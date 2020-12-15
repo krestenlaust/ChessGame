@@ -6,11 +6,16 @@ using System.Threading.Tasks;
 
 namespace ChessGame
 {
-    class Program
+    public class Timer
     {
-        static void Main(string[] args)
+        public void Start()
         {
-           
+
+        }
+
+        public void Stop()
+        {
+
         }
     }
 }

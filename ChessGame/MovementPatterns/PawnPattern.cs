@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChessGame
+namespace ChessGame.MovementPatterns
 {
-    class Program
+    public class PawnPattern : IMovementPattern
     {
-        static void Main(string[] args)
-        {
-           
-        }
+
     }
 }

@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace ChessGame
 {
-    class Program
+    public interface IMovementPattern
     {
-        static void Main(string[] args)
-        {
-           
-        }
+        Move[] GetMoves();
     }
 }

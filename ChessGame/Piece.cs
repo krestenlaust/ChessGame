@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace ChessGame
 {
-    class Program
+    public class Piece
     {
-        static void Main(string[] args)
-        {
-           
-        }
+        public Coordinate Position;
+        public bool hasMoved;
     }
 }

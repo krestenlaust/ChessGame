@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace ChessGame
 {
-    class Program
+    public class Gamemode
     {
-        static void Main(string[] args)
-        {
-           
-        }
+
     }
 }
