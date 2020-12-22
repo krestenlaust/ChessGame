@@ -8,6 +8,9 @@ namespace ChessGame.Pieces
 {
     public class Pawn : Piece
     {
-
+        public Pawn()
+        {
+            Notation = '\0'; // nothing
+        }
     }
 }

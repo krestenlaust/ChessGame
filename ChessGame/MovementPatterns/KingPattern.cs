@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChessGame.MovementPatterns
 {
-    public class PawnPattern : IMovementPattern
+    public class KingPattern : IMovementPattern
     {
         public Move[] GetMoves(Coordinate position, Board board)
         {

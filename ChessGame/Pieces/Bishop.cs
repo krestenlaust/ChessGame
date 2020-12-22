@@ -8,6 +8,9 @@ namespace ChessGame.Pieces
 {
     public class Bishop : Piece
     {
-
+        public Bishop()
+        {
+            Notation = 'B';
+        }
     }
 }

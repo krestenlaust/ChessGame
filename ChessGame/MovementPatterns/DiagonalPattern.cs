@@ -8,6 +8,9 @@ namespace ChessGame.MovementPatterns
 {
     public class DiagonalPattern : IMovementPattern
     {
-
+        public Move[] GetMoves(Board board)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

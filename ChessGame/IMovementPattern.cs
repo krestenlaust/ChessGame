@@ -8,6 +8,6 @@ namespace ChessGame
 {
     public interface IMovementPattern
     {
-        Move[] GetMoves();
+        Move[] GetMoves(Coordinate position, Board board);
     }
 }

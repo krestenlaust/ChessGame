@@ -8,6 +8,9 @@ namespace ChessGame.Pieces
 {
     public class Knight : Piece
     {
-
+        public Knight()
+        {
+            Notation = 'N';
+        }
     }
 }

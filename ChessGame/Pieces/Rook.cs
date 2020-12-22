@@ -8,6 +8,9 @@ namespace ChessGame.Pieces
 {
     public class Rook : Piece
     {
-
+        public Rook()
+        {
+            Notation = 'R';
+        }
     }
 }

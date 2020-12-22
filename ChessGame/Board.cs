@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace ChessGame
 {
@@ -10,11 +6,17 @@ namespace ChessGame
     {
         public int Width;
         public int Height;
+        private Piece[] pieces;
 
         public Board(int width, int height)
         {
             Width = width;
             Height = height;
+        }
+
+        public Piece GetPiece(Coordinate position)
+        {
+            return pieces.FirstOrDefault(x => x.Position == position);
         }
     }
 }
