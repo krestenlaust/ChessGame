@@ -2,6 +2,10 @@
 
 namespace ChessGame
 {
+    /// <summary>
+    /// In Chess, a coordinate consists of files and ranks, which represents respectively the x and y coordinate of a position.
+    /// The file is typically expressed in letters and goes first, e.g. (0, 0) would be 'A1'.
+    /// </summary>
     public readonly struct Coordinate
     {
         public readonly int File;
@@ -18,6 +22,8 @@ namespace ChessGame
 
         public static bool operator !=(Coordinate coordinate1, Coordinate coordinate2) => 
             !(coordinate1 == coordinate2);
+
+        public static Coordinate operator +(Coordinate coordinate1, Coordinate coordinate2) => new Coordinate(coordinate1.File + coordinate2.File, coordinate1.Rank + coordinate2.Rank);
 
         public override string ToString()
         {

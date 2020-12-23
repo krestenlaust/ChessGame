@@ -4,14 +4,14 @@ namespace ChessGame
 {
     public class Board
     {
-        public int Width;
-        public int Height;
+        public int MaxRank;
+        public int MaxFile;
         private Piece[] pieces;
 
         public Board(int width, int height)
         {
-            Width = width;
-            Height = height;
+            MaxFile = width;
+            MaxRank = height;
         }
 
         public Piece GetPiece(Coordinate position)

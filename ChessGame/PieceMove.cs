@@ -7,9 +7,16 @@ namespace ChessGame
     /// </summary>
     public struct PieceMove
     {
-        public bool Captures;
         public Coordinate Position;
         public Piece Piece;
+        public bool Captures;
+
+        public PieceMove(Coordinate position, Piece piece, bool captures)
+        {
+            Position = position;
+            Piece = piece;
+            Captures = captures;
+        }
 
         public override string ToString()
         {

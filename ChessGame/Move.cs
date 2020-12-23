@@ -18,6 +18,24 @@ namespace ChessGame
             CustomNotation = notation;
         }
 
+        public Move(Coordinate position, Piece piece, bool captures=false)
+        {
+            Moves = new PieceMove[]
+            {
+                new PieceMove(position, piece, captures)
+            };
+        }
+
+        public Move(Coordinate position, Piece piece, bool captures, string notation)
+        {
+            Moves = new PieceMove[]
+            {
+                new PieceMove(position, piece, captures)
+            };
+
+            CustomNotation = notation;
+        }
+
         public override string ToString()
         {
             if (!(CustomNotation is null))
