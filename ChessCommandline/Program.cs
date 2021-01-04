@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ChessGame;
 using ChessGame.Gamemodes;
+using ChessGame.Pieces;
 
 namespace ChessCommandline
 {
@@ -21,6 +19,53 @@ namespace ChessCommandline
             while (true)
             {
                 Game game = new Game(player1, player2, new TurtleChess());
+                Board board = game.Board;
+
+                Console.SetCursorPosition(0, 0);
+                DrawBoard(board);
+            }
+        }
+
+        static void DrawBoard(Board board)
+        {
+            for (int y = 0; y <= board.MaxRank; y++)
+            {
+                StringBuilder sb = new StringBuilder();
+
+                for (int x = 0; x <= board.MaxFile; x++)
+                {
+                    char boardTile = ' ';
+
+                    Piece piece = board[new Coordinate(x, y)];
+
+                    switch (board[new Coordinate(x, y)])
+                    {
+                        case Bishop _:
+                            boardTile = piece.Color == TeamColor.White ? '♗' : '♝';
+                            break;
+                        case King _:
+                            boardTile = piece.Color == TeamColor.White ? '♔' : '♚';
+                            break;
+                        case Knight _:
+                            boardTile = piece.Color == TeamColor.White ? '♘' : '♞';
+                            break;
+                        case Pawn _:
+                            boardTile = piece.Color == TeamColor.White ? '♙' : '\u265F';
+                            break;
+                        case Queen _:
+                            boardTile = piece.Color == TeamColor.White ? '♕' : '♛';
+                            break;
+                        case Rook _:
+                            boardTile = piece.Color == TeamColor.White ? '♖' : '♜';
+                            break;
+                        default:
+                            break;
+                    }
+
+                    sb.Append(boardTile);
+                }
+
+                Console.WriteLine(sb);
             }
         }
     }
