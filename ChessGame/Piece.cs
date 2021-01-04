@@ -19,8 +19,15 @@ namespace ChessGame
         /// The character used to notate the piece in algebraic notation.
         /// </summary>
         public char Notation;
+        /// <summary>
+        /// Whether a piece is White or Black.
+        /// </summary>
         public PieceColor Color;
-        public IMovementPattern[] MovementPatterns;
+        /// <summary>
+        /// The different movement patterns the piece uses.
+        /// </summary>
+        public readonly int MaterialValue;
+        private readonly IMovementPattern[] MovementPatterns;
 
         /// <summary>
         /// Returns enumerable of all available moves of a given piece.
