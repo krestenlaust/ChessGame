@@ -9,6 +9,7 @@ namespace ChessGame
     public class Game
     {
         public Gamemode Gamemode;
-        
+        public Player PlayerBlack;
+        public Player PlayerWhite;
     }
 }

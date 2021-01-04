@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace ChessGame
 {
-    public class Gamemode
+    public abstract class Gamemode
     {
-
+        public readonly string Name;
+        public virtual Board GetBoard() { return null; }
     }
 }

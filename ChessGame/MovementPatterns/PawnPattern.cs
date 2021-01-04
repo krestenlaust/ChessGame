@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ChessGame.MovementPatterns
 {
@@ -7,7 +6,7 @@ namespace ChessGame.MovementPatterns
     {
         public IEnumerable<Move> GetMoves(Piece piece, Board board)
         {
-            int moveDirectionY = piece.Color == PieceColor.White ? 1 : -1;
+            int moveDirectionY = piece.Color == TeamColor.White ? 1 : -1;
 
             // store position
             Coordinate position = piece.Position;
@@ -16,18 +15,19 @@ namespace ChessGame.MovementPatterns
             Coordinate leftAttack = position + new Coordinate(1, moveDirectionY);
             Coordinate rightAttack = position + new Coordinate(-1, moveDirectionY);
 
-            if (board.GetPiece(leftAttack) is Piece attackedPiece)
-            {
+            // check left flank
+            if (board.GetPiece(leftAttack) is Piece LeftAttackedPiece && LeftAttackedPiece.Color != piece.Color)
                 yield return new Move(leftAttack, piece, true);
-            }
-            if (!(board.GetPiece(rightAttack) is null))
-            {
-                yield return new Move(rightAttack, piece, true);
-            }
-            if (!(board.GetPiece()))
-            {
 
-            }
+            // check right flank
+            if (board.GetPiece(rightAttack) is Piece rightAttackedPiece && rightAttackedPiece.Color != piece.Color)
+                yield return new Move(rightAttack, piece, true);
+
+            Coordinate forwardPush = position + new Coordinate(0, moveDirectionY);
+
+            // check forward
+            if (board.GetPiece(forwardPush) is Piece obstaclePiece && obstaclePiece.Color != piece.Color)
+                yield return new Move(forwardPush, piece, false);
         }
     }
 }

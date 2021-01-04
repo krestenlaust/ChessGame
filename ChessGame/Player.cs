@@ -8,11 +8,14 @@ namespace ChessGame
 {
     public class Player
     {
-        public string Name;
+        public string Nickname;
+        public int Wins;
+        public int Losses;
+        public int Draws;
 
         public Player(string name)
         {
-            Name = name;
+            Nickname = name;
         }
     }
 }

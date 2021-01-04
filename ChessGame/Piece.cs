@@ -5,7 +5,7 @@ namespace ChessGame
     /// <summary>
     /// The color of a piece.
     /// </summary>
-    public enum PieceColor
+    public enum TeamColor
     {
         Black,
         White
@@ -22,7 +22,7 @@ namespace ChessGame
         /// <summary>
         /// Whether a piece is White or Black.
         /// </summary>
-        public PieceColor Color;
+        public TeamColor Color;
         /// <summary>
         /// The different movement patterns the piece uses.
         /// </summary>
