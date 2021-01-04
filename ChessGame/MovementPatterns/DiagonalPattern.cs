@@ -9,10 +9,8 @@ namespace ChessGame.MovementPatterns
     /// </summary>
     public class DiagonalPattern : IMovementPattern
     {
-        IEnumerable<Move> IMovementPattern.GetMoves(Piece piece, Board board)
+        IEnumerable<Move> IMovementPattern.GetMoves(Piece piece, Coordinate position, Board board)
         {
-            Coordinate position = piece.Position; //Keeps the piece position saved
-
             for (int i = -board.MaxFile; i < board.MaxFile; i++) //Checking the boards lenght both left and right
             {
                 if (i == 0) //If this square

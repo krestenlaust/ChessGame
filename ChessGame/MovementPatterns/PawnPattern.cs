@@ -4,12 +4,9 @@ namespace ChessGame.MovementPatterns
 {
     public class PawnPattern : IMovementPattern
     {
-        public IEnumerable<Move> GetMoves(Piece piece, Board board)
+        public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Board board)
         {
             int moveDirectionY = piece.Color == TeamColor.White ? 1 : -1;
-
-            // store position
-            Coordinate position = piece.Position;
 
             // get potential flank capture positions.
             Coordinate leftAttack = position + new Coordinate(1, moveDirectionY);

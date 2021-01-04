@@ -10,6 +10,8 @@ namespace ChessCommandline
     {
         static void Main(string[] args)
         {
+            Console.OutputEncoding = Encoding.Unicode;
+
             Console.WriteLine("Nickname for player 1 (white)? ");
             Player player1 = new Player(Console.ReadLine());
 
@@ -23,6 +25,10 @@ namespace ChessCommandline
 
                 Console.SetCursorPosition(0, 0);
                 DrawBoard(board);
+
+                Console.WriteLine("Enter move: ");
+                string move = Console.ReadLine();
+
             }
         }
 

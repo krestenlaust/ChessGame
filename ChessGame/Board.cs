@@ -7,12 +7,17 @@ namespace ChessGame
     {
         public int MaxRank;
         public int MaxFile;
-        public List<Piece> Pieces = new List<Piece>();
+        public Dictionary<Coordinate, Piece> Pieces = new Dictionary<Coordinate, Piece>();
 
         public Board(int width, int height)
         {
             MaxFile = width - 1;
             MaxRank = height - 1;
+        }
+
+        public Move MoveByNotation(string notation)
+        {
+            
         }
 
         /// <summary>
@@ -23,23 +28,29 @@ namespace ChessGame
         public Piece this[Coordinate position]
         {
             get { return GetPiece(position); }
-            set
-            {
-                if (value is Piece newPiece)
-                {
-                    newPiece.Position = position;
-                }
+            set { Pieces[position] = value; }
+        }
 
-                if (GetPiece(position) is Piece oldPiece)
-                {
-                    Pieces.Remove(oldPiece);
-                }
+        public bool TryGetCoordinate(Piece piece, out Coordinate position)
+        {
+            try
+            {
+                position = Pieces.FirstOrDefault(x => x.Value == piece).Key;
+                return true;
+
+            }catch (System.ArgumentNullException)
+            {
+                position = new Coordinate();
+                return false;
             }
         }
 
         public Piece GetPiece(Coordinate position)
         {
-            return Pieces.FirstOrDefault(x => x.Position == position);
+            if (Pieces.TryGetValue(position, out Piece piece))
+                return piece;
+
+            return null;
         }
     }
 }

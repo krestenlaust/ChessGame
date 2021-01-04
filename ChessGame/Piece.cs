@@ -13,7 +13,9 @@ namespace ChessGame
 
     public class Piece
     {
-        public Coordinate Position;
+        // A piece shouldn't know it's own position, if there is no board, then there's no position.
+        //public Coordinate Position;
+
         public bool hasMoved;
         /// <summary>
         /// The character used to notate the piece in algebraic notation.
@@ -27,7 +29,7 @@ namespace ChessGame
         /// The different movement patterns the piece uses.
         /// </summary>
         public readonly int MaterialValue;
-        private readonly IMovementPattern[] MovementPatterns;
+        protected IMovementPattern[] MovementPatterns;
 
         /// <summary>
         /// Returns enumerable of all available moves of a given piece.
@@ -36,8 +38,14 @@ namespace ChessGame
         /// <returns></returns>
         public IEnumerable<Move> GetMoves(Board board)
         {
+            if (MovementPatterns is null)
+                yield break;
+
+            if (!board.TryGetCoordinate(this, out Coordinate position))
+                yield break;
+
             foreach (var item in MovementPatterns)
-                foreach (var move in item.GetMoves(this, board))
+                foreach (var move in item.GetMoves(this, position, board))
                 {
                     yield return move;
                 }

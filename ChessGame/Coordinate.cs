@@ -44,8 +44,8 @@ namespace ChessGame
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append((char)(97 + File)); // tilføj bogstavs modpart af 'File'.
-            sb.Append(Rank);
+            sb.Append((char)(97 + File)); // tilføj bogstavs modpart til værdien af File.
+            sb.Append(Rank + 1);
 
             return sb.ToString();
         }
