@@ -360,3 +360,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+ChessGame/obj/Debug/Chess.csprojAssemblyReference.cache
+ChessGame/obj/Debug/Chess.csproj.CoreCompileInputs.cache
+ChessCommandline/ChessCommandline.csproj
+ChessCommandline/App.config
+.vs/ChessGame/v15/.suo
+ChessCommandline/ChessCommandline.csproj
+ChessCommandline/App.config
