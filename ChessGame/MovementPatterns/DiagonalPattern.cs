@@ -14,7 +14,7 @@ namespace ChessGame.MovementPatterns
             throw new NotImplementedException();
         }
 
-        IEnumerator<Move> IMovementPattern.GetMoves(Piece position, Board board)
+        IEnumerable<Move> IMovementPattern.GetMoves(Piece position, Board board)
         {
             throw new NotImplementedException();
         }

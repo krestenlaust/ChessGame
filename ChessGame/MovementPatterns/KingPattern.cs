@@ -4,7 +4,7 @@ namespace ChessGame.MovementPatterns
 {
     public class KingPattern : IMovementPattern
     {
-        public IEnumerator<Move> GetMoves(Piece piece, Board board)
+        public IEnumerable<Move> GetMoves(Piece piece, Board board)
         {
             Coordinate position = piece.Position;
 

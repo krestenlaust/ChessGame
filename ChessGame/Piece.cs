@@ -22,12 +22,12 @@ namespace ChessGame
         public PieceColor Color;
         public IMovementPattern[] MovementPatterns;
 
-        public IEnumerator<Move> GetMoves(Board board)
+        public IEnumerable<Move> GetMoves(Board board)
         {
             foreach (var item in MovementPatterns)
-                foreach (var move in item.GetMoves(board))
+                foreach (var move in item.GetMoves(this, board))
                 {
-
+                    yield return move;
                 }
         }
 

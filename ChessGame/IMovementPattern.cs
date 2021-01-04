@@ -8,6 +8,6 @@ namespace ChessGame
 {
     public interface IMovementPattern
     {
-        IEnumerator<Move> GetMoves(Piece position, Board board);
+        IEnumerable<Move> GetMoves(Piece position, Board board);
     }
 }
