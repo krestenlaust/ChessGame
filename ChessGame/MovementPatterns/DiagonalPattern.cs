@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ChessGame.MovementPatterns
 {
@@ -13,6 +10,11 @@ namespace ChessGame.MovementPatterns
     public class DiagonalPattern : IMovementPattern
     {
         public Move[] GetMoves(Piece position, Board board)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator<Move> IMovementPattern.GetMoves(Piece position, Board board)
         {
             throw new NotImplementedException();
         }

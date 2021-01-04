@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ChessGame
 {
@@ -26,15 +22,13 @@ namespace ChessGame
         public PieceColor Color;
         public IMovementPattern[] MovementPatterns;
 
-        public IEnumerator<Move> GetMoves()
+        public IEnumerator<Move> GetMoves(Board board)
         {
             foreach (var item in MovementPatterns)
-            {
-                foreach (var move in item)
+                foreach (var move in item.GetMoves(board))
                 {
 
                 }
-            }
         }
 
         public override string ToString()
