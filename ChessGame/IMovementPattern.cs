@@ -11,6 +11,6 @@ namespace ChessGame
     /// </summary>
     public interface IMovementPattern
     {
-        IEnumerable<Move> GetMoves(Piece position, Board board);
+        IEnumerable<Move> GetMoves(Piece piece, Board board);
     }
 }
