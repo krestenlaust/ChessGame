@@ -8,9 +8,20 @@ namespace ChessGame
     /// </summary>
     public readonly struct Coordinate
     {
+        /// <summary>
+        /// Zero-indexed. e.g. A would be 0.
+        /// </summary>
         public readonly int File;
+        /// <summary>
+        /// Zero-indexed. Row 1 is actually row 0.
+        /// </summary>
         public readonly int Rank;
 
+        /// <summary>
+        /// Coordinate that describes the position of a piece.
+        /// </summary>
+        /// <param name="file">The x-coordinate, the column. Usually expressed using the letters A-G.</param>
+        /// <param name="rank">The y-coordinate, the row.</param>
         public Coordinate(int file, int rank)
         {
             File = file;
@@ -25,6 +36,10 @@ namespace ChessGame
 
         public static Coordinate operator +(Coordinate coordinate1, Coordinate coordinate2) => new Coordinate(coordinate1.File + coordinate2.File, coordinate1.Rank + coordinate2.Rank);
 
+        /// <summary>
+        /// Converts a coordinate to one with file as letter and rank as one-indexed number.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();

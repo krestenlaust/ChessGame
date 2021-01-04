@@ -22,6 +22,11 @@ namespace ChessGame
         public PieceColor Color;
         public IMovementPattern[] MovementPatterns;
 
+        /// <summary>
+        /// Returns enumerable of all available moves of a given piece.
+        /// </summary>
+        /// <param name="board"></param>
+        /// <returns></returns>
         public IEnumerable<Move> GetMoves(Board board)
         {
             foreach (var item in MovementPatterns)

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace ChessGame
 {
+    /// <summary>
+    /// Describes a specific movement pattern of a piece.
+    /// </summary>
     public interface IMovementPattern
     {
         IEnumerable<Move> GetMoves(Piece position, Board board);
