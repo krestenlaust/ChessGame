@@ -8,6 +8,14 @@ namespace ChessGame.Gamemodes
 {
     public class TurtleChess :  Gamemode
     {
+        public TurtleChess()
+        {
+            Name = "Unlimited Time Chess";
+        }
 
+        public override Board GetBoard()
+        {
+            return null;
+        }
     }
 }

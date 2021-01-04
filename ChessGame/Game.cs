@@ -8,8 +8,15 @@ namespace ChessGame
 {
     public class Game
     {
-        public Gamemode Gamemode;
         public Player PlayerBlack;
         public Player PlayerWhite;
+        public readonly Gamemode Gamemode;
+
+        public Game(Player white, Player black, Gamemode gamemode)
+        {
+            Gamemode = gamemode;
+            PlayerWhite = white;
+            PlayerBlack = black;
+        }
     }
 }

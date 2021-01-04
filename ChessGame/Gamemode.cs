@@ -8,7 +8,7 @@ namespace ChessGame
 {
     public abstract class Gamemode
     {
-        public readonly string Name;
-        public virtual Board GetBoard() { return null; }
+        public string Name { get; protected set; }
+        public abstract Board GetBoard();
     }
 }
