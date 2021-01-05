@@ -17,7 +17,7 @@ namespace ChessGame
         /// <summary>
         /// The character used to notate the piece in algebraic notation.
         /// </summary>
-        public char Notation { get; init; }
+        public char Notation { get; protected set; }
         /// <summary>
         /// Whether a piece is White or Black.
         /// </summary>

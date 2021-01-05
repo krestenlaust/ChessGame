@@ -25,7 +25,7 @@ namespace ChessGame.MovementPatterns
 
                     if (occupyingPiece is null) // is position empty?
                     {
-                        yield return new Move(newPosition, piece);
+                        yield return new Move(newPosition, piece, false);
                         continue;
                     }
 

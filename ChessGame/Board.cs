@@ -18,7 +18,7 @@ namespace ChessGame
 
         public Move MoveByNotation(string notation)
         {
-            return new Move();
+            return null;
         }
 
         /// <summary>
