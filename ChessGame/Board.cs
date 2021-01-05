@@ -5,9 +5,10 @@ namespace ChessGame
 {
     public class Board
     {
-        public int MaxRank;
-        public int MaxFile;
+        public readonly int MaxRank;
+        public readonly int MaxFile;
         public Dictionary<Coordinate, Piece> Pieces = new Dictionary<Coordinate, Piece>();
+        public Dictionary<Coordinate, List<Piece>> Dangerzone = new Dictionary<Coordinate, List<Piece>>();
 
         public Board(int width, int height)
         {
@@ -17,7 +18,7 @@ namespace ChessGame
 
         public Move MoveByNotation(string notation)
         {
-            
+            return new Move();
         }
 
         /// <summary>
