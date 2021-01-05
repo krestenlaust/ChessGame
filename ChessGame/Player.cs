@@ -8,7 +8,7 @@ namespace ChessGame
 {
     public class Player
     {
-        public string Nickname;
+        public readonly string Nickname;
         public int Wins;
         public int Losses;
         public int Draws;

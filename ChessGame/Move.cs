@@ -5,7 +5,7 @@ namespace ChessGame
     public class Move // kunne måske godt være en struct...?
     {
         public PieceMove[] Moves;
-        public string CustomNotation = null;
+        private readonly string CustomNotation = null;
 
         public Move(PieceMove[] moves)
         {
@@ -18,7 +18,7 @@ namespace ChessGame
             CustomNotation = notation;
         }
 
-        public Move(Coordinate position, Piece piece, bool captures=false)
+        public Move(Coordinate position, Piece piece, bool captures)
         {
             Moves = new PieceMove[]
             {
@@ -38,8 +38,11 @@ namespace ChessGame
 
         public override string ToString()
         {
+            // Return custom notation if it's defined.
             if (!(CustomNotation is null))
+            {
                 return CustomNotation;
+            }
 
             StringBuilder sb = new StringBuilder();
 

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace ChessGame
 {
@@ -6,7 +7,7 @@ namespace ChessGame
     /// In Chess, a coordinate consists of files and ranks, which represents respectively the x and y coordinate of a position.
     /// The file is typically expressed in letters and goes first, e.g. (0, 0) would be 'A1'.
     /// </summary>
-    public readonly struct Coordinate
+    public readonly struct Coordinate : IEquatable<Coordinate>
     {
         /// <summary>
         /// Zero-indexed. e.g. A would be 0.
@@ -66,5 +67,7 @@ namespace ChessGame
             hashCode = hashCode * -1521134295 + Rank.GetHashCode();
             return hashCode;
         }
+
+        public bool Equals(Coordinate other) => other == this;
     }
 }

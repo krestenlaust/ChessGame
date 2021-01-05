@@ -13,18 +13,15 @@ namespace ChessGame
 
     public class Piece
     {
-        // A piece shouldn't know it's own position, if there is no board, then there's no position.
-        //public Coordinate Position;
-
         public bool hasMoved;
         /// <summary>
         /// The character used to notate the piece in algebraic notation.
         /// </summary>
-        public char Notation;
+        public char Notation { get; init; }
         /// <summary>
         /// Whether a piece is White or Black.
         /// </summary>
-        public TeamColor Color;
+        public TeamColor Color { get; private set; }
         /// <summary>
         /// The different movement patterns the piece uses.
         /// </summary>
@@ -39,21 +36,24 @@ namespace ChessGame
         public IEnumerable<Move> GetMoves(Board board)
         {
             if (MovementPatterns is null)
+            {
                 yield break;
+            }
 
             if (!board.TryGetCoordinate(this, out Coordinate position))
+            { 
                 yield break;
+            }
 
-            foreach (var item in MovementPatterns)
+            foreach (var item in MovementPatterns) 
+            {
                 foreach (var move in item.GetMoves(this, position, board))
                 {
                     yield return move;
                 }
+            }
         }
 
-        public override string ToString()
-        {
-            return Notation + "";
-        }
+        public override string ToString() => Notation.ToString();
     }
 }
