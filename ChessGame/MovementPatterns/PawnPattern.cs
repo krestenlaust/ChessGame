@@ -25,6 +25,8 @@ namespace ChessGame.MovementPatterns
             // check forward
             if (board.GetPiece(forwardPush) is Piece obstaclePiece && obstaclePiece.Color != piece.Color)
                 yield return new Move(forwardPush, piece, false);
+
+
         }
     }
 }
