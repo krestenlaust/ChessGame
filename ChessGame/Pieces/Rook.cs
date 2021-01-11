@@ -11,6 +11,7 @@ namespace ChessGame.Pieces
         public Rook()
         {
             Notation = 'R';
+            MovementPatternList = new IMovementPattern[] { new MovementPatterns.CardinalPattern() };
         }
     }
 }

@@ -11,6 +11,7 @@ namespace ChessGame.Pieces
         public Queen()
         {
             Notation = 'Q';
+            MovementPatternList = new IMovementPattern[] { new MovementPatterns.CardinalPattern(), new MovementPatterns.DiagonalPattern() };
         }
     }
 }
