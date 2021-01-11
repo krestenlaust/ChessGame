@@ -63,11 +63,8 @@ namespace ChessGame.MovementPatterns
                         break;
                 }
 
-                for (int i = 0; i < board.MaxFile; i++) //Checker
+                for (int i = 1; i < board.MaxFile; i++) //Checker
                 {
-                    if (i == 0) //If this square
-                        continue;
-
                     Coordinate checkPosition = new Coordinate((i + position.File) * Xdir, i + position.Rank * Ydir); //Position update
 
                     if (checkPosition.Rank > board.MaxRank || checkPosition.Rank < 0 ||
@@ -86,6 +83,7 @@ namespace ChessGame.MovementPatterns
                     {
                         yield return new Move(checkPosition, piece, true); //Sends the move 
                     }
+
                     break;
                 }
             }
