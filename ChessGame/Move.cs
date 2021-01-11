@@ -2,7 +2,7 @@
 
 namespace ChessGame
 {
-    public class Move // kunne måske godt være en struct...?
+    public class Move
     {
         public PieceMove[] Moves;
         private readonly string CustomNotation = null;
@@ -18,19 +18,19 @@ namespace ChessGame
             CustomNotation = notation;
         }
 
-        public Move(Coordinate position, Piece piece, bool captures)
+        public Move(Coordinate position, Coordinate source, Piece piece, bool captures)
         {
             Moves = new PieceMove[]
             {
-                new PieceMove(position, piece, captures)
+                new PieceMove(position, source, piece, captures)
             };
         }
 
-        public Move(Coordinate position, Piece piece, bool captures, string notation)
+        public Move(Coordinate position, Coordinate source, Piece piece, bool captures, string notation)
         {
             Moves = new PieceMove[]
             {
-                new PieceMove(position, piece, captures)
+                new PieceMove(position, source, piece, captures)
             };
 
             CustomNotation = notation;

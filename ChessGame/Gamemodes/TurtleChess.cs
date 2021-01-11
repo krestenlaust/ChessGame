@@ -16,9 +16,9 @@ namespace ChessGame.Gamemodes
             Name = "Unlimited Time Chess";
         }
 
-        public override Board GenerateBoard()
+        public override Chessboard GenerateBoard()
         {
-            Board board = new Board(8, 8);
+            Chessboard board = new Chessboard(8, 8);
 
             board[new Coordinate(0, 0)] = new Pieces.Rook { Color = TeamColor.White };
             board[new Coordinate(1, 0)] = new Pieces.Knight { Color = TeamColor.White };

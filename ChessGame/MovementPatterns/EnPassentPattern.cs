@@ -8,7 +8,7 @@ namespace ChessGame.MovementPatterns
 {
     class EnPassentPattern : IMovementPattern
     {
-        public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Board board, bool captureOnly = false)
+        public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool captureOnly = false)
         {
 
         }

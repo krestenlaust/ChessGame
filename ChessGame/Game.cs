@@ -5,7 +5,7 @@ namespace ChessGame
 {
     public class Game
     {
-        public readonly Board Board;
+        public readonly Chessboard Board;
         public TeamColor CurrentTurn = TeamColor.White;
         public Player CurrentPlayerTurn
         {

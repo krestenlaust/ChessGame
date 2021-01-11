@@ -42,6 +42,7 @@ namespace ChessGame
             !(coordinate1 == coordinate2);
 
         public static Coordinate operator +(Coordinate coordinate1, Coordinate coordinate2) => new Coordinate(coordinate1.File + coordinate2.File, coordinate1.Rank + coordinate2.Rank);
+        public static Coordinate operator -(Coordinate coordinate1, Coordinate coordinate2) => new Coordinate(coordinate1.File - coordinate2.File, coordinate1.Rank - coordinate2.Rank);
 
         /// <summary>
         /// Converts a coordinate to one with file as letter and rank as one-indexed number.

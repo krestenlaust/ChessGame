@@ -33,7 +33,7 @@ namespace ChessGame
         /// </summary>
         /// <param name="board"></param>
         /// <returns></returns>
-        public IEnumerable<Move> GetMoves(Board board)
+        public IEnumerable<Move> GetMoves(Chessboard board, bool captureOnly = false)
         {
             if (MovementPatternList is null)
             {
@@ -47,7 +47,7 @@ namespace ChessGame
 
             foreach (var item in MovementPatternList) 
             {
-                foreach (var move in item.GetMoves(this, position, board))
+                foreach (var move in item.GetMoves(this, position, board, captureOnly))
                 {
                     yield return move;
                 }

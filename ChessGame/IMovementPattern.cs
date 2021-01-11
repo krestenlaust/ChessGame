@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ChessGame
 {
@@ -11,6 +8,14 @@ namespace ChessGame
     /// </summary>
     public interface IMovementPattern
     {
-        IEnumerable<Move> GetMoves(Piece piece, Coordinate location, Board board, bool captureOnly=false);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="piece"></param>
+        /// <param name="position"></param>
+        /// <param name="board"></param>
+        /// <param name="anyCaptureOnly">Only return capture-moves, capture no matter other pieces (even if there isn't a piece).</param>
+        /// <returns></returns>
+        IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool anyCaptureOnly=false);
     }
 }

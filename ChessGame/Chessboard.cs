@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace ChessGame
 {
-    public class Board
+    public class Chessboard
     {
         public readonly int MaxRank;
         public readonly int MaxFile;
@@ -13,7 +13,7 @@ namespace ChessGame
         /// </summary>
         public Dictionary<Coordinate, List<Piece>> Dangerzone = new Dictionary<Coordinate, List<Piece>>();
 
-        public Board(int width, int height)
+        public Chessboard(int width, int height)
         {
             MaxFile = width - 1;
             MaxRank = height - 1;
@@ -82,7 +82,7 @@ namespace ChessGame
         {
             foreach (var piece in Pieces)
             {
-                foreach (var move in piece.Value.GetMoves(this))
+                foreach (var move in piece.Value.GetMoves(this, true))
                 {
                     
                 }

@@ -24,7 +24,7 @@ namespace ChessCommandline
             while (true)
             {
                 Game game = new Game(player1, player2, new TurtleChess());
-                Board board = game.Board;
+                Chessboard board = game.Board;
 
                 while (true)
                 {
@@ -68,7 +68,7 @@ namespace ChessCommandline
             }
         }
 
-        static void DrawBoard(Board board)
+        static void DrawBoard(Chessboard board)
         {
             int i = 0;
             for (int y = 0; y <= board.MaxRank; y++)
