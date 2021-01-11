@@ -35,7 +35,7 @@ namespace ChessGame.MovementPatterns
             forwardPush += new Coordinate(0, moveDirectionY);
 
             // check long forward
-            if (!(board.GetPiece(forwardPush) is Piece))
+            if (board.GetPiece(forwardPush) is null && !piece.hasMoved)
             {
                 // clear ahead.
                 yield return new Move(forwardPush, piece, false);

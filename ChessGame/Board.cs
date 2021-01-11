@@ -30,6 +30,8 @@ namespace ChessGame
 
                 Pieces.Remove(Pieces.First(piece => piece.Value == singleMove.Piece).Key);
                 Pieces[singleMove.Destination] = singleMove.Piece;
+
+                singleMove.Piece.hasMoved = true;
             }
         }
 
