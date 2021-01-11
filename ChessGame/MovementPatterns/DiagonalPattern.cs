@@ -65,7 +65,7 @@ namespace ChessGame.MovementPatterns
 
                 for (int i = 1; i < board.MaxFile; i++) //Checker
                 {
-                    Coordinate checkPosition = new Coordinate((i + position.File) * Xdir, i + position.Rank * Ydir); //Position update
+                    Coordinate checkPosition = new Coordinate((i * Xdir) + position.File, (i * Ydir) + position.Rank); //Position update
 
                     if (checkPosition.Rank > board.MaxRank || checkPosition.Rank < 0 ||
                         checkPosition.File > board.MaxFile || checkPosition.File < 0) //If the checking position is outside of the board
@@ -79,7 +79,8 @@ namespace ChessGame.MovementPatterns
                         yield return new Move(checkPosition, piece, false);
                         continue;
                     }
-                    else if (occupyingPiece.Color != piece.Color) // There is a enemy piece
+
+                    if (occupyingPiece.Color != piece.Color) // There is a enemy piece
                     {
                         yield return new Move(checkPosition, piece, true); //Sends the move 
                     }
