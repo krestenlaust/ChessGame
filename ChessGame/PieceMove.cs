@@ -8,12 +8,14 @@ namespace ChessGame
     public struct PieceMove
     {
         public Coordinate Destination;
+        public Coordinate Source;
         public Piece Piece;
         public bool Captures;
 
-        public PieceMove(Coordinate position, Piece piece, bool captures)
+        public PieceMove(Coordinate destination, Coordinate source, Piece piece, bool captures)
         {
-            Destination = position;
+            Destination = destination;
+            Source = source;
             Piece = piece;
             Captures = captures;
         }

@@ -58,6 +58,7 @@
     <Compile Include="Move.cs" />
     <Compile Include="MovementPatterns\CardinalPattern.cs" />
     <Compile Include="MovementPatterns\DiagonalPattern.cs" />
+    <Compile Include="MovementPatterns\EnPassentPattern.cs" />
     <Compile Include="MovementPatterns\KingPattern.cs" />
     <Compile Include="MovementPatterns\KnightPattern.cs" />
     <Compile Include="MovementPatterns\PawnPattern.cs" />

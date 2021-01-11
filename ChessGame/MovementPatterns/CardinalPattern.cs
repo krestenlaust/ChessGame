@@ -9,7 +9,7 @@ namespace ChessGame.MovementPatterns
     /// </summary>
     public class CardinalPattern : IMovementPattern
     {
-        IEnumerable<Move> IMovementPattern.GetMoves(Piece piece, Coordinate position, Board board)
+        IEnumerable<Move> IMovementPattern.GetMoves(Piece piece, Coordinate position, Board board, bool captureOnly = false)
         {
             for (int n = 0; n < 4; n++) //The 4 directions from the piece
             {

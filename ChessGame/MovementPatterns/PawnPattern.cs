@@ -4,7 +4,7 @@ namespace ChessGame.MovementPatterns
 {
     public class PawnPattern : IMovementPattern
     {
-        public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Board board)
+        public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Board board, bool captureOnly = false)
         {
             int moveDirectionY = piece.Color == TeamColor.White ? 1 : -1;
 

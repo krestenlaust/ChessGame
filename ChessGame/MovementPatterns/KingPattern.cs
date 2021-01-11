@@ -4,7 +4,7 @@ namespace ChessGame.MovementPatterns
 {
     public class KingPattern : IMovementPattern
     {
-        public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Board board)
+        public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Board board, bool captureOnly = false)
         {
             // adjacent cells
             for (int y = -1; y <= 1; y++)
