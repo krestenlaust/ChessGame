@@ -78,13 +78,20 @@ namespace ChessGame
             return null;
         }
 
-        private void CalculateDangerzones()
+        private void RecalculateDangerzones()
         {
+            Dangerzone = new Dictionary<Coordinate, List<Piece>>();
+
             foreach (var piece in Pieces)
             {
                 foreach (var move in piece.Value.GetMoves(this, true))
                 {
-                    
+                    if (Dangerzone[move.Moves[0].Destination] is null)
+                    {
+                        Dangerzone[move.Moves[0].Destination] = new List<Piece>();
+                    }
+
+                    Dangerzone[move.Moves[0].Destination].Add(piece.Value);
                 }
             }
         }
