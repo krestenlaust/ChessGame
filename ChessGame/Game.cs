@@ -7,6 +7,13 @@ namespace ChessGame
     {
         public readonly Board Board;
         public TeamColor CurrentTurn = TeamColor.White;
+        public Player CurrentPlayerTurn
+        {
+            get
+            {
+                return CurrentTurn == TeamColor.White ? playerWhite : playerBlack;
+            }
+        }
         private readonly Player playerBlack;
         private readonly Player playerWhite;
         private readonly Gamemode gamemode;
