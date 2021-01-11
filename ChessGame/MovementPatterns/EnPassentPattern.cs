@@ -10,7 +10,7 @@ namespace ChessGame.MovementPatterns
     {
         public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool captureOnly = false)
         {
-
+            yield break;
         }
     }
 }

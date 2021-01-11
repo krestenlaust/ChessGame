@@ -76,13 +76,13 @@ namespace ChessGame.MovementPatterns
 
                     if (occupyingPiece is null) // is position empty?
                     {
-                        yield return new Move(checkPosition, piece, false);
+                        yield return new Move(checkPosition, position, piece, false);
                         continue;
                     }
 
                     if (occupyingPiece.Color != piece.Color) // There is a enemy piece
                     {
-                        yield return new Move(checkPosition, piece, true); //Sends the move 
+                        yield return new Move(checkPosition, position, piece, true); //Sends the move 
                     }
 
                     break;

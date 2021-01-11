@@ -14,11 +14,11 @@ namespace ChessGame.MovementPatterns
 
             // check left flank
             if (board.GetPiece(leftAttack) is Piece LeftAttackedPiece && LeftAttackedPiece.Color != piece.Color || captureOnly)
-                yield return new Move(leftAttack, piece, true);
+                yield return new Move(leftAttack, position, piece, true);
 
             // check right flank
             if (board.GetPiece(rightAttack) is Piece rightAttackedPiece && rightAttackedPiece.Color != piece.Color || captureOnly)
-                yield return new Move(rightAttack, piece, true);
+                yield return new Move(rightAttack, position, piece, true);
 
             Coordinate forwardPush = position + new Coordinate(0, moveDirectionY);
 
@@ -36,7 +36,7 @@ namespace ChessGame.MovementPatterns
             }
 
             // move 1 tile forward
-            yield return new Move(forwardPush, piece, false);
+            yield return new Move(forwardPush, position, piece, false);
 
             forwardPush += new Coordinate(0, moveDirectionY);
 
@@ -44,7 +44,7 @@ namespace ChessGame.MovementPatterns
             if (board.GetPiece(forwardPush) is null && !piece.hasMoved)
             {
                 // clear ahead.
-                yield return new Move(forwardPush, piece, false);
+                yield return new Move(forwardPush, position, piece, false);
             }
         }
     }

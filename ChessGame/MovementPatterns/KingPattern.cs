@@ -25,13 +25,13 @@ namespace ChessGame.MovementPatterns
 
                     if (occupyingPiece is null) // is position empty?
                     {
-                        yield return new Move(newPosition, piece, false);
+                        yield return new Move(newPosition, position, piece, false);
                         continue;
                     }
 
                     if (occupyingPiece.Color != piece.Color) // is piece of opposite color (can capture)
                     {
-                        yield return new Move(newPosition, piece, true);
+                        yield return new Move(newPosition, position, piece, true);
                     }
                 }
             }
