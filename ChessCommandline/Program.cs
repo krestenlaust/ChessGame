@@ -8,6 +8,9 @@ namespace ChessCommandline
 {
     class Program
     {
+        static ConsoleColor currentColor = ConsoleColor.Red;
+        static readonly Array consoleColors = Enum.GetValues(typeof(ConsoleColor));
+
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.Unicode;
@@ -25,24 +28,41 @@ namespace ChessCommandline
 
                 while (true)
                 {
-
                     Console.Clear();
                     Console.SetCursorPosition(0, 0);
                     DrawBoard(board);
 
-                dirty_makemove:
-                    Console.WriteLine("Enter move: ");
-                    string move = Console.ReadLine();
+                    while (true)
+                    {
+                        Console.WriteLine("Enter move: ");
+                        string move = Console.ReadLine();
 
-                    if (game.MakeMove(move))
-                    {
-                        Console.WriteLine("Made move");
+                        if (move == "c")
+                        {
+                            int i;
+                            for (i = 0; i < consoleColors.Length; i++)
+                            {
+                                if ((ConsoleColor)consoleColors.GetValue(i) == currentColor)
+                                    break;
+                            }
+
+                            currentColor = (ConsoleColor)consoleColors.GetValue((i + 1) % consoleColors.Length);
+
+                            break;
+                        }
+
+                        if (game.MakeMove(move))
+                        {
+                            Console.WriteLine("Made move");
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Wrong notation");
+                            continue;
+                        }
                     }
-                    else
-                    {
-                        Console.WriteLine("Wrong notation");
-                        goto dirty_makemove;
-                    }
+                    
                 }
 
             }
@@ -85,7 +105,7 @@ namespace ChessCommandline
 
                     if (++i % 2 == 0)
                     {
-                        Console.BackgroundColor = ConsoleColor.Red;
+                        Console.BackgroundColor = currentColor;
                     }
                     else
                     {
