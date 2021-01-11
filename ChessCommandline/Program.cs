@@ -50,10 +50,9 @@ namespace ChessCommandline
 
         static void DrawBoard(Board board)
         {
+            int i = 0;
             for (int y = 0; y <= board.MaxRank; y++)
             {
-                StringBuilder sb = new StringBuilder();
-
                 for (int x = 0; x <= board.MaxFile; x++)
                 {
                     char boardTile = ' ';
@@ -84,10 +83,19 @@ namespace ChessCommandline
                             break;
                     }
 
-                    sb.Append(boardTile);
-                }
+                    if (++i % 2 == 0)
+                    {
+                        Console.BackgroundColor = ConsoleColor.Red;
+                    }
+                    else
+                    {
+                        Console.BackgroundColor = ConsoleColor.Black;
+                    }
 
-                Console.WriteLine(sb);
+                    Console.Write(boardTile);
+                }
+                i++;
+                Console.WriteLine();
             }
         }
     }
