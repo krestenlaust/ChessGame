@@ -8,6 +8,9 @@ namespace ChessGame
         public readonly int MaxRank;
         public readonly int MaxFile;
         public Dictionary<Coordinate, Piece> Pieces = new Dictionary<Coordinate, Piece>();
+        /// <summary>
+        /// Describes intersection squares.
+        /// </summary>
         public Dictionary<Coordinate, List<Piece>> Dangerzone = new Dictionary<Coordinate, List<Piece>>();
 
         public Board(int width, int height)
@@ -16,9 +19,63 @@ namespace ChessGame
             MaxRank = height - 1;
         }
 
-        public Move MoveByNotation(string notation)
+        public void Move(Move move)
         {
+            
+        }
+
+        public Move MoveByNotation(string notation, TeamColor player)
+        {
+            char pieceNotation;
+            Coordinate destination;
+
+            // pawn move
+            if (char.IsDigit(notation[1]))
+            {
+                pieceNotation = '\0';
+                destination = new Coordinate(notation);
+            }
+            else
+            {
+                pieceNotation = notation[0];
+                destination = new Coordinate(notation.Substring(1));
+            }
+
+            foreach (var piece in Pieces)
+            {
+                if (piece.Value.Notation != pieceNotation)
+                    continue;
+
+                if (piece.Value.Color != player)
+                    continue;
+
+                foreach (var targetMove in piece.Value.GetMoves(this))
+                {
+                    foreach (var singleMove in targetMove.Moves)
+                    {
+                        if (singleMove.Piece != piece.Value)
+                            continue;
+
+                        if (singleMove.Position != destination)
+                            continue;
+
+                        return targetMove;
+                    }
+                }
+            }
+
             return null;
+        }
+
+        private void CalculateDangerzones()
+        {
+            foreach (var piece in Pieces)
+            {
+                foreach (var move in piece.Value.GetMoves(this))
+                {
+                    
+                }
+            }
         }
 
         /// <summary>

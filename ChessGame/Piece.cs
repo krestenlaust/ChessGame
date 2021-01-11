@@ -21,12 +21,12 @@ namespace ChessGame
         /// <summary>
         /// Whether a piece is White or Black.
         /// </summary>
-        public TeamColor Color { get; private set; }
+        public TeamColor Color { get; set; }
         /// <summary>
         /// The different movement patterns the piece uses.
         /// </summary>
         public readonly int MaterialValue;
-        protected IMovementPattern[] MovementPatterns;
+        protected IMovementPattern[] MovementPatternList;
 
         /// <summary>
         /// Returns enumerable of all available moves of a given piece.
@@ -35,7 +35,7 @@ namespace ChessGame
         /// <returns></returns>
         public IEnumerable<Move> GetMoves(Board board)
         {
-            if (MovementPatterns is null)
+            if (MovementPatternList is null)
             {
                 yield break;
             }
@@ -45,7 +45,7 @@ namespace ChessGame
                 yield break;
             }
 
-            foreach (var item in MovementPatterns) 
+            foreach (var item in MovementPatternList) 
             {
                 foreach (var move in item.GetMoves(this, position, board))
                 {

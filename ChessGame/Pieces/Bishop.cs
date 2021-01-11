@@ -11,6 +11,7 @@ namespace ChessGame.Pieces
         public Bishop()
         {
             Notation = 'B';
+            MovementPatternList = new IMovementPattern[] { new MovementPatterns.DiagonalPattern() };
         }
     }
 }

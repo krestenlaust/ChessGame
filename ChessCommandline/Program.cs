@@ -26,8 +26,19 @@ namespace ChessCommandline
                 Console.SetCursorPosition(0, 0);
                 DrawBoard(board);
 
+                dirty_makemove:
                 Console.WriteLine("Enter move: ");
                 string move = Console.ReadLine();
+
+                if (game.MakeMove(move))
+                {
+                    Console.WriteLine("Made move");
+                }
+                else
+                {
+                    Console.WriteLine("Wrong notation");
+                    goto dirty_makemove;
+                }
 
             }
         }

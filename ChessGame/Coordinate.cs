@@ -29,6 +29,12 @@ namespace ChessGame
             Rank = rank;
         }
 
+        public Coordinate(string notation)
+        {
+            File = (int)char.ToLower(notation[0]) - 97;
+            Rank = (int)notation[1] - 49;
+        }
+
         public static bool operator ==(Coordinate coordinate1, Coordinate coordinate2) => 
             coordinate1.File == coordinate2.File && coordinate1.Rank == coordinate2.Rank;
 
