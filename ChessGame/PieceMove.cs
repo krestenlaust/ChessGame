@@ -7,13 +7,13 @@ namespace ChessGame
     /// </summary>
     public struct PieceMove
     {
-        public Coordinate Position;
+        public Coordinate Destination;
         public Piece Piece;
         public bool Captures;
 
         public PieceMove(Coordinate position, Piece piece, bool captures)
         {
-            Position = position;
+            Destination = position;
             Piece = piece;
             Captures = captures;
         }
@@ -27,7 +27,7 @@ namespace ChessGame
             if (Captures)
                 sb.Append('x');
 
-            sb.Append(Position);
+            sb.Append(Destination);
 
             return sb.ToString();
         }

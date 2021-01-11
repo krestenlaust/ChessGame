@@ -21,7 +21,16 @@ namespace ChessGame
 
         public void Move(Move move)
         {
-            
+            foreach (var singleMove in move.Moves)
+            {
+                if (singleMove.Captures)
+                {
+                    Pieces.Remove(singleMove.Destination);
+                }
+
+                Pieces.Remove(Pieces.First(piece => piece.Value == singleMove.Piece).Key);
+                Pieces[singleMove.Destination] = singleMove.Piece;
+            }
         }
 
         public Move MoveByNotation(string notation, TeamColor player)
@@ -43,10 +52,10 @@ namespace ChessGame
 
             foreach (var piece in Pieces)
             {
-                if (piece.Value.Notation != pieceNotation)
+                if (piece.Value.Color != player)
                     continue;
 
-                if (piece.Value.Color != player)
+                if (piece.Value.Notation != pieceNotation)
                     continue;
 
                 foreach (var targetMove in piece.Value.GetMoves(this))
@@ -56,7 +65,7 @@ namespace ChessGame
                         if (singleMove.Piece != piece.Value)
                             continue;
 
-                        if (singleMove.Position != destination)
+                        if (singleMove.Destination != destination)
                             continue;
 
                         return targetMove;

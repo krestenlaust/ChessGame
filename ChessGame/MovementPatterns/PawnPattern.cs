@@ -23,10 +23,23 @@ namespace ChessGame.MovementPatterns
             Coordinate forwardPush = position + new Coordinate(0, moveDirectionY);
 
             // check forward
-            if (board.GetPiece(forwardPush) is Piece obstaclePiece && obstaclePiece.Color != piece.Color)
+            if (board.GetPiece(forwardPush) is Piece)
+            {
+                // piece in the way.
+                yield break;
+            }
+
+            // move 1 tile forward
+            yield return new Move(forwardPush, piece, false);
+
+            forwardPush += new Coordinate(0, moveDirectionY);
+
+            // check long forward
+            if (!(board.GetPiece(forwardPush) is Piece))
+            {
+                // clear ahead.
                 yield return new Move(forwardPush, piece, false);
-
-
+            }
         }
     }
 }

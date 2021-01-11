@@ -23,21 +23,26 @@ namespace ChessCommandline
                 Game game = new Game(player1, player2, new TurtleChess());
                 Board board = game.Board;
 
-                Console.SetCursorPosition(0, 0);
-                DrawBoard(board);
+                while (true)
+                {
+
+                    Console.Clear();
+                    Console.SetCursorPosition(0, 0);
+                    DrawBoard(board);
 
                 dirty_makemove:
-                Console.WriteLine("Enter move: ");
-                string move = Console.ReadLine();
+                    Console.WriteLine("Enter move: ");
+                    string move = Console.ReadLine();
 
-                if (game.MakeMove(move))
-                {
-                    Console.WriteLine("Made move");
-                }
-                else
-                {
-                    Console.WriteLine("Wrong notation");
-                    goto dirty_makemove;
+                    if (game.MakeMove(move))
+                    {
+                        Console.WriteLine("Made move");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Wrong notation");
+                        goto dirty_makemove;
+                    }
                 }
 
             }
