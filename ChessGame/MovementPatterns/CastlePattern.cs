@@ -11,14 +11,10 @@ namespace ChessGame.MovementPatterns
     /// </summary>
     public class CastlePattern : IMovementPattern
     {
-        public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool anyCaptureOnly = false)
+        public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool dangersquaresOnly = false)
         {
-            if (anyCaptureOnly)
-            {
-                yield break;
-            }
-
-            if (piece.hasMoved)
+            // has castling piece moved, or only return dangersquares?
+            if (dangersquaresOnly || piece.hasMoved)
             {
                 yield break;
             }

@@ -14,9 +14,9 @@ namespace ChessGame
         /// <param name="piece"></param>
         /// <param name="position"></param>
         /// <param name="board"></param>
-        /// <param name="anyCaptureOnly">Only return capture-moves, capture no matter other pieces (even if there isn't a piece).</param>
+        /// <param name="dangersquaresOnly">Return squares that are under threat (squares that are being aimed down).</param>
         /// <returns></returns>
-        IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool anyCaptureOnly=false);
+        IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool dangersquaresOnly=false);
         /// TODO: anyCaptureOnly should probably be turned into something that just makes a piece return all moves possible.
     }
 }

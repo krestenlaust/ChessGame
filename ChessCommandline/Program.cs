@@ -25,7 +25,7 @@ namespace ChessCommandline
 
             while (true)
             {
-                Game game = new Game(player1, player2, new OpenWorldChess());
+                Game game = new Game(player1, player2, new TurtleChess());
                 Chessboard board = game.Board;
 
                 while (true)

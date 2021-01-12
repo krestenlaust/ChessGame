@@ -16,7 +16,7 @@ namespace ChessGame.Gamemodes
 
         public override Chessboard GenerateBoard()
         {
-            Chessboard board = new Chessboard(18, 30);
+            Chessboard board = new Chessboard(18, 25);
 
             board[new Coordinate(0, 0)] = new Pieces.Rook { Color = TeamColor.White };
             board[new Coordinate(1, 0)] = new Pieces.Knight { Color = TeamColor.White };

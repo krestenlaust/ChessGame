@@ -11,7 +11,10 @@ namespace ChessGame.Pieces
         public Pawn()
         {
             Notation = '\0'; // nothing
-            MovementPatternList = new IMovementPattern[] { new MovementPatterns.PawnPattern(), new MovementPatterns.EnPassentPattern() };
+            MovementPatternList = new IMovementPattern[] { 
+                new MovementPatterns.PawnCapturePattern(), 
+                new MovementPatterns.PawnPushPattern(),
+                new MovementPatterns.EnPassentPattern() };
         }
     }
 }
