@@ -8,22 +8,24 @@ namespace ChessCommandline
 {
     class Program
     {
-        static ConsoleColor currentColor = ConsoleColor.Red;
+        static ConsoleColor currentColor = ConsoleColor.DarkRed;
         static readonly Array consoleColors = Enum.GetValues(typeof(ConsoleColor));
 
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.Unicode;
 
-            Console.WriteLine("Nickname for player 1 (white)? ");
-            Player player1 = new Player(Console.ReadLine());
+            Console.WriteLine("Nickname for player 1 [default: white]? ");
+            string nickname = Console.ReadLine();
+            Player player1 = new Player(nickname == string.Empty ? "white" : nickname);
 
-            Console.WriteLine("Nickname for player 2? (black)");
-            Player player2 = new Player(Console.ReadLine());
+            Console.WriteLine("Nickname for player 2? [default: black]");
+            nickname = Console.ReadLine();
+            Player player2 = new Player(nickname == string.Empty ? "black" : nickname);
 
             while (true)
             {
-                Game game = new Game(player1, player2, new TurtleChess());
+                Game game = new Game(player1, player2, new OpenWorldChess());
                 Chessboard board = game.Board;
 
                 while (true)
@@ -34,7 +36,7 @@ namespace ChessCommandline
 
                     while (true)
                     {
-                        Console.WriteLine("Enter move: ");
+                        Console.WriteLine($"{game.CurrentPlayerTurn.Nickname}'s turn to move: ");
                         string move = Console.ReadLine();
 
                         if (move == "c")
@@ -53,12 +55,11 @@ namespace ChessCommandline
 
                         if (game.MakeMove(move))
                         {
-                            Console.WriteLine("Made move");
                             break;
                         }
                         else
                         {
-                            Console.WriteLine("Wrong notation");
+                            Console.WriteLine("Incorrect notation/move");
                             continue;
                         }
                     }
@@ -82,22 +83,22 @@ namespace ChessCommandline
                     switch (board[new Coordinate(x, y)])
                     {
                         case Bishop _:
-                            boardTile = piece.Color == TeamColor.White ? '♗' : '♝';
+                            boardTile = piece.Color == TeamColor.Black ? '♗' : '♝';
                             break;
                         case King _:
-                            boardTile = piece.Color == TeamColor.White ? '♔' : '♚';
+                            boardTile = piece.Color == TeamColor.Black ? '♔' : '♚';
                             break;
                         case Knight _:
-                            boardTile = piece.Color == TeamColor.White ? '♘' : '♞';
+                            boardTile = piece.Color == TeamColor.Black ? '♘' : '♞';
                             break;
                         case Pawn _:
-                            boardTile = piece.Color == TeamColor.White ? '♙' : '\u265F';
+                            boardTile = piece.Color == TeamColor.Black ? '♙' : '\u265F';
                             break;
                         case Queen _:
-                            boardTile = piece.Color == TeamColor.White ? '♕' : '♛';
+                            boardTile = piece.Color == TeamColor.Black ? '♕' : '♛';
                             break;
                         case Rook _:
-                            boardTile = piece.Color == TeamColor.White ? '♖' : '♜';
+                            boardTile = piece.Color == TeamColor.Black ? '♖' : '♜';
                             break;
                         default:
                             break;

@@ -23,6 +23,14 @@ namespace ChessGame.MovementPatterns
                     // whether the position is occupied.
                     Piece occupyingPiece = board.GetPiece(newPosition);
 
+                    TeamColor oppositeColor = piece.Color == TeamColor.Black ? TeamColor.White : TeamColor.Black;
+
+                    // The king would put itself in check.
+                    if (board.IsDangerSquare(newPosition, oppositeColor) > 0)
+                    {
+                        continue;
+                    }
+
                     if (occupyingPiece is null) // is position empty?
                     {
                         yield return new Move(newPosition, position, piece, false);
@@ -35,14 +43,6 @@ namespace ChessGame.MovementPatterns
                     }
                 }
             }
-
-            if (piece.hasMoved) // king has moved, castling isn't possible.
-            {
-                yield break;
-            }
-
-            // castling - without making sure the king won't end up in check.
-
         }
     }
 }

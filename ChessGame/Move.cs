@@ -4,6 +4,25 @@ namespace ChessGame
 {
     public class Move
     {
+        /// <summary>
+        /// Returns true if any of <c>Moves</c> captures.
+        /// </summary>
+        public bool Captures
+        {
+            get
+            {
+                foreach (var singleMove in Moves)
+                {
+                    if (singleMove.Captures)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
         public PieceMove[] Moves;
         private readonly string CustomNotation = null;
 

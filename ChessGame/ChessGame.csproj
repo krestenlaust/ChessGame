@@ -53,6 +53,7 @@
     <Compile Include="Coordinate.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Gamemode.cs" />
+    <Compile Include="Gamemodes\OpenWorldChess.cs" />
     <Compile Include="Gamemodes\TurtleChess.cs" />
     <Compile Include="IMovementPattern.cs" />
     <Compile Include="Move.cs" />

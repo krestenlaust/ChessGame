@@ -11,7 +11,7 @@ namespace ChessGame
         /// <summary>
         /// Describes intersection squares.
         /// </summary>
-        public Dictionary<Coordinate, List<Piece>> Dangerzone = new Dictionary<Coordinate, List<Piece>>();
+        private Dictionary<Coordinate, List<Piece>> dangerzone = new Dictionary<Coordinate, List<Piece>>();
 
         public Chessboard(int width, int height)
         {
@@ -28,7 +28,15 @@ namespace ChessGame
                     Pieces.Remove(singleMove.Destination);
                 }
 
-                Pieces.Remove(Pieces.First(piece => piece.Value == singleMove.Piece).Key);
+                try
+                {
+                    Pieces.Remove(Pieces.First(piece => piece.Value == singleMove.Piece).Key);
+                }
+                catch (System.InvalidOperationException)
+                {
+                    // Piece doesn't exist already, doesn't matter.
+                }
+
                 Pieces[singleMove.Destination] = singleMove.Piece;
 
                 singleMove.Piece.hasMoved = true;
@@ -37,8 +45,9 @@ namespace ChessGame
 
         public Move MoveByNotation(string notation, TeamColor player)
         {
-            char pieceNotation;
-            Coordinate destination;
+            char pieceNotation = ' ';
+            string customNotation = null;
+            Coordinate destination = new Coordinate();
 
             // pawn move
             if (char.IsDigit(notation[1]))
@@ -46,10 +55,14 @@ namespace ChessGame
                 pieceNotation = '\0';
                 destination = new Coordinate(notation);
             }
-            else
+            else if (char.IsDigit(notation[2]))
             {
                 pieceNotation = notation[0];
                 destination = new Coordinate(notation.Substring(1));
+            }
+            else
+            {
+                customNotation = notation;
             }
 
             foreach (var piece in Pieces)
@@ -57,11 +70,16 @@ namespace ChessGame
                 if (piece.Value.Color != player)
                     continue;
 
-                if (piece.Value.Notation != pieceNotation)
+                if (piece.Value.Notation != pieceNotation && customNotation is null)
                     continue;
 
                 foreach (var targetMove in piece.Value.GetMoves(this))
                 {
+                    if (customNotation == targetMove.ToString())
+                    {
+                        return targetMove;
+                    }
+
                     foreach (var singleMove in targetMove.Moves)
                     {
                         if (singleMove.Piece != piece.Value)
@@ -75,23 +93,50 @@ namespace ChessGame
                 }
             }
 
+            // look for move by custom notation
+
+
+
             return null;
         }
 
-        private void RecalculateDangerzones()
+        /// <summary>
+        /// Returns count of how many pieces with <c>color</c> aiming on square.
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public int IsDangerSquare(Coordinate position, TeamColor color)
         {
-            Dangerzone = new Dictionary<Coordinate, List<Piece>>();
+            if (dangerzone.TryGetValue(position, out List<Piece> pieces))
+            {
+                return pieces is null ? 0 : pieces.Count(p => p.Color == color);
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public void RecalculateDangerzones()
+        {
+            dangerzone = new Dictionary<Coordinate, List<Piece>>();
 
             foreach (var piece in Pieces)
             {
                 foreach (var move in piece.Value.GetMoves(this, true))
                 {
-                    if (Dangerzone[move.Moves[0].Destination] is null)
+                    if (!move.Captures)
                     {
-                        Dangerzone[move.Moves[0].Destination] = new List<Piece>();
+                        continue;
                     }
 
-                    Dangerzone[move.Moves[0].Destination].Add(piece.Value);
+                    // idunno, not finished
+                    if (dangerzone[move.Moves[0].Destination] is null)
+                    {
+                        dangerzone[move.Moves[0].Destination] = new List<Piece>();
+                    }
+
+                    dangerzone[move.Moves[0].Destination].Add(piece.Value);
                 }
             }
         }

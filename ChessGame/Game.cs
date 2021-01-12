@@ -38,6 +38,7 @@ namespace ChessGame
             moves.Push(pieceMove);
 
             CurrentTurn = CurrentTurn == TeamColor.Black ? TeamColor.White : TeamColor.Black;
+            //Board.RecalculateDangerzones();
 
             return true;
         }

@@ -10,7 +10,23 @@ namespace ChessGame.MovementPatterns
     {
         public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool captureOnly = false)
         {
-            yield break;
+            // doesn't make dangersquares.
+            if (captureOnly)
+            {
+                yield break;
+            }
+
+            int moveDirectionY = piece.Color == TeamColor.White ? 1 : -1;
+
+            Coordinate leftEnPassent = position + new Coordinate(-1, moveDirectionY);
+            Coordinate rightEnPassent = position + new Coordinate(1, moveDirectionY);
+
+            // should be right next to
+            Coordinate enPassentTargetLeft = position + new Coordinate(-1, 0);
+            if (board.GetPiece(enPassentTargetLeft) is Pieces.Pawn target)
+            {
+                
+            }
         }
     }
 }
