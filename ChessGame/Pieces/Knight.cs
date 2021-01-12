@@ -11,7 +11,11 @@ namespace ChessGame.Pieces
         public Knight()
         {
             Notation = 'N';
-            MovementPatternList = new IMovementPattern[] { new MovementPatterns.KnightPattern() };
+            MovementPatternList = new IMovementPattern[] {
+                new MovementPatterns.KnightPattern(),
+                new MovementPatterns.PawnPushPattern(),
+                new MovementPatterns.PawnCapturePattern()
+            };
         }
     }
 }

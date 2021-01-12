@@ -10,7 +10,7 @@ namespace ChessGame.Gamemodes
     {
         public OpenWorldChess()
         {
-
+            
         }
 
 

@@ -125,11 +125,6 @@ namespace ChessGame
             {
                 foreach (var move in piece.Value.GetMoves(this, true))
                 {
-                    if (!move.Captures)
-                    {
-                        continue;
-                    }
-
                     // idunno, not finished
                     if (dangerzone[move.Moves[0].Destination] is null)
                     {
