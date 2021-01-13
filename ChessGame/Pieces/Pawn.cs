@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ChessGame.Pieces
+﻿namespace ChessGame.Pieces
 {
     public class Pawn : Piece
     {
         public Pawn()
         {
             Notation = '\0'; // nothing
-            MovementPatternList = new IMovementPattern[] { 
-                new MovementPatterns.PawnCapturePattern(), 
+            MaterialValue = 1;
+            MovementPatternList = new IMovementPattern[] {
+                new MovementPatterns.PawnCapturePattern(),
                 new MovementPatterns.PawnPushPattern(),
                 new MovementPatterns.EnPassentPattern() };
         }

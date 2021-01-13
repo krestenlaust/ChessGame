@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ChessGame
 {
     public class Game
     {
         public readonly Chessboard Board;
-        public TeamColor CurrentTurn = TeamColor.White;
+        public TeamColor CurrentTurn = TeamColor.Black; // changes on next turn start
         public Player CurrentPlayerTurn
         {
             get
@@ -27,6 +26,11 @@ namespace ChessGame
             Board = gamemode.GenerateBoard();
         }
 
+        public void StartGame()
+        {
+            StartNextTurn();
+        }
+
         public bool MakeMove(string move)
         {
             Move pieceMove = Board.MoveByNotation(move, CurrentTurn);
@@ -34,13 +38,30 @@ namespace ChessGame
             if (pieceMove is null)
                 return false;
 
-            Board.Move(pieceMove);
-            moves.Push(pieceMove);
-            Board.UpdateDangerzones(pieceMove);
+            return MakeMove(pieceMove);
+        }
 
-            CurrentTurn = CurrentTurn == TeamColor.Black ? TeamColor.White : TeamColor.Black;
+        public bool MakeMove(Move move)
+        {
+            // make the actual move change the chessboard state.
+            Board.Move(move);
+            // add the move to the list of moves.
+            moves.Push(move);
+
+            StartNextTurn();
 
             return true;
+        }
+
+        private void StartNextTurn()
+        {
+            // refresh dangersquares
+            Board.UpdateDangerzones();
+
+            // change turn
+            CurrentTurn = CurrentTurn == TeamColor.Black ? TeamColor.White : TeamColor.Black;
+
+            CurrentPlayerTurn.TurnStarted(Board);
         }
     }
 }

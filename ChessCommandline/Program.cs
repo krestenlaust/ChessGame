@@ -1,8 +1,8 @@
-﻿using System;
-using System.Text;
-using ChessGame;
+﻿using ChessGame;
 using ChessGame.Gamemodes;
 using ChessGame.Pieces;
+using System;
+using System.Text;
 
 namespace ChessCommandline
 {
@@ -29,12 +29,11 @@ namespace ChessCommandline
 
                 while (true)
                 {
-                    Console.Clear();
-                    Console.SetCursorPosition(0, 0);
                     DrawBoard(game.Board);
 
                     while (true)
                     {
+                        Console.Title = $"Material: {game.Board.MaterialSum}";
                         Console.WriteLine($"{game.CurrentPlayerTurn.Nickname}'s turn to move: ");
                         string move = Console.ReadLine();
 
@@ -51,6 +50,7 @@ namespace ChessCommandline
 
                             break;
                         }
+
                         if (move == "r")
                         {
                             game.Board.UpdateDangerzones();
@@ -67,7 +67,7 @@ namespace ChessCommandline
                             continue;
                         }
                     }
-                    
+
                 }
 
             }
@@ -75,35 +75,39 @@ namespace ChessCommandline
 
         static void DrawBoard(Chessboard board)
         {
+            Console.Clear();
+            Console.SetCursorPosition(0, 0);
+
             int i = 0;
             for (int y = 0; y <= board.MaxRank; y++)
             {
                 for (int x = 0; x <= board.MaxFile; x++)
                 {
-                    char boardTile = ' ';
+                    char boardTile;
                     Coordinate tilePosition = new Coordinate(x, y);
 
                     int blackDangersquare = board.IsDangerSquare(tilePosition, TeamColor.Black);
                     int whiteDangersquare = board.IsDangerSquare(tilePosition, TeamColor.White);
+                    int sumDangersquare = whiteDangersquare - blackDangersquare;
+                    boardTile = Math.Abs(sumDangersquare).ToString()[0];
 
-                    if (blackDangersquare > 0)
+                    if (sumDangersquare > 0)
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        boardTile = blackDangersquare.ToString()[0];
                     }
-                    else if (whiteDangersquare > 0)
+                    else if (sumDangersquare < 0)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        boardTile = whiteDangersquare.ToString()[0];
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.White;
+                        boardTile = ' ';
                     }
 
                     Piece piece = board[new Coordinate(x, y)];
 
-                    switch (board[new Coordinate(x, y)])
+                    switch (piece)
                     {
                         case Bishop _:
                             boardTile = piece.Color == TeamColor.Black ? '♗' : '♝';

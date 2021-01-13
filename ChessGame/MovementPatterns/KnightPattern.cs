@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ChessGame.MovementPatterns
 {
@@ -45,7 +41,7 @@ namespace ChessGame.MovementPatterns
                     {
                         checkPosition = new Coordinate(-Xdir + position.File, -Ydir + position.Rank); //Position update
                     }
-                    
+
                     if (checkPosition.Rank > board.MaxRank || checkPosition.Rank < 0 ||
                         checkPosition.File > board.MaxFile || checkPosition.File < 0) //If the checking position is outside of the board
                         continue;

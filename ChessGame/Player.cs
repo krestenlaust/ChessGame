@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ChessGame
 {
@@ -12,10 +8,16 @@ namespace ChessGame
         public int Wins;
         public int Losses;
         public int Draws;
+        public event Action<Chessboard> onTurnStarted;
 
         public Player(string name)
         {
             Nickname = name;
+        }
+
+        public void TurnStarted(Chessboard board)
+        {
+            onTurnStarted?.Invoke(board);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace ChessGame
         /// <summary>
         /// The different movement patterns the piece uses.
         /// </summary>
-        public readonly int MaterialValue;
+        public int MaterialValue { get; protected set; }
         protected IMovementPattern[] MovementPatternList;
 
         /// <summary>
@@ -41,11 +41,11 @@ namespace ChessGame
             }
 
             if (!board.TryGetCoordinate(this, out Coordinate position))
-            { 
+            {
                 yield break;
             }
 
-            foreach (var item in MovementPatternList) 
+            foreach (var item in MovementPatternList)
             {
                 foreach (var move in item.GetMoves(this, position, board, captureOnly))
                 {

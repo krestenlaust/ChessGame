@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ChessGame.MovementPatterns
 {
@@ -54,7 +53,7 @@ namespace ChessGame.MovementPatterns
                         continue;
                     }
 
-                    if (occupyingPiece.Color != piece.Color) // There is a enemy piece
+                    if (occupyingPiece.Color != piece.Color || dangersquaresOnly) // There is a enemy piece
                     {
                         yield return new Move(checkPosition, position, piece, true); //Sends the move 
                     }
@@ -62,6 +61,6 @@ namespace ChessGame.MovementPatterns
                     break;
                 }
             }
-        }    
+        }
     }
 }

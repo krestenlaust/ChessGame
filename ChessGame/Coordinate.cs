@@ -32,16 +32,16 @@ namespace ChessGame
 
         public Coordinate(string notation)
         {
-            File = (int)char.ToLower(notation[0]) - 97;
-            Rank = (int)notation[1] - 49;
+            File = char.ToLower(notation[0]) - 97;
+            Rank = notation[1] - 49;
         }
 
         [DebuggerStepThrough]
-        public static bool operator ==(Coordinate coordinate1, Coordinate coordinate2) => 
+        public static bool operator ==(Coordinate coordinate1, Coordinate coordinate2) =>
             coordinate1.File == coordinate2.File && coordinate1.Rank == coordinate2.Rank;
 
         [DebuggerStepThrough]
-        public static bool operator !=(Coordinate coordinate1, Coordinate coordinate2) => 
+        public static bool operator !=(Coordinate coordinate1, Coordinate coordinate2) =>
             !(coordinate1 == coordinate2);
 
         [DebuggerStepThrough]

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ChessGame
 {
@@ -16,7 +15,7 @@ namespace ChessGame
         /// <param name="board"></param>
         /// <param name="dangersquaresOnly">Return squares that are under threat (squares that are being aimed down).</param>
         /// <returns></returns>
-        IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool dangersquaresOnly=false);
+        IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool dangersquaresOnly = false);
         /// TODO: anyCaptureOnly should probably be turned into something that just makes a piece return all moves possible.
     }
 }

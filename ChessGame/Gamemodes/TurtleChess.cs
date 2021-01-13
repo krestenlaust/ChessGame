@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ChessGame.Gamemodes
+﻿namespace ChessGame.Gamemodes
 {
     /// <summary>
     /// Chess with regular board size and no timer.

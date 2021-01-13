@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ChessGame.MovementPatterns
 {
@@ -24,7 +20,7 @@ namespace ChessGame.MovementPatterns
             Coordinate enPassentTargetLeft = position + new Coordinate(-1, 0);
             if (board.GetPiece(enPassentTargetLeft) is Pieces.Pawn target)
             {
-                
+
             }
         }
     }

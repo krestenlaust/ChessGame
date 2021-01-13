@@ -12,6 +12,13 @@ namespace ChessGame
         /// Describes intersection squares.
         /// </summary>
         public readonly Dictionary<Coordinate, List<Piece>> Dangerzone;
+        public int MaterialSum
+        {
+            get
+            {
+                return Pieces.Values.Sum(p => p.Color == TeamColor.Black ? -p.MaterialValue : p.MaterialValue);
+            }
+        }
 
         public Chessboard(int width, int height)
         {
@@ -115,6 +122,7 @@ namespace ChessGame
             }
         }
 
+        /*
         /// <summary>
         /// Updates dangersquares by a given move.
         /// </summary>
@@ -132,17 +140,19 @@ namespace ChessGame
         // updates all pieces on square.
         private void UpdateDangerzones(Coordinate position)
         {
-            if (!Dangerzone.ContainsKey(position))
+            bool exists = Dangerzone.TryGetValue(position, out List<Piece> pieces);
+
+            if (!exists)
             {
                 return;
             }
 
-            foreach (var piece in Dangerzone[position])
+            foreach (var piece in pieces.ToList())
             {
                 UpdateDangerzones(piece);
             }
         }
-
+        */
         /// <summary>
         /// Removes old references of piece, and adds new.
         /// </summary>
@@ -165,7 +175,7 @@ namespace ChessGame
             {
                 foreach (var singleMove in move.Moves)
                 {
-                    if (!Dangerzone.TryGetValue(singleMove.Destination, out List<Piece> pieces))
+                    if (!Dangerzone.ContainsKey(singleMove.Destination))
                     {
                         Dangerzone[singleMove.Destination] = new List<Piece>();
                     }
@@ -203,7 +213,8 @@ namespace ChessGame
                 position = Pieces.FirstOrDefault(x => x.Value == piece).Key;
                 return true;
 
-            }catch (System.ArgumentNullException)
+            }
+            catch (System.ArgumentNullException)
             {
                 position = new Coordinate();
                 return false;

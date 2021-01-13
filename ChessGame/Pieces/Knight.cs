@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ChessGame.Pieces
+﻿namespace ChessGame.Pieces
 {
     public class Knight : Piece
     {
         public Knight()
         {
             Notation = 'N';
+            MaterialValue = 3;
             MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.KnightPattern(),
-                new MovementPatterns.PawnPushPattern(),
-                new MovementPatterns.PawnCapturePattern()
+                //new MovementPatterns.PawnPushPattern(),
+                //new MovementPatterns.PawnCapturePattern()
             };
         }
     }
