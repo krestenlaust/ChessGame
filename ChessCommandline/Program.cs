@@ -26,13 +26,12 @@ namespace ChessCommandline
             while (true)
             {
                 Game game = new Game(player1, player2, new TurtleChess());
-                Chessboard board = game.Board;
 
                 while (true)
                 {
                     Console.Clear();
                     Console.SetCursorPosition(0, 0);
-                    DrawBoard(board);
+                    DrawBoard(game.Board);
 
                     while (true)
                     {
@@ -50,6 +49,11 @@ namespace ChessCommandline
 
                             currentColor = (ConsoleColor)consoleColors.GetValue((i + 1) % consoleColors.Length);
 
+                            break;
+                        }
+                        if (move == "r")
+                        {
+                            game.Board.UpdateDangerzones();
                             break;
                         }
 
@@ -77,6 +81,25 @@ namespace ChessCommandline
                 for (int x = 0; x <= board.MaxFile; x++)
                 {
                     char boardTile = ' ';
+                    Coordinate tilePosition = new Coordinate(x, y);
+
+                    int blackDangersquare = board.IsDangerSquare(tilePosition, TeamColor.Black);
+                    int whiteDangersquare = board.IsDangerSquare(tilePosition, TeamColor.White);
+
+                    if (blackDangersquare > 0)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        boardTile = blackDangersquare.ToString()[0];
+                    }
+                    else if (whiteDangersquare > 0)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        boardTile = whiteDangersquare.ToString()[0];
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
 
                     Piece piece = board[new Coordinate(x, y)];
 

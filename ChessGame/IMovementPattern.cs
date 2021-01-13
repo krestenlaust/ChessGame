@@ -9,7 +9,7 @@ namespace ChessGame
     public interface IMovementPattern
     {
         /// <summary>
-        /// 
+        /// Returns the moves a piece can make based on the <c>board</c>.
         /// </summary>
         /// <param name="piece"></param>
         /// <param name="position"></param>

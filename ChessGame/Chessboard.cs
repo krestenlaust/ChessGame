@@ -3,20 +3,22 @@ using System.Linq;
 
 namespace ChessGame
 {
-    public class Chessboard
+    public readonly struct Chessboard
     {
         public readonly int MaxRank;
         public readonly int MaxFile;
-        public Dictionary<Coordinate, Piece> Pieces = new Dictionary<Coordinate, Piece>();
+        public readonly Dictionary<Coordinate, Piece> Pieces;
         /// <summary>
         /// Describes intersection squares.
         /// </summary>
-        private Dictionary<Coordinate, List<Piece>> dangerzone = new Dictionary<Coordinate, List<Piece>>();
+        public readonly Dictionary<Coordinate, List<Piece>> Dangerzone;
 
         public Chessboard(int width, int height)
         {
             MaxFile = width - 1;
             MaxRank = height - 1;
+            Pieces = new Dictionary<Coordinate, Piece>();
+            Dangerzone = new Dictionary<Coordinate, List<Piece>>();
         }
 
         public void Move(Move move)
@@ -93,10 +95,6 @@ namespace ChessGame
                 }
             }
 
-            // look for move by custom notation
-
-
-
             return null;
         }
 
@@ -107,7 +105,7 @@ namespace ChessGame
         /// <returns></returns>
         public int IsDangerSquare(Coordinate position, TeamColor color)
         {
-            if (dangerzone.TryGetValue(position, out List<Piece> pieces))
+            if (Dangerzone.TryGetValue(position, out List<Piece> pieces))
             {
                 return pieces is null ? 0 : pieces.Count(p => p.Color == color);
             }
@@ -125,14 +123,21 @@ namespace ChessGame
         {
             foreach (var singleMove in move.Moves)
             {
-
+                UpdateDangerzones(singleMove.Piece);
+                UpdateDangerzones(singleMove.Destination);
+                UpdateDangerzones(singleMove.Source);
             }
         }
 
         // updates all pieces on square.
         private void UpdateDangerzones(Coordinate position)
         {
-            foreach (var piece in dangerzone[position])
+            if (!Dangerzone.ContainsKey(position))
+            {
+                return;
+            }
+
+            foreach (var piece in Dangerzone[position])
             {
                 UpdateDangerzones(piece);
             }
@@ -145,17 +150,14 @@ namespace ChessGame
         private void UpdateDangerzones(Piece piece)
         {
             // remove all instances
-            foreach (var item in dangerzone)
+            foreach (var item in Dangerzone)
             {
                 if (item.Value is null)
                 {
                     continue;
                 }
 
-                foreach (var singlePiece in item.Value)
-                {
-                    item.Value.Remove(piece);
-                }
+                item.Value.Remove(piece);
             }
 
             // update dangersquares.
@@ -163,32 +165,23 @@ namespace ChessGame
             {
                 foreach (var singleMove in move.Moves)
                 {
-                    if (dangerzone[singleMove.Destination] is null)
+                    if (!Dangerzone.TryGetValue(singleMove.Destination, out List<Piece> pieces))
                     {
-                        dangerzone[singleMove.Destination] = new List<Piece>();
+                        Dangerzone[singleMove.Destination] = new List<Piece>();
                     }
 
-                    dangerzone[singleMove.Destination].Add(singleMove.Piece);
+                    Dangerzone[singleMove.Destination].Add(singleMove.Piece);
                 }
             }
         }
 
         public void UpdateDangerzones()
         {
-            dangerzone = new Dictionary<Coordinate, List<Piece>>();
+            Dangerzone.Clear();
 
             foreach (var piece in Pieces)
             {
-                foreach (var move in piece.Value.GetMoves(this, true))
-                {
-                    // idunno, not finished
-                    if (dangerzone[move.Moves[0].Destination] is null)
-                    {
-                        dangerzone[move.Moves[0].Destination] = new List<Piece>();
-                    }
-
-                    dangerzone[move.Moves[0].Destination].Add(piece.Value);
-                }
+                UpdateDangerzones(piece.Value);
             }
         }
 

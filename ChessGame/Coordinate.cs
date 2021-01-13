@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text;
 
 namespace ChessGame
@@ -35,13 +36,17 @@ namespace ChessGame
             Rank = (int)notation[1] - 49;
         }
 
+        [DebuggerStepThrough]
         public static bool operator ==(Coordinate coordinate1, Coordinate coordinate2) => 
             coordinate1.File == coordinate2.File && coordinate1.Rank == coordinate2.Rank;
 
+        [DebuggerStepThrough]
         public static bool operator !=(Coordinate coordinate1, Coordinate coordinate2) => 
             !(coordinate1 == coordinate2);
 
+        [DebuggerStepThrough]
         public static Coordinate operator +(Coordinate coordinate1, Coordinate coordinate2) => new Coordinate(coordinate1.File + coordinate2.File, coordinate1.Rank + coordinate2.Rank);
+        [DebuggerStepThrough]
         public static Coordinate operator -(Coordinate coordinate1, Coordinate coordinate2) => new Coordinate(coordinate1.File - coordinate2.File, coordinate1.Rank - coordinate2.Rank);
 
         /// <summary>
@@ -59,14 +64,16 @@ namespace ChessGame
         }
 
         // autogenereret af visual studio
+        [DebuggerStepThrough]
         public override bool Equals(object obj)
         {
             return obj is Coordinate coordinate &&
                    File == coordinate.File &&
                    Rank == coordinate.Rank;
         }
-        
+
         // autogenereret af visual studio
+        [DebuggerStepThrough]
         public override int GetHashCode()
         {
             int hashCode = -73919966;
@@ -75,6 +82,7 @@ namespace ChessGame
             return hashCode;
         }
 
+        [DebuggerStepThrough]
         public bool Equals(Coordinate other) => other == this;
     }
 }

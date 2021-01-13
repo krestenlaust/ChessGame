@@ -5,12 +5,12 @@ namespace ChessGame
     /// <summary>
     /// Describes a single piece's move.
     /// </summary>
-    public struct PieceMove
+    public readonly struct PieceMove
     {
-        public Coordinate Destination;
-        public Coordinate Source;
-        public Piece Piece;
-        public bool Captures;
+        public readonly Coordinate Destination;
+        public readonly Coordinate Source;
+        public readonly Piece Piece;
+        public readonly bool Captures;
 
         public PieceMove(Coordinate destination, Coordinate source, Piece piece, bool captures)
         {

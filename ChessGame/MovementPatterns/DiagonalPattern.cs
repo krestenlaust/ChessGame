@@ -11,32 +11,6 @@ namespace ChessGame.MovementPatterns
     {
         IEnumerable<Move> IMovementPattern.GetMoves(Piece piece, Coordinate position, Chessboard board, bool dangersquaresOnly = false)
         {
-            /*for (int i = -board.MaxFile; i < board.MaxFile; i++) //Checking the boards lenght both left and right
-            {
-                if (i == 0) //If this square
-                    continue;
-
-                Coordinate newPosition = new Coordinate(i + position.File, i + position.Rank); //Position update
-
-                if (newPosition.Rank > board.MaxRank || newPosition.Rank < 0 ||
-                    newPosition.File > board.MaxFile || newPosition.File < 0) //If the checking position is outside of the board
-                    continue;
-
-                // whether the position is occupied.
-                Piece occupyingPiece = board.GetPiece(newPosition);
-
-                if (occupyingPiece is null) // is position empty?
-                {
-                    yield return new Move(newPosition, piece, false);
-                    continue;
-                }
-                else if (occupyingPiece.Color != piece.Color)
-                {
-                    yield return new Move(newPosition, piece, true);
-                    continue;
-                }
-                continue;
-            }*/
             for (int n = 0; n < 4; n++) //The 4 directions from the piece
             {
                 int Xdir = 1;

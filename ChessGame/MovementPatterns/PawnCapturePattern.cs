@@ -14,11 +14,15 @@ namespace ChessGame.MovementPatterns
 
             // check left flank
             if (board.GetPiece(leftAttack) is Piece LeftAttackedPiece && LeftAttackedPiece.Color != piece.Color || dangersquaresOnly)
+            {
                 yield return new Move(leftAttack, position, piece, true);
+            }
 
             // check right flank
             if (board.GetPiece(rightAttack) is Piece rightAttackedPiece && rightAttackedPiece.Color != piece.Color || dangersquaresOnly)
+            {
                 yield return new Move(rightAttack, position, piece, true);
+            }
         }
     }
 }

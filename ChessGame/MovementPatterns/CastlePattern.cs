@@ -13,7 +13,7 @@ namespace ChessGame.MovementPatterns
     {
         public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool dangersquaresOnly = false)
         {
-            // has castling piece moved, or only return dangersquares?
+            // has the piece, to castle, moved? Only return dangersquares?
             if (dangersquaresOnly || piece.hasMoved)
             {
                 yield break;

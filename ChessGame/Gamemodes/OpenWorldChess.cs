@@ -8,12 +8,6 @@ namespace ChessGame.Gamemodes
 {
     public class OpenWorldChess : Gamemode
     {
-        public OpenWorldChess()
-        {
-            
-        }
-
-
         public override Chessboard GenerateBoard()
         {
             Chessboard board = new Chessboard(18, 25);

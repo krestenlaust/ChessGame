@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace ChessGame.MovementPatterns
 {
     /// <summary>
-    /// The pattern the rooks uses, targets fields that are cardinal to current position.
+    /// The pattern the rook uses, targets fields that are cardinal to current position.
     /// Can't jump over pieces, therefor only
     /// </summary>
     public class CardinalPattern : IMovementPattern
