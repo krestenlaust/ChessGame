@@ -117,7 +117,63 @@ namespace ChessGame
             }
         }
 
-        public void RecalculateDangerzones()
+        /// <summary>
+        /// Updates dangersquares by a given move.
+        /// </summary>
+        /// <param name="move"></param>
+        public void UpdateDangerzones(Move move)
+        {
+            foreach (var singleMove in move.Moves)
+            {
+
+            }
+        }
+
+        // updates all pieces on square.
+        private void UpdateDangerzones(Coordinate position)
+        {
+            foreach (var piece in dangerzone[position])
+            {
+                UpdateDangerzones(piece);
+            }
+        }
+
+        /// <summary>
+        /// Removes old references of piece, and adds new.
+        /// </summary>
+        /// <param name="piece"></param>
+        private void UpdateDangerzones(Piece piece)
+        {
+            // remove all instances
+            foreach (var item in dangerzone)
+            {
+                if (item.Value is null)
+                {
+                    continue;
+                }
+
+                foreach (var singlePiece in item.Value)
+                {
+                    item.Value.Remove(piece);
+                }
+            }
+
+            // update dangersquares.
+            foreach (var move in piece.GetMoves(this, true))
+            {
+                foreach (var singleMove in move.Moves)
+                {
+                    if (dangerzone[singleMove.Destination] is null)
+                    {
+                        dangerzone[singleMove.Destination] = new List<Piece>();
+                    }
+
+                    dangerzone[singleMove.Destination].Add(singleMove.Piece);
+                }
+            }
+        }
+
+        public void UpdateDangerzones()
         {
             dangerzone = new Dictionary<Coordinate, List<Piece>>();
 
