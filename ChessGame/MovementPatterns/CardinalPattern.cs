@@ -36,7 +36,7 @@ namespace ChessGame.MovementPatterns
                         break;
                 }
 
-                for (int i = 1; i <= board.Width; i++) //Checker
+                for (int i = 1; i < board.Width; i++) //Checker
                 {
                     Coordinate checkPosition = new Coordinate((i * Xdir) + position.File, (i * Ydir) + position.Rank); //Position update
 
