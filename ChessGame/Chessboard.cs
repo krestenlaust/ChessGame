@@ -122,37 +122,6 @@ namespace ChessGame
             }
         }
 
-        /*
-        /// <summary>
-        /// Updates dangersquares by a given move.
-        /// </summary>
-        /// <param name="move"></param>
-        public void UpdateDangerzones(Move move)
-        {
-            foreach (var singleMove in move.Moves)
-            {
-                UpdateDangerzones(singleMove.Piece);
-                UpdateDangerzones(singleMove.Destination);
-                UpdateDangerzones(singleMove.Source);
-            }
-        }
-
-        // updates all pieces on square.
-        private void UpdateDangerzones(Coordinate position)
-        {
-            bool exists = Dangerzone.TryGetValue(position, out List<Piece> pieces);
-
-            if (!exists)
-            {
-                return;
-            }
-
-            foreach (var piece in pieces.ToList())
-            {
-                UpdateDangerzones(piece);
-            }
-        }
-        */
         /// <summary>
         /// Removes old references of piece, and adds new.
         /// </summary>
