@@ -79,9 +79,9 @@ namespace ChessCommandline
             Console.SetCursorPosition(0, 0);
 
             int i = 0;
-            for (int y = 0; y <= board.MaxRank; y++)
+            for (int y = 0; y < board.Height; y++)
             {
-                for (int x = 0; x <= board.MaxFile; x++)
+                for (int x = 0; x <= board.Width; x++)
                 {
                     char boardTile;
                     Coordinate tilePosition = new Coordinate(x, y);

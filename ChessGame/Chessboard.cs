@@ -5,8 +5,8 @@ namespace ChessGame
 {
     public readonly struct Chessboard
     {
-        public readonly int MaxRank;
-        public readonly int MaxFile;
+        public readonly int Height;
+        public readonly int Width;
         public readonly Dictionary<Coordinate, Piece> Pieces;
         /// <summary>
         /// Describes intersection squares.
@@ -22,13 +22,13 @@ namespace ChessGame
 
         public Chessboard(int width, int height)
         {
-            MaxFile = width - 1;
-            MaxRank = height - 1;
+            Width = width;
+            Height = height;
             Pieces = new Dictionary<Coordinate, Piece>();
             Dangerzone = new Dictionary<Coordinate, List<Piece>>();
         }
 
-        public void Move(Move move)
+        public void DoMove(Move move)
         {
             foreach (var singleMove in move.Moves)
             {
@@ -52,7 +52,7 @@ namespace ChessGame
             }
         }
 
-        public Move MoveByNotation(string notation, TeamColor player)
+        public Move GetMoveByNotation(string notation, TeamColor player)
         {
             char pieceNotation = ' ';
             string customNotation = null;

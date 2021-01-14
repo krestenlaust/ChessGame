@@ -16,8 +16,8 @@ namespace ChessGame.MovementPatterns
 
                     Coordinate newPosition = new Coordinate(x + position.File, y + position.Rank);
 
-                    if (newPosition.Rank > board.MaxRank || newPosition.Rank < 0 ||
-                        newPosition.File > board.MaxFile || newPosition.File < 0) // if the checking position is outside of the board
+                    if (newPosition.Rank >= board.Height || newPosition.Rank < 0 ||
+                        newPosition.File >= board.Width || newPosition.File < 0) // if the checking position is outside of the board
                         continue;
 
                     // whether the position is occupied.

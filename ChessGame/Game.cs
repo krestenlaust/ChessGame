@@ -33,7 +33,7 @@ namespace ChessGame
 
         public bool MakeMove(string move)
         {
-            Move pieceMove = Board.MoveByNotation(move, CurrentTurn);
+            Move pieceMove = Board.GetMoveByNotation(move, CurrentTurn);
 
             if (pieceMove is null)
                 return false;
@@ -44,7 +44,7 @@ namespace ChessGame
         public bool MakeMove(Move move)
         {
             // make the actual move change the chessboard state.
-            Board.Move(move);
+            Board.DoMove(move);
             // add the move to the list of moves.
             moves.Push(move);
 
