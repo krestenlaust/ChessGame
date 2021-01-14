@@ -20,6 +20,14 @@ namespace ChessGame
             }
         }
 
+        public Chessboard(Chessboard board)
+        {
+            Height = board.Height;
+            Width = board.Width;
+            Pieces = new Dictionary<Coordinate, Piece>(board.Pieces);
+            Dangerzone = new Dictionary<Coordinate, List<Piece>>(board.Dangerzone);
+        }
+
         public Chessboard(int width, int height)
         {
             Width = width;
@@ -30,6 +38,11 @@ namespace ChessGame
 
         public void DoMove(Move move)
         {
+            if (move is null)
+            {
+                return;
+            }
+
             foreach (var singleMove in move.Moves)
             {
                 if (singleMove.Captures)
@@ -49,6 +62,22 @@ namespace ChessGame
                 Pieces[singleMove.Destination] = singleMove.Piece;
 
                 singleMove.Piece.hasMoved = true;
+            }
+        }
+
+        public IEnumerable<Move> GetMoves(TeamColor teamColor)
+        {
+            foreach (var piece in Pieces.Values.ToList())
+            {
+                if (piece.Color != teamColor)
+                {
+                    continue;
+                }
+
+                foreach (var move in piece.GetMoves(this))
+                {
+                    yield return move;
+                }
             }
         }
 

@@ -58,7 +58,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bots\SimpletronBot.cs" />
     <Compile Include="Chessboard.cs" />
+    <Compile Include="Chessbot.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Gamemode.cs" />

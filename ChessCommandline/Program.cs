@@ -9,6 +9,7 @@ namespace ChessCommandline
     class Program
     {
         static ConsoleColor currentColor = ConsoleColor.DarkRed;
+        static bool showDangersquares = false;
         static readonly Array consoleColors = Enum.GetValues(typeof(ConsoleColor));
 
         static void Main(string[] args)
@@ -18,16 +19,19 @@ namespace ChessCommandline
             Console.WriteLine("Nickname for player 1 [default: white]? ");
             string nickname = Console.ReadLine();
             Player player1 = new Player(nickname == string.Empty ? "white" : nickname);
+            player1.onTurnStarted += Player1_onTurnStarted;
 
+            /*
             Console.WriteLine("Nickname for player 2? [default: black]");
             nickname = Console.ReadLine();
             Player player2 = new Player(nickname == string.Empty ? "black" : nickname);
+            player2.onTurnStarted += Player2_onTurnStarted;
+            */
+            ChessGame.Bots.SimpletronBot bot = new ChessGame.Bots.SimpletronBot();
 
             while (true)
             {
-                Game game = new Game(player1, player2, new TurtleChess());
-                player1.onTurnStarted += Player1_onTurnStarted;
-                player2.onTurnStarted += Player2_onTurnStarted;
+                Game game = new Game(player1, bot.GeneratePlayer(), new TurtleChess());
                 game.StartGame();
 
                 while (true)
@@ -76,6 +80,12 @@ namespace ChessCommandline
                     break;
                 }
 
+                if (move == "dangerzone")
+                {
+                    showDangersquares = !showDangersquares;
+                    break;
+                }
+
                 if (game.MakeMove(move))
                 {
                     break;
@@ -98,27 +108,31 @@ namespace ChessCommandline
             {
                 for (int x = 0; x < board.Width; x++)
                 {
-                    char boardTile;
+                    char boardTile = ' ';
                     Coordinate tilePosition = new Coordinate(x, y);
 
-                    int blackDangersquare = board.IsDangerSquare(tilePosition, TeamColor.Black);
-                    int whiteDangersquare = board.IsDangerSquare(tilePosition, TeamColor.White);
-                    int sumDangersquare = whiteDangersquare - blackDangersquare;
-                    boardTile = Math.Abs(sumDangersquare).ToString()[0];
+                    if (showDangersquares)
+                    {
+                        int blackDangersquare = board.IsDangerSquare(tilePosition, TeamColor.Black);
+                        int whiteDangersquare = board.IsDangerSquare(tilePosition, TeamColor.White);
+                        int sumDangersquare = whiteDangersquare - blackDangersquare;
+                        boardTile = Math.Abs(sumDangersquare).ToString()[0];
 
-                    if (sumDangersquare > 0)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
+                        if (sumDangersquare > 0)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                        }
+                        else if (sumDangersquare < 0)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.White;
+                            boardTile = ' ';
+                        }
                     }
-                    else if (sumDangersquare < 0)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.White;
-                        boardTile = ' ';
-                    }
+                    
 
                     Piece piece = board[new Coordinate(x, y)];
 
