@@ -26,50 +26,65 @@ namespace ChessCommandline
             while (true)
             {
                 Game game = new Game(player1, player2, new TurtleChess());
+                player1.onTurnStarted += Player1_onTurnStarted;
+                player2.onTurnStarted += Player2_onTurnStarted;
+                game.StartGame();
 
                 while (true)
                 {
-                    DrawBoard(game.Board);
+                }
+            }
+        }
 
-                    while (true)
+        private static void Player2_onTurnStarted(Game obj)
+        {
+            AskForMove(obj);
+        }
+
+        private static void Player1_onTurnStarted(Game obj)
+        {
+            AskForMove(obj);
+        }
+
+        private static void AskForMove(Game game)
+        {
+            DrawBoard(game.Board);
+
+            while (true)
+            {
+                Console.Title = $"Material: {game.Board.MaterialSum}";
+                Console.WriteLine($"{game.CurrentPlayerTurn.Nickname}'s turn to move: ");
+                string move = Console.ReadLine();
+
+                if (move == "c")
+                {
+                    int i;
+                    for (i = 0; i < consoleColors.Length; i++)
                     {
-                        Console.Title = $"Material: {game.Board.MaterialSum}";
-                        Console.WriteLine($"{game.CurrentPlayerTurn.Nickname}'s turn to move: ");
-                        string move = Console.ReadLine();
-
-                        if (move == "c")
-                        {
-                            int i;
-                            for (i = 0; i < consoleColors.Length; i++)
-                            {
-                                if ((ConsoleColor)consoleColors.GetValue(i) == currentColor)
-                                    break;
-                            }
-
-                            currentColor = (ConsoleColor)consoleColors.GetValue((i + 1) % consoleColors.Length);
-
+                        if ((ConsoleColor)consoleColors.GetValue(i) == currentColor)
                             break;
-                        }
-
-                        if (move == "r")
-                        {
-                            game.Board.UpdateDangerzones();
-                            break;
-                        }
-
-                        if (game.MakeMove(move))
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Incorrect notation/move");
-                            continue;
-                        }
                     }
 
+                    currentColor = (ConsoleColor)consoleColors.GetValue((i + 1) % consoleColors.Length);
+
+                    break;
                 }
 
+                if (move == "r")
+                {
+                    game.Board.UpdateDangerzones();
+                    break;
+                }
+
+                if (game.MakeMove(move))
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Incorrect notation/move");
+                    continue;
+                }
             }
         }
 

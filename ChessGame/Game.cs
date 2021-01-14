@@ -61,7 +61,7 @@ namespace ChessGame
             // change turn
             CurrentTurn = CurrentTurn == TeamColor.Black ? TeamColor.White : TeamColor.Black;
 
-            CurrentPlayerTurn.TurnStarted(Board);
+            CurrentPlayerTurn.TurnStarted(this);
         }
     }
 }
