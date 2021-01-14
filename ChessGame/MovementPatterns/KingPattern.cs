@@ -11,14 +11,20 @@ namespace ChessGame.MovementPatterns
             {
                 for (int x = -1; x <= 1; x++)
                 {
+                    // ignore own position
                     if (x == 0 && y == 0)
+                    {
                         continue;
+                    }
 
                     Coordinate newPosition = new Coordinate(x + position.File, y + position.Rank);
 
+                    // if the checking position is outside of the board - ignore it.
                     if (newPosition.Rank >= board.Height || newPosition.Rank < 0 ||
-                        newPosition.File >= board.Width || newPosition.File < 0) // if the checking position is outside of the board
+                        newPosition.File >= board.Width || newPosition.File < 0)
+                    {
                         continue;
+                    }
 
                     // whether the position is occupied.
                     Piece occupyingPiece = board.GetPiece(newPosition);
@@ -31,13 +37,15 @@ namespace ChessGame.MovementPatterns
                         continue;
                     }
 
-                    if (occupyingPiece is null) // is position empty?
+                    // is position empty?
+                    if (occupyingPiece is null)
                     {
                         yield return new Move(newPosition, position, piece, false);
                         continue;
                     }
 
-                    if (occupyingPiece.Color != piece.Color) // is piece of opposite color (can capture)
+                    // is piece of opposite color (can capture)
+                    if (occupyingPiece.Color != piece.Color)
                     {
                         yield return new Move(newPosition, position, piece, true);
                     }

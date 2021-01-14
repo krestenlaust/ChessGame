@@ -24,7 +24,7 @@ namespace ChessGame
         }
 
         public readonly PieceMove[] Moves;
-        private readonly string CustomNotation = null;
+        private readonly string CustomNotation;
 
         public Move(PieceMove[] moves)
         {
@@ -39,7 +39,7 @@ namespace ChessGame
 
         public Move(Coordinate position, Coordinate source, Piece piece, bool captures)
         {
-            Moves = new PieceMove[]
+            Moves = new []
             {
                 new PieceMove(position, source, piece, captures)
             };
@@ -47,7 +47,7 @@ namespace ChessGame
 
         public Move(Coordinate position, Coordinate source, Piece piece, bool captures, string notation)
         {
-            Moves = new PieceMove[]
+            Moves = new []
             {
                 new PieceMove(position, source, piece, captures)
             };
