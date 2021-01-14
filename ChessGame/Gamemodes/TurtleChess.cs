@@ -5,12 +5,12 @@
     /// </summary>
     public class TurtleChess : Gamemode
     {
-        public TurtleChess()
+        public TurtleChess(Player playerWhite, Player playerBlack) : base(playerWhite, playerBlack)
         {
-            Name = "Unlimited Time Chess";
+
         }
 
-        public override Chessboard GenerateBoard()
+        protected override Chessboard GenerateBoard()
         {
             Chessboard board = new Chessboard(8, 8);
 

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using ChessGame.Pieces;
 
 namespace ChessGame
 {
@@ -54,7 +56,7 @@ namespace ChessGame
                 {
                     Pieces.Remove(Pieces.First(piece => piece.Value == singleMove.Piece).Key);
                 }
-                catch (System.InvalidOperationException)
+                catch (InvalidOperationException)
                 {
                     // Piece doesn't exist already, doesn't matter.
                 }
@@ -62,6 +64,39 @@ namespace ChessGame
                 Pieces[singleMove.Destination] = singleMove.Piece;
 
                 singleMove.Piece.hasMoved = true;
+            }
+        }
+
+        public bool IsKingInCheck(TeamColor color)
+        {
+            King king = null;
+
+            
+            foreach (var item in GetPieces<King>())
+            {
+                if (item.Color != color)
+                {
+                    continue;
+                }
+
+                king = item;
+            }
+
+            if (king is null)
+            {
+                throw new ChessExceptions.KingNotFoundChessException();
+            }
+
+            Coordinate position = GetCoordinate(king);
+
+            if (Dangerzone.TryGetValue(position, out List<Piece> pieces))
+            {
+                // returns true if any of the pieces are of a different color.
+                return pieces.Any(p => p.Color != color);
+            }
+            else
+            {
+                return false;
             }
         }
 
@@ -194,7 +229,7 @@ namespace ChessGame
         }
 
         /// <summary>
-        /// Gets piece by position, or places piece at position (and changes the piece's position to position).
+        /// Gets piece by position.
         /// </summary>
         /// <param name="position"></param>
         /// <returns></returns>
@@ -203,6 +238,8 @@ namespace ChessGame
             get { return GetPiece(position); }
             set { Pieces[position] = value; }
         }
+
+        public Coordinate GetCoordinate(Piece piece) => Pieces.FirstOrDefault(p => p.Value == piece).Key;
 
         public bool TryGetCoordinate(Piece piece, out Coordinate position)
         {
@@ -226,5 +263,7 @@ namespace ChessGame
 
             return null;
         }
+
+        public List<T> GetPieces<T>() => Pieces.OfType<T>().ToList();
     }
 }

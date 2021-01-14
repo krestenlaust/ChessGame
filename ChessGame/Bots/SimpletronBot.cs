@@ -8,18 +8,35 @@ namespace ChessGame.Bots
 {
     public class SimpletronBot : Chessbot
     {
-        protected override Move GenerateMove(Chessboard board, TeamColor teamColor)
+        private TeamColor GetOppositeColor(TeamColor color) => color == TeamColor.Black ? TeamColor.White : TeamColor.Black;
+
+        private List<(int, Move)> CheckMovesRecursive(Chessboard board, TeamColor color, int depth, List<Move> moveStack = null)
         {
-            List<(int, Move)> longerMoves = new List<(int, Move)>();
+            List<(int, Move)> moves = new List<(int, Move)>();
 
-            foreach (var botMove1 in board.GetMoves(teamColor))
+            foreach (var move in board.GetMoves(color))
             {
-                Chessboard checkBoard = new Chessboard(board);
+                Chessboard boardSimulation = new Chessboard(board);
+                boardSimulation.DoMove(move);
 
-                checkBoard.DoMove(botMove1);
+                if (depth == 0)
+                {
+                    moves.Add((boardSimulation.MaterialSum, moveStack[0]));
+                }
+                else
+                {
+                    if (moveStack is null)
+                    {
+                        moveStack = new List<Move>();
+                    }
 
-                TeamColor oppositeColor = teamColor == TeamColor.Black ? TeamColor.White : TeamColor.Black;
+                    moveStack.Add(move);
 
+                    
+                    return CheckMovesRecursive(boardSimulation, GetOppositeColor(color), depth - 1, moveStack);
+                }
+
+                /*
                 foreach (var enemyMove1 in checkBoard.GetMoves(oppositeColor))
                 {
                     Chessboard checkboardDepth1 = new Chessboard(checkBoard);
@@ -29,11 +46,19 @@ namespace ChessGame.Bots
                     {
                         Chessboard checkboardDepth2 = new Chessboard(checkboardDepth1);
                         checkboardDepth2.DoMove(botMove2);
-                    
+
                         longerMoves.Add((checkboardDepth2.MaterialSum, botMove1));
                     }
-                }
+                }*/
             }
+
+            return moves;
+        }
+
+        protected override Move GenerateMove(Chessboard board, TeamColor teamColor)
+        {
+
+            List<(int, Move)> longerMoves = CheckMovesRecursive(board, teamColor, 2);
 
             List<(int, Move)> sortedMoves = longerMoves.OrderByDescending(material => material.Item1).ToList();
 

@@ -31,7 +31,7 @@ namespace ChessCommandline
 
             while (true)
             {
-                Game game = new Game(player1, bot.GeneratePlayer(), new TurtleChess());
+                Gamemode game = new TurtleChess(player1, bot.GeneratePlayer());
                 game.StartGame();
 
                 while (true)
@@ -40,17 +40,17 @@ namespace ChessCommandline
             }
         }
 
-        private static void Player2_onTurnStarted(Game obj)
+        private static void Player2_onTurnStarted(Gamemode obj)
         {
             AskForMove(obj);
         }
 
-        private static void Player1_onTurnStarted(Game obj)
+        private static void Player1_onTurnStarted(Gamemode obj)
         {
             AskForMove(obj);
         }
 
-        private static void AskForMove(Game game)
+        private static void AskForMove(Gamemode game)
         {
             DrawBoard(game.Board);
 
@@ -155,8 +155,6 @@ namespace ChessCommandline
                             break;
                         case Rook _:
                             boardTile = piece.Color == TeamColor.Black ? '♖' : '♜';
-                            break;
-                        default:
                             break;
                     }
 

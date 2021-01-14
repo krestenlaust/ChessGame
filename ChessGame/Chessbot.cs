@@ -12,7 +12,7 @@ namespace ChessGame
             return player;
         }
 
-        protected void TurnStart(Game game)
+        protected void TurnStart(Gamemode game)
         {
             game.MakeMove(
                 GenerateMove(game.Board, game.CurrentTurn)
