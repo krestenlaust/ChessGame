@@ -36,9 +36,20 @@ namespace ChessCommandline
                 Chessboard chessboard = new ClassicChess().GenerateBoard(player1, player2);
                 chessboard.StartGame();
 
-                while (true)
-                {
+                while (chessboard.isGameInProgress)
+                { // (event-based)
                 }
+
+                if (chessboard.Winner is null)
+                {
+                    Console.WriteLine("Draw!");
+                }
+                else
+                {
+                    Console.WriteLine($"{chessboard.Winner} has won!");
+                }
+
+                Console.ReadLine();
             }
         }
 
@@ -82,7 +93,7 @@ namespace ChessCommandline
                     continue;
                 }
 
-                if (board.MakeMove(move))
+                if (board.PerformMove(move))
                 {
                     return;
                 }

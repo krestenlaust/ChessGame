@@ -7,11 +7,6 @@ namespace ChessGame
 {
     public abstract class Gamemode
     {
-        //public readonly Chessboard Board;
-        
-        //private readonly Player playerBlack;
-        //private readonly Player playerWhite;
-
         public Gamemode()
         {
         }

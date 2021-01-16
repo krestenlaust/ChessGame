@@ -19,5 +19,10 @@ namespace ChessGame
         {
             onTurnStarted?.Invoke(board);
         }
+
+        public override string ToString()
+        {
+            return Nickname;
+        }
     }
 }

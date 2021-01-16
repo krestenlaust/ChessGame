@@ -14,7 +14,7 @@ namespace ChessGame
 
         protected void TurnStart(Chessboard board)
         {
-            board.MakeMove(
+            board.PerformMove(
                 GenerateMove(board)
                 );
         }

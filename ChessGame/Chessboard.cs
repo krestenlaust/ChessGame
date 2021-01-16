@@ -5,12 +5,18 @@ using ChessGame.Pieces;
 
 namespace ChessGame
 {
-    // not readonly anymore, should this still be a class ?!
     /// <summary>
     /// A class that describes a game of chess.
     /// </summary>
     public class Chessboard
     {
+        public enum GameState
+        {
+            InProgress,
+            Stalemate,
+            Checkmate
+        }
+
         public readonly int Height;
         public readonly int Width;
         public readonly Dictionary<Coordinate, Piece> Pieces;
@@ -21,6 +27,10 @@ namespace ChessGame
         public readonly Stack<Move> Moves;
         public readonly Player PlayerWhite;
         public readonly Player PlayerBlack;
+        public bool isGameInProgress;
+        public Player Winner;
+        public event Action onKingChecked;
+        public event Action<GameState> onGameStateUpdated;
 
         /// <summary>
         /// True if the king, who's turn it is, is in check.
@@ -79,6 +89,7 @@ namespace ChessGame
         /// </summary>
         public void StartGame()
         {
+            isGameInProgress = true;
             StartNextTurn();
         }
 
@@ -87,14 +98,14 @@ namespace ChessGame
         /// </summary>
         /// <param name="move"></param>
         /// <returns></returns>
-        public bool MakeMove(string move)
+        public bool PerformMove(string move)
         {
             Move pieceMove = GetMoveByNotation(move, CurrentTurn);
 
             if (pieceMove is null)
                 return false;
 
-            return MakeMove(pieceMove);
+            return PerformMove(pieceMove);
         }
 
         /// <summary>
@@ -102,7 +113,7 @@ namespace ChessGame
         /// </summary>
         /// <param name="move"></param>
         /// <returns></returns>
-        public bool MakeMove(Move move)
+        public bool PerformMove(Move move)
         {
             // make the actual move change the chessboard state.
             ExecuteMove(move);
@@ -122,6 +133,8 @@ namespace ChessGame
             // refresh dangersquares
             UpdateDangerzones();
 
+            Player previousPlayer = CurrentPlayerTurn;
+
             // change turn
             CurrentTurn = CurrentTurn == TeamColor.Black ? TeamColor.White : TeamColor.Black;
 
@@ -129,11 +142,32 @@ namespace ChessGame
             if (IsKingInCheck(CurrentTurn))
             {
                 isKingChecked = true;
-                Console.Title = "Check!";
+                onKingChecked?.Invoke();
             }
             else
             {
                 isKingChecked = false;
+            }
+
+            // no more legal moves, game is over either by stalemate or checkmate.
+            if (!GetMoves(CurrentTurn).Any())
+            {
+                isGameInProgress = false;
+                GameState gameState;
+
+                // checkmate
+                if (isKingChecked)
+                {
+                    Winner = previousPlayer;
+                    gameState = GameState.Checkmate;
+                }
+                else
+                {
+                    gameState = GameState.Stalemate;
+                }
+
+                onGameStateUpdated?.Invoke(gameState);
+                return;
             }
 
             CurrentPlayerTurn.TurnStarted(this);
@@ -161,7 +195,7 @@ namespace ChessGame
         }
 
         /// <summary>
-        /// Executes a move.
+        /// Executes a move by updating the pieces accordingly.
         /// </summary>
         /// <param name="move"></param>
         public void ExecuteMove(Move move)
