@@ -13,7 +13,6 @@ namespace ChessGame
 
     public class Piece
     {
-        public bool hasMoved;
         /// <summary>
         /// The character used to notate the piece in algebraic notation.
         /// </summary>

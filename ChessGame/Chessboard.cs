@@ -25,6 +25,7 @@ namespace ChessGame
         /// </summary>
         public readonly Dictionary<Coordinate, List<Piece>> Dangerzone;
         public readonly Stack<Move> Moves;
+        public readonly HashSet<Piece> MovedPieces;
         public readonly Player PlayerWhite;
         public readonly Player PlayerBlack;
         public bool isGameInProgress;
@@ -69,6 +70,7 @@ namespace ChessGame
             PlayerWhite = board.PlayerWhite;
             gamemode = board.gamemode;
             isKingChecked = board.isKingChecked;
+            MovedPieces = board.MovedPieces;
         }
 
         public Chessboard(int width, int height, Gamemode gamemode, Player playerWhite, Player playerBlack)
@@ -82,6 +84,7 @@ namespace ChessGame
             PlayerWhite = playerWhite;
             PlayerBlack = playerBlack;
             CurrentTurn = TeamColor.Black;
+            MovedPieces = new HashSet<Piece>();
         }
 
         /// <summary>
@@ -223,7 +226,7 @@ namespace ChessGame
 
                 Pieces[singleMove.Destination] = singleMove.Piece;
 
-                singleMove.Piece.hasMoved = true;
+                MovedPieces.Add(singleMove.Piece);
             }
         }
 
@@ -269,24 +272,73 @@ namespace ChessGame
         public Move GetMoveByNotation(string notation, TeamColor player)
         {
             char pieceNotation = ' ';
+            char promotionTarget;
             string customNotation = null;
             Coordinate destination = new Coordinate();
 
-            // pawn move
-            if (char.IsDigit(notation[1]))
+            try
             {
-                pieceNotation = '\0';
-                destination = new Coordinate(notation);
-            }
-            else if (char.IsDigit(notation[2]))
-            {
-                pieceNotation = notation[0];
-                destination = new Coordinate(notation.Substring(1));
-            }
-            else
+                // read destination square
+                int lastNumberIndex = 0;
+                for (int i = 0; i < notation.Length; i++)
+                {
+                    if (char.IsDigit(notation[i]))
+                    {
+                        lastNumberIndex = i;
+                    }
+                }
+
+                destination = new Coordinate(notation.Substring(lastNumberIndex - 1, 2));
+
+                // more at the end
+                if (notation.Length - 1 > lastNumberIndex)
+                {
+                    // promotion
+                    if (notation[lastNumberIndex + 1] == '=')
+                    {
+                        promotionTarget = notation[lastNumberIndex + 2];
+                        pieceNotation = '\0';
+                    }
+                }
+
+                if (lastNumberIndex - 1 == 0)
+                {
+                    pieceNotation = '\0';
+                }
+                else
+                {
+                    pieceNotation = notation[0];
+
+                    if (notation[lastNumberIndex - 2] == 'x')
+                    {
+
+                    }
+                }
+
+                
+
+                /*
+
+                // pawn move
+                if (char.IsDigit(notation[1]))
+                {
+                    pieceNotation = '\0';
+                    destination = new Coordinate(notation);
+                }
+                else if (char.IsDigit(notation[2]))
+                {
+                    pieceNotation = notation[0];
+                    destination = new Coordinate(notation.Substring(1));
+                }
+                else
+                {
+                    customNotation = notation;
+                }*/
+            }catch (Exception)
             {
                 customNotation = notation;
             }
+            
 
             foreach (var piece in Pieces)
             {
@@ -406,7 +458,7 @@ namespace ChessGame
                 return true;
 
             }
-            catch (System.ArgumentNullException)
+            catch (ArgumentNullException)
             {
                 position = new Coordinate();
                 return false;

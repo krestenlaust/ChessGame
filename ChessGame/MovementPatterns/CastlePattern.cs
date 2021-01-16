@@ -7,10 +7,10 @@ namespace ChessGame.MovementPatterns
     /// </summary>
     public class CastlePattern : IMovementPattern
     {
-        public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool dangersquaresOnly = false)
+        public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool guardedSquaresOnly = false)
         {
             // has the piece, to castle, moved? Only return dangersquares?
-            if (dangersquaresOnly || piece.hasMoved)
+            if (guardedSquaresOnly || board.MovedPieces.Contains(piece))
             {
                 yield break;
             }
@@ -25,7 +25,7 @@ namespace ChessGame.MovementPatterns
                     Coordinate checkPosition = new Coordinate(-i, 0) + position;
                     if (board.GetPiece(checkPosition) is Piece blockingPiece)
                     {
-                        if (blockingPiece is Pieces.Rook && !blockingPiece.hasMoved)
+                        if (blockingPiece is Pieces.Rook && !board.MovedPieces.Contains(blockingPiece))
                         {
                             yield return new Move(
                                 new PieceMove[] {
@@ -43,7 +43,7 @@ namespace ChessGame.MovementPatterns
                     Coordinate checkPosition = new Coordinate(i, 0) + position;
                     if (board.GetPiece(checkPosition) is Piece blockingPiece)
                     {
-                        if (blockingPiece is Pieces.Rook && !blockingPiece.hasMoved)
+                        if (blockingPiece is Pieces.Rook && !board.MovedPieces.Contains(blockingPiece))
                         {
                             yield return new Move(
                                 new PieceMove[] {

@@ -63,7 +63,7 @@ namespace ChessGame.Bots
 
             foreach (var item in viableMoves)
             {
-                if (!item.Moves[0].Piece.hasMoved)
+                if (!board.MovedPieces.Contains(item.Moves[0].Piece))
                 {
                     return item;
                 }
@@ -71,7 +71,7 @@ namespace ChessGame.Bots
 
             return viableMoves[0];
         }
-
+        
         private List<Move> FindBestMoves(Chessboard board, TeamColor teamColor)
         {
             List<(int, Move)> moves = new List<(int, Move)>();

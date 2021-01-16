@@ -76,6 +76,7 @@
     <Compile Include="MovementPatterns\KnightPattern.cs" />
     <Compile Include="MovementPatterns\PawnCapturePattern.cs" />
     <Compile Include="MovementPatterns\PawnPushPattern.cs" />
+    <Compile Include="MovementPatterns\PromotionPattern.cs" />
     <Compile Include="Piece.cs" />
     <Compile Include="PieceMove.cs" />
     <Compile Include="Pieces\Bishop.cs" />

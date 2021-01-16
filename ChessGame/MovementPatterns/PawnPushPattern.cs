@@ -35,8 +35,10 @@ namespace ChessGame.MovementPatterns
 
             forwardPush += new Coordinate(0, moveDirectionY);
 
+            int longJumprank = piece.Color == TeamColor.White ? 1 : 6;
+
             // check long forward
-            if (board.GetPiece(forwardPush) is null && !piece.hasMoved)
+            if (board.GetPiece(forwardPush) is null && position.Rank == longJumprank)
             {
                 // clear ahead.
                 yield return new Move(forwardPush, position, piece, false);
