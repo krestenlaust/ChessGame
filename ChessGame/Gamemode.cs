@@ -27,6 +27,7 @@ namespace ChessGame
         /// <returns></returns>
         public virtual bool ValidateMove(Move move, Chessboard board)
         {
+            // TODO: fix this, the check is flawed, a move must not put the king in check either.
             if (!board.IsKingInCheck(board.CurrentTurn))
             {
                 return true;

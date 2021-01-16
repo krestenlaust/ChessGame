@@ -20,6 +20,8 @@ namespace ChessCommandline
             string nickname = Console.ReadLine();
             Player player1 = new Player(nickname == string.Empty ? "white" : nickname);
             player1.onTurnStarted += AskForMove;
+            Player player2 = new Player(nickname == string.Empty ? "black" : nickname);
+            player2.onTurnStarted += AskForMove;
 
             /*
             Console.WriteLine("Nickname for player 2? [default: black]");
@@ -31,7 +33,7 @@ namespace ChessCommandline
 
             while (true)
             {
-                Chessboard chessboard = new ClassicChess().GenerateBoard(player1, bot.GeneratePlayer());
+                Chessboard chessboard = new ClassicChess().GenerateBoard(player1, player2);
                 chessboard.StartGame();
 
                 while (true)
@@ -61,24 +63,28 @@ namespace ChessCommandline
 
                     currentColor = (ConsoleColor)consoleColors.GetValue((i + 1) % consoleColors.Length);
 
-                    break;
+                    DrawBoard(board);
+                    continue;
                 }
 
                 if (move == "r")
                 {
                     board.UpdateDangerzones();
-                    break;
+                    
+                    DrawBoard(board);
+                    continue;
                 }
 
                 if (move == "dangerzone")
                 {
                     showDangersquares = !showDangersquares;
-                    break;
+                    DrawBoard(board);
+                    continue;
                 }
 
                 if (board.MakeMove(move))
                 {
-                    break;
+                    return;
                 }
                 else
                 {

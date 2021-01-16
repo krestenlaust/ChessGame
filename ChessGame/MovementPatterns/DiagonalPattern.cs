@@ -8,7 +8,7 @@ namespace ChessGame.MovementPatterns
     /// </summary>
     public class DiagonalPattern : IMovementPattern
     {
-        IEnumerable<Move> IMovementPattern.GetMoves(Piece piece, Coordinate position, Chessboard board, bool dangersquaresOnly = false)
+        IEnumerable<Move> IMovementPattern.GetMoves(Piece piece, Coordinate position, Chessboard board, bool guardedSquaresOnly = false)
         {
             for (int n = 0; n < 4; n++) //The 4 directions from the piece
             {
@@ -51,6 +51,11 @@ namespace ChessGame.MovementPatterns
                     {
                         yield return new Move(checkPosition, position, piece, false);
                         continue;
+                    }
+                    else if (guardedSquaresOnly) // if not empty
+                    {
+                        yield return new Move(checkPosition, position, piece, false);
+                        break;
                     }
 
                     if (occupyingPiece.Color != piece.Color) // There is a enemy piece

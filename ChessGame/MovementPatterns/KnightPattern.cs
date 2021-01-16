@@ -4,7 +4,7 @@ namespace ChessGame.MovementPatterns
 {
     public class KnightPattern : IMovementPattern
     {
-        public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool dangersquaresOnly = false)
+        public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool guardedSquaresOnly = false)
         {
             for (int n = 0; n < 4; n++) //The 4 directions from the piece
             {
@@ -49,7 +49,7 @@ namespace ChessGame.MovementPatterns
                     // whether the position is occupied.
                     Piece occupyingPiece = board.GetPiece(checkPosition);
 
-                    if (occupyingPiece is null || dangersquaresOnly) // is position empty? or return danger squares?
+                    if (occupyingPiece is null || guardedSquaresOnly) // is position empty? or return danger squares?
                     {
                         yield return new Move(checkPosition, position, piece, false);
                         continue;

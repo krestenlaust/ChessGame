@@ -19,9 +19,6 @@ namespace ChessGame
                 );
         }
 
-        protected virtual Move GenerateMove(Chessboard board)
-        {
-            return null;
-        }
+        protected abstract Move GenerateMove(Chessboard board);
     }
 }

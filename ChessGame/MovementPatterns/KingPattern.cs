@@ -4,7 +4,7 @@ namespace ChessGame.MovementPatterns
 {
     public class KingPattern : IMovementPattern
     {
-        public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool dangersquaresOnly = false)
+        public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool guardedSquaresOnly = false)
         {
             // adjacent cells
             for (int y = -1; y <= 1; y++)
@@ -34,6 +34,11 @@ namespace ChessGame.MovementPatterns
                     // The king would put itself in check.
                     if (board.IsDangerSquare(newPosition, oppositeColor) > 0)
                     {
+                        continue;
+                    }
+                    else if (guardedSquaresOnly) // return all protected squares
+                    {
+                        yield return new Move(newPosition, position, piece, false);
                         continue;
                     }
 

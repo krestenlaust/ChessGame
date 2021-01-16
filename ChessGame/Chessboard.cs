@@ -27,7 +27,7 @@ namespace ChessGame
         /// </summary>
         private bool isKingChecked;
         private readonly Gamemode gamemode;
-        public TeamColor CurrentTurn { get; private set; } = TeamColor.Black; // changes on next turn start
+        public TeamColor CurrentTurn { get; private set; } // changes on next turn start
         public Player CurrentPlayerTurn
         {
             get
@@ -71,6 +71,7 @@ namespace ChessGame
             this.gamemode = gamemode;
             PlayerWhite = playerWhite;
             PlayerBlack = playerBlack;
+            CurrentTurn = TeamColor.Black;
         }
 
         /// <summary>
@@ -128,6 +129,7 @@ namespace ChessGame
             if (IsKingInCheck(CurrentTurn))
             {
                 isKingChecked = true;
+                Console.Title = "Check!";
             }
             else
             {
@@ -194,7 +196,6 @@ namespace ChessGame
         public bool IsKingInCheck(TeamColor color)
         {
             Piece king = null;
-
             
             foreach (var item in GetPieces<King>())
             {
@@ -225,7 +226,12 @@ namespace ChessGame
         }
 
         // GetMoves
-
+        /// <summary>
+        /// Translates algebraic notation into move.
+        /// </summary>
+        /// <param name="notation"></param>
+        /// <param name="player"></param>
+        /// <returns></returns>
         public Move GetMoveByNotation(string notation, TeamColor player)
         {
             char pieceNotation = ' ';
@@ -258,6 +264,13 @@ namespace ChessGame
 
                 foreach (var targetMove in piece.Value.GetMoves(this))
                 {
+                    if (!gamemode.ValidateMove(targetMove, this))
+                    {
+                        // Rules of algebraic notation states that invalid moves
+                        // should not be included when trying to disambiguate moves.
+                        continue;
+                    }
+
                     if (customNotation == targetMove.ToString())
                     {
                         return targetMove;

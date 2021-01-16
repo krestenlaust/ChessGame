@@ -4,9 +4,9 @@ namespace ChessGame.MovementPatterns
 {
     class EnPassentPattern : IMovementPattern
     {
-        public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool dangersquaresOnly = false)
+        public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool guardedSquaresOnly = false)
         {
-            if (dangersquaresOnly || board.Moves.Count == 0)
+            if (guardedSquaresOnly || board.Moves.Count == 0)
             {
                 yield break;
             }
