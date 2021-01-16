@@ -105,7 +105,7 @@ namespace ChessGame
         public bool MakeMove(Move move)
         {
             // make the actual move change the chessboard state.
-            DoMove(move);
+            ExecuteMove(move);
             // add the move to the list of moves.
             Moves.Push(move);
 
@@ -164,7 +164,7 @@ namespace ChessGame
         /// Executes a move.
         /// </summary>
         /// <param name="move"></param>
-        public void DoMove(Move move)
+        public void ExecuteMove(Move move)
         {
             if (move is null)
             {

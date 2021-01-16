@@ -17,7 +17,7 @@ namespace ChessGame.Bots
             foreach (var move in board.GetMoves(color))
             {
                 Chessboard boardSimulation = new Chessboard(board);
-                boardSimulation.DoMove(move);
+                boardSimulation.ExecuteMove(move);
 
                 if (depth == 0)
                 {
@@ -79,7 +79,7 @@ namespace ChessGame.Bots
             foreach (var move in board.GetMoves(teamColor))
             {
                 Chessboard boardCheck = new Chessboard(board);
-                boardCheck.DoMove(move);
+                boardCheck.ExecuteMove(move);
                 moves.Add((boardCheck.MaterialSum, move));
             }
 
