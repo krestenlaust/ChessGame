@@ -17,7 +17,7 @@ namespace ChessGame
         }
 
         // TODO: maybe implement classic chess by standard (make this virtual).
-        protected abstract Chessboard GenerateBoard();
+        public abstract Chessboard GenerateBoard(Player playerWhite, Player playerBlack);
 
         /// <summary>
         /// Validates a move for a given position. Maybe merge with <c>MakeMove(Move)</c>

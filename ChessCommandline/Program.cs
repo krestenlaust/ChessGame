@@ -19,7 +19,7 @@ namespace ChessCommandline
             Console.WriteLine("Nickname for player 1 [default: white]? ");
             string nickname = Console.ReadLine();
             Player player1 = new Player(nickname == string.Empty ? "white" : nickname);
-            player1.onTurnStarted += Player1_onTurnStarted;
+            player1.onTurnStarted += AskForMove;
 
             /*
             Console.WriteLine("Nickname for player 2? [default: black]");
@@ -31,8 +31,8 @@ namespace ChessCommandline
 
             while (true)
             {
-                Gamemode game = new TurtleChess(player1, bot.GeneratePlayer());
-                game.StartGame();
+                Chessboard chessboard = new ClassicChess().GenerateBoard(player1, bot.GeneratePlayer());
+                chessboard.StartGame();
 
                 while (true)
                 {
@@ -40,24 +40,14 @@ namespace ChessCommandline
             }
         }
 
-        private static void Player2_onTurnStarted(Gamemode obj)
+        private static void AskForMove(Chessboard board)
         {
-            AskForMove(obj);
-        }
-
-        private static void Player1_onTurnStarted(Gamemode obj)
-        {
-            AskForMove(obj);
-        }
-
-        private static void AskForMove(Gamemode game)
-        {
-            DrawBoard(game.Board);
+            DrawBoard(board);
 
             while (true)
             {
-                Console.Title = $"Material: {game.Board.MaterialSum}";
-                Console.WriteLine($"{game.CurrentPlayerTurn.Nickname}'s turn to move: ");
+                Console.Title = $"Material: {board.MaterialSum}";
+                Console.WriteLine($"{board.CurrentPlayerTurn.Nickname}'s turn to move: ");
                 string move = Console.ReadLine();
 
                 if (move == "c")
@@ -76,7 +66,7 @@ namespace ChessCommandline
 
                 if (move == "r")
                 {
-                    game.Board.UpdateDangerzones();
+                    board.UpdateDangerzones();
                     break;
                 }
 
@@ -86,7 +76,7 @@ namespace ChessCommandline
                     break;
                 }
 
-                if (game.MakeMove(move))
+                if (board.MakeMove(move))
                 {
                     break;
                 }

@@ -19,20 +19,20 @@ namespace ChessGame
         /// </summary>
         public readonly Dictionary<Coordinate, List<Piece>> Dangerzone;
         public readonly Stack<Move> Moves;
+        public readonly Player PlayerWhite;
+        public readonly Player PlayerBlack;
 
         /// <summary>
         /// True if the king, who's turn it is, is in check.
         /// </summary>
         private bool isKingChecked;
         private readonly Gamemode gamemode;
-        private readonly Player playerWhite;
-        private readonly Player playerBlack;
-        public TeamColor CurrentTurn { get; private set; } // changes on next turn start
+        public TeamColor CurrentTurn { get; private set; } = TeamColor.Black; // changes on next turn start
         public Player CurrentPlayerTurn
         {
             get
             {
-                return CurrentTurn == TeamColor.White ? playerWhite : playerBlack;
+                return CurrentTurn == TeamColor.White ? PlayerWhite : PlayerBlack;
             }
         }
         public int MaterialSum
@@ -55,24 +55,22 @@ namespace ChessGame
             Dangerzone = new Dictionary<Coordinate, List<Piece>>(board.Dangerzone);
             CurrentTurn = board.CurrentTurn;
             Moves = new Stack<Move>(board.Moves);
-            playerBlack = board.playerBlack;
-            playerWhite = board.playerWhite;
+            PlayerBlack = board.PlayerBlack;
+            PlayerWhite = board.PlayerWhite;
             gamemode = board.gamemode;
             isKingChecked = board.isKingChecked;
         }
 
-        public Chessboard(int width, int height, Player playerWhite, Player playerBlack, Gamemode gamemode)
+        public Chessboard(int width, int height, Gamemode gamemode, Player playerWhite, Player playerBlack)
         {
             Width = width;
             Height = height;
             Pieces = new Dictionary<Coordinate, Piece>();
             Dangerzone = new Dictionary<Coordinate, List<Piece>>();
             Moves = new Stack<Move>();
-            this.playerWhite = playerWhite;
-            this.playerBlack = playerBlack;
-            CurrentTurn = TeamColor.Black;
             this.gamemode = gamemode;
-            isKingChecked = false;
+            PlayerWhite = playerWhite;
+            PlayerBlack = playerBlack;
         }
 
         /// <summary>
@@ -195,7 +193,7 @@ namespace ChessGame
 
         public bool IsKingInCheck(TeamColor color)
         {
-            King king = null;
+            Piece king = null;
 
             
             foreach (var item in GetPieces<King>())
@@ -376,6 +374,8 @@ namespace ChessGame
             return null;
         }
 
-        public List<T> GetPieces<T>() => Pieces.OfType<T>().ToList();
+        public List<Piece> GetPieces<T>() => (from piece in Pieces.Values
+                                         where piece is T
+                                         select piece).ToList();
     }
 }

@@ -5,16 +5,11 @@ namespace ChessGame.Gamemodes
     /// <summary>
     /// Chess with regular board size and no timer.
     /// </summary>
-    public class TurtleChess : Gamemode
+    public class ClassicChess : Gamemode
     {
-        public TurtleChess(Player playerWhite, Player playerBlack) : base(playerWhite, playerBlack)
+        public override Chessboard GenerateBoard(Player playerWhite, Player playerBlack)
         {
-
-        }
-
-        protected override Chessboard GenerateBoard()
-        {
-            Chessboard board = new Chessboard(8, 8);
+            Chessboard board = new Chessboard(8, 8, this, playerWhite, playerBlack);
 
             board[new Coordinate(0, 0)] = new Rook { Color = TeamColor.White };
             board[new Coordinate(1, 0)] = new Knight { Color = TeamColor.White };

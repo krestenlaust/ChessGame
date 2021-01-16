@@ -2,14 +2,9 @@
 {
     public class OpenWorldChess : Gamemode
     {
-        public OpenWorldChess(Player playerWhite, Player playerBlack) : base(playerWhite, playerBlack)
+        public override Chessboard GenerateBoard(Player playerWhite, Player playerBlack)
         {
-
-        }
-
-        protected override Chessboard GenerateBoard()
-        {
-            Chessboard board = new Chessboard(14, 20);
+            Chessboard board = new Chessboard(14, 20, this, playerWhite, playerBlack);
 
             board[new Coordinate(0, 0)] = new Pieces.Rook { Color = TeamColor.White };
             board[new Coordinate(1, 0)] = new Pieces.Knight { Color = TeamColor.White };

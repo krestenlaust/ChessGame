@@ -6,7 +6,7 @@ namespace ChessGame.MovementPatterns
     {
         public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool dangersquaresOnly = false)
         {
-            if (dangersquaresOnly)
+            if (dangersquaresOnly || board.Moves.Count == 0)
             {
                 yield break;
             }
