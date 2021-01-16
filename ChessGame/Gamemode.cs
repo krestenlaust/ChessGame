@@ -1,96 +1,79 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using ChessGame.Pieces;
 
 namespace ChessGame
 {
     public abstract class Gamemode
     {
-        public readonly Chessboard Board;
-        public TeamColor CurrentTurn = TeamColor.Black; // changes on next turn start
-        public Player CurrentPlayerTurn
-        {
-            get
-            {
-                return CurrentTurn == TeamColor.White ? playerWhite : playerBlack;
-            }
-        }
-        private readonly Player playerBlack;
-        private readonly Player playerWhite;
-        private readonly Stack<Move> moves = new Stack<Move>();
-        public event Action onGameOver;
-        public event Action onKingChecked;
+        //public readonly Chessboard Board;
+        
+        //private readonly Player playerBlack;
+        //private readonly Player playerWhite;
 
-        public Gamemode(Player playerWhite, Player playerBlack)
+        public Gamemode()
         {
-            this.playerWhite = playerWhite;
-            this.playerBlack = playerBlack;
-            Board = GenerateBoard();
         }
 
-        protected virtual Chessboard GenerateBoard()
-        {
-            return new Chessboard();
-        }
+        // TODO: maybe implement classic chess by standard (make this virtual).
+        protected abstract Chessboard GenerateBoard();
 
         /// <summary>
-        /// Starts a game by calling <c>StartNextTurn</c>.
-        /// </summary>
-        public virtual void StartGame()
-        {
-            StartNextTurn();
-        }
-
-        /// <summary>
-        /// Makes a move based on move notation. Calls <c>MakeMove(Move)</c> once move is translated.
+        /// Validates a move for a given position. Maybe merge with <c>MakeMove(Move)</c>
         /// </summary>
         /// <param name="move"></param>
+        /// <param name="board"></param>
         /// <returns></returns>
-        public bool MakeMove(string move)
+        public virtual bool ValidateMove(Move move, Chessboard board)
         {
-            Move pieceMove = Board.GetMoveByNotation(move, CurrentTurn);
+            if (!board.IsKingInCheck(board.CurrentTurn))
+            {
+                return true;
+            }
 
-            if (pieceMove is null)
+            TeamColor oppositeColor = board.CurrentTurn == TeamColor.Black ? TeamColor.White : TeamColor.Black;
+
+
+            bool possiblyValidMove = false;
+
+            foreach (var pieceMove in move.Moves)
+            {
+                // When the king is put in check, one (or more) of the following conditions
+                // have to be true for the move to not immedietly be invalid.
+                // Condition 1: A friendly piece is moved into dangerzone.
+                // Condition 2: An enemy piece, that is listed on the dangersquare the king stands on, is captured.
+                // Condition 3: The king is moved to a non-dangerzone tile.
+
+                bool destinationDangerzone = board.IsDangerSquare(pieceMove.Destination, oppositeColor) > 0;
+
+                if (!(destinationDangerzone || // Condition 1 & 2
+                    (pieceMove.Piece is King && !destinationDangerzone))) // condition 3
+                {
+                    // non of the conditions apply, ignore move.
+                    continue;
+                }
+
+                possiblyValidMove = true;
+            }
+
+            // TODO: validate moves with simulations
+            if (!possiblyValidMove)
+            {
                 return false;
-
-            return MakeMove(pieceMove);
-        }
-
-        /// <summary>
-        /// Updates chessboard state based on move, adds the move to the move stack, and calls <c>StartNextTurn</c>.
-        /// </summary>
-        /// <param name="move"></param>
-        /// <returns></returns>
-        public virtual bool MakeMove(Move move)
-        {
-            // make the actual move change the chessboard state.
-            Board.DoMove(move);
-            // add the move to the list of moves.
-            moves.Push(move);
-
-            StartNextTurn();
-
-            return true;
-        }
-
-        /// <summary>
-        /// Refreshes dangerzone, updates turn, checks for check, and notifies event listeners of new turn.
-        /// </summary>
-        protected virtual void StartNextTurn()
-        {
-            // refresh dangersquares
-            Board.UpdateDangerzones();
-
-            // change turn
-            CurrentTurn = CurrentTurn == TeamColor.Black ? TeamColor.White : TeamColor.Black;
-
-            // check for whether king is in check.
-            if (Board.IsKingInCheck(CurrentTurn))
-            {
-                // trigger event
-                onKingChecked?.Invoke();
             }
 
-            CurrentPlayerTurn.TurnStarted(this);
+            Chessboard boardSimulation = new Chessboard(board);
+            boardSimulation.DoMove(move);
+
+            // king is still in check, move is invalid
+            if (boardSimulation.IsKingInCheck(board.CurrentTurn))
+            {
+                return false;
+            }
+
+            // move is valid
+            return true;
         }
     }
 }

@@ -35,35 +35,20 @@ namespace ChessGame.Bots
                     
                     return CheckMovesRecursive(boardSimulation, GetOppositeColor(color), depth - 1, moveStack);
                 }
-
-                /*
-                foreach (var enemyMove1 in checkBoard.GetMoves(oppositeColor))
-                {
-                    Chessboard checkboardDepth1 = new Chessboard(checkBoard);
-                    checkboardDepth1.DoMove(enemyMove1);
-
-                    foreach (var botMove2 in FindBestMoves(checkboardDepth1, teamColor))
-                    {
-                        Chessboard checkboardDepth2 = new Chessboard(checkboardDepth1);
-                        checkboardDepth2.DoMove(botMove2);
-
-                        longerMoves.Add((checkboardDepth2.MaterialSum, botMove1));
-                    }
-                }*/
             }
 
             return moves;
         }
 
-        protected override Move GenerateMove(Chessboard board, TeamColor teamColor)
+        protected override Move GenerateMove(Chessboard board)
         {
 
-            List<(int, Move)> longerMoves = CheckMovesRecursive(board, teamColor, 2);
+            List<(int, Move)> longerMoves = CheckMovesRecursive(board, board.CurrentTurn, 2);
 
             List<(int, Move)> sortedMoves = longerMoves.OrderByDescending(material => material.Item1).ToList();
 
             int newLuckyNumber;
-            if (teamColor == TeamColor.Black)
+            if (board.CurrentTurn == TeamColor.Black)
             {
                 newLuckyNumber = sortedMoves[sortedMoves.Count - 1].Item1;
             }

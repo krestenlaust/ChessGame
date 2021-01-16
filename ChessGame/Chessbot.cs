@@ -12,14 +12,14 @@ namespace ChessGame
             return player;
         }
 
-        protected void TurnStart(Gamemode game)
+        protected void TurnStart(Chessboard board)
         {
-            game.MakeMove(
-                GenerateMove(game.Board, game.CurrentTurn)
+            board.MakeMove(
+                GenerateMove(board)
                 );
         }
 
-        protected virtual Move GenerateMove(Chessboard board, TeamColor teamColor)
+        protected virtual Move GenerateMove(Chessboard board)
         {
             return null;
         }

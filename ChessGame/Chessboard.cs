@@ -5,7 +5,11 @@ using ChessGame.Pieces;
 
 namespace ChessGame
 {
-    public readonly struct Chessboard
+    // not readonly anymore, should this still be a class ?!
+    /// <summary>
+    /// A class that describes a game of chess.
+    /// </summary>
+    public class Chessboard
     {
         public readonly int Height;
         public readonly int Width;
@@ -14,6 +18,23 @@ namespace ChessGame
         /// Describes intersection squares.
         /// </summary>
         public readonly Dictionary<Coordinate, List<Piece>> Dangerzone;
+        public readonly Stack<Move> Moves;
+
+        /// <summary>
+        /// True if the king, who's turn it is, is in check.
+        /// </summary>
+        private bool isKingChecked;
+        private readonly Gamemode gamemode;
+        private readonly Player playerWhite;
+        private readonly Player playerBlack;
+        public TeamColor CurrentTurn { get; private set; } // changes on next turn start
+        public Player CurrentPlayerTurn
+        {
+            get
+            {
+                return CurrentTurn == TeamColor.White ? playerWhite : playerBlack;
+            }
+        }
         public int MaterialSum
         {
             get
@@ -22,22 +43,127 @@ namespace ChessGame
             }
         }
 
+        /// <summary>
+        /// Makes a copy of <c>board</c>, player references stay the same.
+        /// </summary>
+        /// <param name="board"></param>
         public Chessboard(Chessboard board)
         {
             Height = board.Height;
             Width = board.Width;
             Pieces = new Dictionary<Coordinate, Piece>(board.Pieces);
             Dangerzone = new Dictionary<Coordinate, List<Piece>>(board.Dangerzone);
+            CurrentTurn = board.CurrentTurn;
+            Moves = new Stack<Move>(board.Moves);
+            playerBlack = board.playerBlack;
+            playerWhite = board.playerWhite;
+            gamemode = board.gamemode;
+            isKingChecked = board.isKingChecked;
         }
 
-        public Chessboard(int width, int height)
+        public Chessboard(int width, int height, Player playerWhite, Player playerBlack, Gamemode gamemode)
         {
             Width = width;
             Height = height;
             Pieces = new Dictionary<Coordinate, Piece>();
             Dangerzone = new Dictionary<Coordinate, List<Piece>>();
+            Moves = new Stack<Move>();
+            this.playerWhite = playerWhite;
+            this.playerBlack = playerBlack;
+            CurrentTurn = TeamColor.Black;
+            this.gamemode = gamemode;
+            isKingChecked = false;
         }
 
+        /// <summary>
+        /// Starts a game by calling <c>StartNextTurn</c>.
+        /// </summary>
+        public void StartGame()
+        {
+            StartNextTurn();
+        }
+
+        /// <summary>
+        /// Makes a move based on move notation. Calls <c>MakeMove(Move)</c> once move is translated.
+        /// </summary>
+        /// <param name="move"></param>
+        /// <returns></returns>
+        public bool MakeMove(string move)
+        {
+            Move pieceMove = GetMoveByNotation(move, CurrentTurn);
+
+            if (pieceMove is null)
+                return false;
+
+            return MakeMove(pieceMove);
+        }
+
+        /// <summary>
+        /// Updates chessboard state based on move, adds the move to the move stack, and calls <c>StartNextTurn</c>.
+        /// </summary>
+        /// <param name="move"></param>
+        /// <returns></returns>
+        public bool MakeMove(Move move)
+        {
+            // make the actual move change the chessboard state.
+            DoMove(move);
+            // add the move to the list of moves.
+            Moves.Push(move);
+
+            StartNextTurn();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Refreshes dangerzone, updates turn, checks for check.
+        /// </summary>
+        public void StartNextTurn()
+        {
+            // refresh dangersquares
+            UpdateDangerzones();
+
+            // change turn
+            CurrentTurn = CurrentTurn == TeamColor.Black ? TeamColor.White : TeamColor.Black;
+
+            // check for whether king is in check.
+            if (IsKingInCheck(CurrentTurn))
+            {
+                isKingChecked = true;
+            }
+            else
+            {
+                isKingChecked = false;
+            }
+
+            CurrentPlayerTurn.TurnStarted(this);
+        }
+
+        public IEnumerable<Move> GetMoves(TeamColor teamColor)
+        {
+            foreach (var piece in Pieces.Values.ToList())
+            {
+                if (piece.Color != teamColor)
+                {
+                    continue;
+                }
+
+                foreach (var move in piece.GetMoves(this))
+                {
+                    if (!gamemode.ValidateMove(move, this))
+                    {
+                        continue;
+                    }
+
+                    yield return move;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Executes a move.
+        /// </summary>
+        /// <param name="move"></param>
         public void DoMove(Move move)
         {
             if (move is null)
@@ -100,21 +226,7 @@ namespace ChessGame
             }
         }
 
-        public IEnumerable<Move> GetMoves(TeamColor teamColor)
-        {
-            foreach (var piece in Pieces.Values.ToList())
-            {
-                if (piece.Color != teamColor)
-                {
-                    continue;
-                }
-
-                foreach (var move in piece.GetMoves(this))
-                {
-                    yield return move;
-                }
-            }
-        }
+        // GetMoves
 
         public Move GetMoveByNotation(string notation, TeamColor player)
         {

@@ -2,6 +2,11 @@
 {
     public class OpenWorldChess : Gamemode
     {
+        public OpenWorldChess(Player playerWhite, Player playerBlack) : base(playerWhite, playerBlack)
+        {
+
+        }
+
         protected override Chessboard GenerateBoard()
         {
             Chessboard board = new Chessboard(14, 20);

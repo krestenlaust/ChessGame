@@ -8,16 +8,16 @@ namespace ChessGame
         public int Wins;
         public int Losses;
         public int Draws;
-        public event Action<Gamemode> onTurnStarted;
+        public event Action<Chessboard> onTurnStarted;
 
         public Player(string name)
         {
             Nickname = name;
         }
 
-        public void TurnStarted(Gamemode game)
+        public void TurnStarted(Chessboard board)
         {
-            onTurnStarted?.Invoke(game);
+            onTurnStarted?.Invoke(board);
         }
     }
 }
