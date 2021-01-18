@@ -30,6 +30,7 @@ namespace ChessGame
         public readonly Player PlayerBlack;
         public bool isGameInProgress;
         public Player Winner;
+
         public event Action onKingChecked;
         public event Action<GameState> onGameStateUpdated;
 

@@ -25,6 +25,7 @@ namespace ChessGame
             // if move puts king in check — it's invalid.
             Chessboard boardSimulation = new Chessboard(board);
             boardSimulation.ExecuteMove(move);
+            boardSimulation.UpdateDangerzones();
 
             // king is in check, move is invalid
             if (boardSimulation.IsKingInCheck(board.CurrentTurn))
