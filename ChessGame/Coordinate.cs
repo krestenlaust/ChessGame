@@ -20,7 +20,7 @@ namespace ChessGame
         public readonly int Rank;
 
         /// <summary>
-        /// Coordinate that describes the position of a piece.
+        /// Coordinate that describes the position of a piece. Null can be used to show ambiguity.
         /// </summary>
         /// <param name="file">The x-coordinate, the column. Usually expressed using the letters A-G.</param>
         /// <param name="rank">The y-coordinate, the row.</param>
@@ -36,13 +36,46 @@ namespace ChessGame
             Rank = notation[1] - 49;
         }
 
+        /*
         [DebuggerStepThrough]
-        public static bool operator ==(Coordinate coordinate1, Coordinate coordinate2) =>
-            coordinate1.File == coordinate2.File && coordinate1.Rank == coordinate2.Rank;
+        public static bool operator ==(Coordinate coordinate1, Coordinate coordinate2)
+        {
+            // this is way more complicated than I imagined,
+            // it's supposed to return true if all non-null equals withn their property group
+            // E.g.
+            // (null, 5) == (null, 5) == true
+            // (null, 5) == (3, 5) == true
+            // (null, null) == (3, 5) == false
+            // (null, 5) == (5, null) == false
+            // logic:
+            // (null, n) == (null, n) == true
+            // (n1, n2) == (n1, n2) == true
+            // (n1, null) == (n1, n2) == true
+
+            // all are ambigous, no number is the same.
+            if (coordinate1.File is null && coordinate1.Rank is null || coordinate2.File is null && coordinate2.Rank is null)
+            {
+                return false;
+            }
+
+            // file is null, compare rank.
+            if (coordinate1.File is null)
+            {
+                return coordinate1.Rank == coordinate2.Rank;
+            }
+            else if (coordinate1.Rank is null) // rank is null, compare file.
+            {
+                return coordinate1.File == coordinate1.Rank;
+            }
+
+            return coordinate1.File == coordinate2.File && coordinate1.Rank == coordinate2.Rank;
+        }*/
 
         [DebuggerStepThrough]
-        public static bool operator !=(Coordinate coordinate1, Coordinate coordinate2) =>
-            !(coordinate1 == coordinate2);
+        public static bool operator !=(Coordinate coordinate1, Coordinate coordinate2) => coordinate1.Rank != coordinate2.Rank || coordinate1.File != coordinate2.File;
+
+        [DebuggerStepThrough]
+        public static bool operator ==(Coordinate coordinate1, Coordinate coordinate2) => coordinate1.Rank == coordinate2.Rank && coordinate1.File == coordinate2.File;
 
         [DebuggerStepThrough]
         public static Coordinate operator +(Coordinate coordinate1, Coordinate coordinate2) => new Coordinate(coordinate1.File + coordinate2.File, coordinate1.Rank + coordinate2.Rank);

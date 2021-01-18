@@ -102,9 +102,9 @@ namespace ChessGame
         /// </summary>
         /// <param name="move"></param>
         /// <returns></returns>
-        public bool PerformMove(string move)
+        public bool PerformMove(string move, MoveNotation notationType)
         {
-            Move pieceMove = GetMoveByNotation(move, CurrentTurn);
+            Move pieceMove = GetMoveByNotation(move, CurrentTurn, notationType);
 
             if (pieceMove is null)
                 return false;
@@ -229,6 +229,8 @@ namespace ChessGame
 
                 MovedPieces.Add(singleMove.Piece);
             }
+
+            UpdateDangerzones();
         }
 
         public bool IsKingInCheck(TeamColor color)
@@ -270,109 +272,132 @@ namespace ChessGame
         /// <param name="notation"></param>
         /// <param name="player"></param>
         /// <returns></returns>
-        public Move GetMoveByNotation(string notation, TeamColor player)
+        public Move GetMoveByNotation(string notation, TeamColor player, MoveNotation notationType)
         {
-            char pieceNotation = ' ';
-            char promotionTarget;
-            string customNotation = null;
-            Coordinate destination = new Coordinate();
+            
+            Coordinate? source = null;
+            Coordinate? destination = null;
+            bool? captures = null;
+            char? pieceNotation = null;
+            char? promotionTarget = null;
+            bool customNotation = false;
 
             try
             {
-                // read destination square
-                int lastNumberIndex = 0;
-                for (int i = 0; i < notation.Length; i++)
+                switch (notationType)
                 {
-                    if (char.IsDigit(notation[i]))
-                    {
-                        lastNumberIndex = i;
-                    }
+                    case MoveNotation.UCI:
+                        if (notation.Length > 4)
+                        {
+                            source = new Coordinate(notation.Substring(0, 2));
+                            destination = new Coordinate(notation.Substring(2, 2));
+                        }
+
+                        if (notation.Length == 5)
+                        {
+                            promotionTarget = notation[4];
+                        }
+                        break;
+                    case MoveNotation.StandardAlgebraic:
+                        // read destination square
+                        int lastNumberIndex = 0;
+                        for (int i = 0; i < notation.Length; i++)
+                        {
+                            if (char.IsDigit(notation[i]))
+                            {
+                                lastNumberIndex = i;
+                            }
+
+                            if (notation[i] == 'x')
+                            {
+                                captures = true;
+                            }
+                        }
+
+                        if (lastNumberIndex == 0)
+                        {
+                            customNotation = true;
+                            break;
+                        }
+
+                        destination = new Coordinate(notation.Substring(lastNumberIndex - 1, 2));
+
+                        // more at the end
+                        if (notation.Length - 1 > lastNumberIndex)
+                        {
+                            // promotion
+                            if (notation[lastNumberIndex + 1] == '=')
+                            {
+                                promotionTarget = notation[lastNumberIndex + 2];
+                                pieceNotation = '\0';
+                            }
+                        }
+
+                        if (lastNumberIndex - 1 == 0)
+                        {
+                            pieceNotation = '\0';
+                        }
+                        else
+                        {
+                            pieceNotation = notation[0];
+
+                            if (notation[lastNumberIndex - 2] == 'x')
+                            {
+
+                            }
+                        }
+                        break;
                 }
-
-                destination = new Coordinate(notation.Substring(lastNumberIndex - 1, 2));
-
-                // more at the end
-                if (notation.Length - 1 > lastNumberIndex)
-                {
-                    // promotion
-                    if (notation[lastNumberIndex + 1] == '=')
-                    {
-                        promotionTarget = notation[lastNumberIndex + 2];
-                        pieceNotation = '\0';
-                    }
-                }
-
-                if (lastNumberIndex - 1 == 0)
-                {
-                    pieceNotation = '\0';
-                }
-                else
-                {
-                    pieceNotation = notation[0];
-
-                    if (notation[lastNumberIndex - 2] == 'x')
-                    {
-
-                    }
-                }
-
-                
-
-                /*
-
-                // pawn move
-                if (char.IsDigit(notation[1]))
-                {
-                    pieceNotation = '\0';
-                    destination = new Coordinate(notation);
-                }
-                else if (char.IsDigit(notation[2]))
-                {
-                    pieceNotation = notation[0];
-                    destination = new Coordinate(notation.Substring(1));
-                }
-                else
-                {
-                    customNotation = notation;
-                }*/
             }catch (Exception)
             {
-                customNotation = notation;
+                customNotation = true;
             }
-            
 
-            foreach (var piece in Pieces)
+            foreach (var move in GetMoves(CurrentTurn))
             {
-                if (piece.Value.Color != player)
-                    continue;
-
-                if (piece.Value.Notation != pieceNotation && customNotation is null)
-                    continue;
-
-                foreach (var targetMove in piece.Value.GetMoves(this))
+                if (customNotation && move.CustomNotation == notation)
                 {
-                    if (!gamemode.ValidateMove(targetMove, this))
+                    if (gamemode.ValidateMove(move, this))
                     {
-                        // Rules of algebraic notation states that invalid moves
-                        // should not be included when trying to disambiguate moves.
+                        return move;
+                    }
+
+                    continue;
+                }
+
+                foreach (var pieceMove in move.Moves)
+                {
+                    if (!(source is null) && source != pieceMove.Source)
+                    {
                         continue;
                     }
 
-                    if (customNotation == targetMove.ToString())
+                    if (!(destination is null) && destination != pieceMove.Destination)
                     {
-                        return targetMove;
+                        continue;
                     }
 
-                    foreach (var singleMove in targetMove.Moves)
+                    if (!(captures is null) && captures != pieceMove.Captures)
                     {
-                        if (singleMove.Piece != piece.Value)
-                            continue;
-
-                        if (singleMove.Destination != destination)
-                            continue;
-
-                        return targetMove;
+                        continue;
                     }
+
+                    if (!(pieceNotation is null) && pieceNotation != pieceMove.Piece.Notation)
+                    {
+                        continue;
+                    }
+
+                    if (!(promotionTarget is null) && promotionTarget != pieceMove.PromotesTo)
+                    {
+                        continue;
+                    }
+
+                    if (!gamemode.ValidateMove(move, this))
+                    {
+                        continue;
+                    }
+
+                    return move;
                 }
             }
 

@@ -93,7 +93,7 @@ namespace ChessCommandline
                     continue;
                 }
 
-                if (board.PerformMove(move))
+                if (board.PerformMove(move, MoveNotation.UCI))
                 {
                     return;
                 }

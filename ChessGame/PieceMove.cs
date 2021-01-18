@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ChessGame
 {
-    public enum ChessNotation
+    public enum MoveNotation
     {
         UCI,
         StandardAlgebraic
@@ -79,11 +79,11 @@ namespace ChessGame
         /// </summary>
         /// <param name="notation"></param>
         /// <returns></returns>
-        public string ToString(ChessNotation notation)
+        public string ToString(MoveNotation notation)
         {
             switch (notation)
             {
-                case ChessNotation.UCI:
+                case MoveNotation.UCI:
                     StringBuilder sb = new StringBuilder();
 
                     sb.Append(Source);
@@ -94,7 +94,7 @@ namespace ChessGame
                         sb.Append(PromotesTo);
                     }
                     break;
-                case ChessNotation.StandardAlgebraic:
+                case MoveNotation.StandardAlgebraic:
                     return ToString();
                 default:
                     break;

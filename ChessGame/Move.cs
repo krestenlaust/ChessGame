@@ -24,7 +24,7 @@ namespace ChessGame
         }
 
         public readonly PieceMove[] Moves;
-        private readonly string CustomNotation;
+        public readonly string CustomNotation;
 
         public Move(PieceMove[] moves)
         {
