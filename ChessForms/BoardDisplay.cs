@@ -9,6 +9,8 @@ namespace ChessForms
     {
         public PictureBox[,] Boardcells;
         public int BoardWidth, BoardHeight;
+        public Coordinate? FromPosition = null;
+        public Chessboard Chessboard;
 
         public BoardDisplay()
         {
@@ -25,23 +27,25 @@ namespace ChessForms
             Player playerWhite = new Player("white");
             Player playerBlack = new Player("black");
 
-            Chessboard Chessboard = new ChessGame.Gamemodes.ClassicChess().GenerateBoard(playerWhite, playerBlack);
+            Chessboard = new ChessGame.Gamemodes.ClassicChess().GenerateBoard(playerWhite, playerBlack);
             CreateBoard(Chessboard.Width, Chessboard.Height);
             BoardWidth = Chessboard.Width;
             BoardHeight = Chessboard.Height;
+
+            UpdateBoard();
 
             Chessboard.onGameStateUpdated += Board_onGameStateUpdated;
 
             Chessboard.StartGame();
         }
 
-        public void UpdateBoard(Chessboard board)
+        public void UpdateBoard()
         {
-            for (int y = 0; y < board.Height; y++)
+            for (int y = 0; y < Chessboard.Height; y++)
             {
-                for (int x = 0; x < board.Width; x++)
+                for (int x = 0; x < Chessboard.Width; x++)
                 {
-                    Piece cellPiece = board.GetPiece(new Coordinate(x, y));
+                    Piece cellPiece = Chessboard.GetPiece(new Coordinate(x, y));
 
                     if (cellPiece is null)
                     {
@@ -82,7 +86,8 @@ namespace ChessForms
                     {
                         Dock = DockStyle.Fill,
                         Image = Image.FromFile(@"C:\Users\kress\Documents\geotermi.jpg"),
-                        BorderStyle = BorderStyle.None
+                        BorderStyle = BorderStyle.None,
+                        SizeMode = PictureBoxSizeMode.StretchImage
                     };
 
                     box.Click += CellClicked;
@@ -90,6 +95,14 @@ namespace ChessForms
 
                     tableLayoutPanel1.Controls.Add(box);
                 }
+            }
+        }
+
+        private void MakeMove(Coordinate from, Coordinate to)
+        {
+            if (Chessboard.PerformMove(from.ToString() + to.ToString(), MoveNotation.UCI))
+            {
+                UpdateBoard();
             }
         }
 
@@ -102,7 +115,26 @@ namespace ChessForms
             int cellX = windowX / (tableLayoutPanel1.Width / BoardWidth);
             int cellY = windowY / (tableLayoutPanel1.Height / BoardHeight);
 
-            MessageBox.Show($"({windowX}, {windowY}) ({cellX}, {cellY})");
+            Coordinate clickTarget = new Coordinate(cellX, cellY);
+
+            if (FromPosition is null)
+            {
+                FromPosition = clickTarget;
+                this.Text = FromPosition.ToString();
+            }
+            else
+            {
+                // select
+                if (clickTarget != FromPosition)
+                {
+                    MakeMove(FromPosition.Value, clickTarget);
+                }
+
+                this.Text = "Select move";
+                FromPosition = null;
+            }
+
+            //MessageBox.Show($"({windowX}, {windowY}) ({cellX}, {cellY})");
         }
 
         public void ClearPiece(int x, int y)

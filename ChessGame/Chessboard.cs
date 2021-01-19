@@ -287,7 +287,7 @@ namespace ChessGame
                 switch (notationType)
                 {
                     case MoveNotation.UCI:
-                        if (notation.Length > 4)
+                        if (notation.Length >= 4)
                         {
                             source = new Coordinate(notation.Substring(0, 2));
                             destination = new Coordinate(notation.Substring(2, 2));
