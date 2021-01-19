@@ -8,6 +8,7 @@ namespace ChessForms
     public partial class BoardDisplay : Form
     {
         public PictureBox[,] Boardcells;
+        public int BoardWidth, BoardHeight;
 
         public BoardDisplay()
         {
@@ -26,6 +27,8 @@ namespace ChessForms
 
             Chessboard Chessboard = new ChessGame.Gamemodes.ClassicChess().GenerateBoard(playerWhite, playerBlack);
             CreateBoard(Chessboard.Width, Chessboard.Height);
+            BoardWidth = Chessboard.Width;
+            BoardHeight = Chessboard.Height;
 
             Chessboard.onGameStateUpdated += Board_onGameStateUpdated;
 
@@ -38,7 +41,16 @@ namespace ChessForms
             {
                 for (int x = 0; x < board.Width; x++)
                 {
+                    Piece cellPiece = board.GetPiece(new Coordinate(x, y));
 
+                    if (cellPiece is null)
+                    {
+                        ClearPiece(x, y);
+                    }
+                    else
+                    {
+                        PlacePiece(x, y, cellPiece);
+                    }
                 }
             }
         }
@@ -69,7 +81,8 @@ namespace ChessForms
                     PictureBox box = new PictureBox
                     {
                         Dock = DockStyle.Fill,
-                        Image = Image.FromFile(@"C:\Users\kress\Documents\geotermi.jpg")
+                        Image = Image.FromFile(@"C:\Users\kress\Documents\geotermi.jpg"),
+                        BorderStyle = BorderStyle.None
                     };
 
                     box.Click += CellClicked;
@@ -82,7 +95,14 @@ namespace ChessForms
 
         private void CellClicked(object sender, System.EventArgs e)
         {
+            Point click = tableLayoutPanel1.PointToClient(MousePosition);
+            int windowX = click.X;
+            int windowY = click.Y;
             
+            int cellX = windowX / (tableLayoutPanel1.Width / BoardWidth);
+            int cellY = windowY / (tableLayoutPanel1.Height / BoardHeight);
+
+            MessageBox.Show($"({windowX}, {windowY}) ({cellX}, {cellY})");
         }
 
         public void ClearPiece(int x, int y)
@@ -100,9 +120,17 @@ namespace ChessForms
             switch (piece)
             {
                 case Bishop _:
-                    break;
-                default:
-                    break;
+                    return Properties.Resources.PieceWhiteBishop;
+                case King _:
+                    return Properties.Resources.PieceWhiteKing;
+                case Pawn _:
+                    return Properties.Resources.PieceWhitePawn;
+                case Rook _:
+                    return Properties.Resources.PieceWhiteRook;
+                case Queen _:
+                    return Properties.Resources.PieceWhiteQueen;
+                case Knight _:
+                    return Properties.Resources.PieceWhiteKnight;
             }
 
             return null;

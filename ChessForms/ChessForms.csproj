@@ -90,5 +90,23 @@
       <Name>ChessGame</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Chess_piece_-_White_bishop.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Chess_piece_-_White_king.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Chess_piece_-_White_knight.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Chess_piece_-_White_pawn.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Chess_piece_-_White_queen.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Chess_piece_-_White_rook.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
