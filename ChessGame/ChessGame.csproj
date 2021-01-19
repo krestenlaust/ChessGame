@@ -65,7 +65,6 @@
     <Compile Include="Gamemode.cs" />
     <Compile Include="Gamemodes\OpenWorldChess.cs" />
     <Compile Include="Gamemodes\ClassicChess.cs" />
-    <Compile Include="Gamemodes\TestGamemode.cs" />
     <Compile Include="IMovementPattern.cs" />
     <Compile Include="Move.cs" />
     <Compile Include="MovementPatterns\CardinalPattern.cs" />
