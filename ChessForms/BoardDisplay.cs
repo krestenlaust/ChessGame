@@ -2,6 +2,8 @@
 using System.Windows.Forms;
 using ChessGame;
 using ChessGame.Pieces;
+using ChessGame.Bots;
+using ChessGame.Gamemodes;
 
 namespace ChessForms
 {
@@ -18,26 +20,20 @@ namespace ChessForms
             InitializeComponent();
         }
 
-        private void Board_onGameStateUpdated(Chessboard.GameState obj)
-        {
-
-        }
-
         private void BoardDisplay_Load(object sender, System.EventArgs e)
         {
             Player playerWhite = new Player("white");
             playerWhite.onTurnStarted += PlayerWhite_onTurnStarted;
 
-            ChessGame.Bots.SimpletronBot bot = new ChessGame.Bots.SimpletronBot();
+            SimpletronBot bot = new SimpletronBot();
 
-            Chessboard = new ChessGame.Gamemodes.ClassicChess().GenerateBoard(playerWhite, bot.GeneratePlayer());
+
+            Chessboard = new ClassicChess().GenerateBoard(playerWhite, bot.GeneratePlayer());
             CreateBoard(Chessboard.Width, Chessboard.Height);
             BoardWidth = Chessboard.Width;
             BoardHeight = Chessboard.Height;
 
             UpdateBoard();
-
-            Chessboard.onGameStateUpdated += Board_onGameStateUpdated;
 
             Chessboard.StartGame();
         }
@@ -170,7 +166,7 @@ namespace ChessForms
                         }
 
                         FromPosition = clickTarget;
-                        this.Text = FromPosition.ToString();
+                        Text = FromPosition.ToString();
                         SelectPiece(cellX, cellY);
                         SelectedPiece = piece;
                         

@@ -71,7 +71,8 @@ namespace ChessGame.Bots
 
             return viableMoves[0];
         }
-        
+
+        /*
         private List<Move> FindBestMoves(Chessboard board, TeamColor teamColor)
         {
             List<(int, Move)> moves = new List<(int, Move)>();
@@ -103,5 +104,6 @@ namespace ChessGame.Bots
 
             return (from move in sortedMoves where move.Item1 == luckyNumber select move.Item2).ToList();
         }
+        */
     }
 }
