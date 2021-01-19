@@ -63,18 +63,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -91,22 +91,40 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Chess_piece_-_White_bishop.jpg" />
+    <None Include="Resources\BondeHvid.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Chess_piece_-_White_king.jpg" />
+    <None Include="Resources\BondeSort.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Chess_piece_-_White_knight.jpg" />
+    <None Include="Resources\DronningHvid.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Chess_piece_-_White_pawn.jpg" />
+    <None Include="Resources\DronningSort.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Chess_piece_-_White_queen.jpg" />
+    <None Include="Resources\HestHvid.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Chess_piece_-_White_rook.jpg" />
+    <None Include="Resources\HestSort.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KongeHvid.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KongeSort.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LøberHvid.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LøberSort.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TårnHvid.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TårnSort.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

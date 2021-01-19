@@ -63,9 +63,9 @@ namespace ChessForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap PieceWhiteBishop {
+        internal static System.Drawing.Bitmap BondeHvid {
             get {
-                object obj = ResourceManager.GetObject("PieceWhiteBishop", resourceCulture);
+                object obj = ResourceManager.GetObject("BondeHvid", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace ChessForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap PieceWhiteKing {
+        internal static System.Drawing.Bitmap BondeSort {
             get {
-                object obj = ResourceManager.GetObject("PieceWhiteKing", resourceCulture);
+                object obj = ResourceManager.GetObject("BondeSort", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +83,9 @@ namespace ChessForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap PieceWhiteKnight {
+        internal static System.Drawing.Bitmap DronningHvid {
             get {
-                object obj = ResourceManager.GetObject("PieceWhiteKnight", resourceCulture);
+                object obj = ResourceManager.GetObject("DronningHvid", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -93,9 +93,9 @@ namespace ChessForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap PieceWhitePawn {
+        internal static System.Drawing.Bitmap DronningSort {
             get {
-                object obj = ResourceManager.GetObject("PieceWhitePawn", resourceCulture);
+                object obj = ResourceManager.GetObject("DronningSort", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,9 +103,9 @@ namespace ChessForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap PieceWhiteQueen {
+        internal static System.Drawing.Bitmap HestHvid {
             get {
-                object obj = ResourceManager.GetObject("PieceWhiteQueen", resourceCulture);
+                object obj = ResourceManager.GetObject("HestHvid", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,9 +113,69 @@ namespace ChessForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap PieceWhiteRook {
+        internal static System.Drawing.Bitmap HestSort {
             get {
-                object obj = ResourceManager.GetObject("PieceWhiteRook", resourceCulture);
+                object obj = ResourceManager.GetObject("HestSort", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap KongeHvid {
+            get {
+                object obj = ResourceManager.GetObject("KongeHvid", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap KongeSort {
+            get {
+                object obj = ResourceManager.GetObject("KongeSort", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap LøberHvid {
+            get {
+                object obj = ResourceManager.GetObject("LøberHvid", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap LøberSort {
+            get {
+                object obj = ResourceManager.GetObject("LøberSort", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TårnHvid {
+            get {
+                object obj = ResourceManager.GetObject("TårnHvid", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TårnSort {
+            get {
+                object obj = ResourceManager.GetObject("TårnSort", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
