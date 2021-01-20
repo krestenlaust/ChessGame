@@ -19,10 +19,7 @@ namespace ChessGame
         public readonly Dictionary<Coordinate, List<Piece>> Dangerzone;
         public readonly Stack<Move> Moves;
         public readonly HashSet<Piece> MovedPieces;
-        public readonly Player PlayerWhite;
-        public readonly Player PlayerBlack;
         public bool isGameInProgress;
-        public Player Winner;
 
         private readonly Gamemode gamemode;
         public TeamColor CurrentTurn { get; private set; } // changes on next turn start
@@ -30,7 +27,7 @@ namespace ChessGame
         {
             get
             {
-                return CurrentTurn == TeamColor.White ? PlayerWhite : PlayerBlack;
+                return CurrentTurn == TeamColor.White ? gamemode.PlayerWhite : gamemode.PlayerBlack;
             }
         }
         public int MaterialSum
@@ -50,8 +47,6 @@ namespace ChessGame
             Height = board.Height;
             Width = board.Width;
             CurrentTurn = board.CurrentTurn;
-            PlayerBlack = board.PlayerBlack;
-            PlayerWhite = board.PlayerWhite;
             gamemode = board.gamemode;
             
             Pieces = new Dictionary<Coordinate, Piece>(board.Pieces);
@@ -60,13 +55,11 @@ namespace ChessGame
             Moves = new Stack<Move>(board.Moves);
         }
 
-        public Chessboard(int width, int height, Gamemode gamemode, Player playerWhite, Player playerBlack)
+        public Chessboard(int width, int height, Gamemode gamemode)
         {
             Width = width;
             Height = height;
             this.gamemode = gamemode;
-            PlayerWhite = playerWhite;
-            PlayerBlack = playerBlack;
             CurrentTurn = TeamColor.Black;
 
             Pieces = new Dictionary<Coordinate, Piece>();
@@ -124,14 +117,17 @@ namespace ChessGame
             // refresh dangersquares
             //UpdateDangerzones();
 
-            Player previousPlayer = CurrentPlayerTurn;
-
             // change turn
             CurrentTurn = CurrentTurn == TeamColor.Black ? TeamColor.White : TeamColor.Black;
 
-            gamemode.StartTurn(this);
+            if (gamemode.StartTurn(this))
+            {
+                CurrentPlayerTurn.TurnStarted(this);   
+            }
+            else
+            {
+            }
 
-            CurrentPlayerTurn.TurnStarted(this);
         }
 
         public IEnumerable<Move> GetMoves(TeamColor teamColor)
@@ -178,13 +174,18 @@ namespace ChessGame
                     Pieces.Remove(key);
                 }
 
-                if (singleMove.PromotesTo != '\0')
+                if (singleMove.PromotePiece is null)
                 {
-
+                    Pieces[singleMove.Destination] = singleMove.Piece;
+                    MovedPieces.Add(singleMove.Piece);
                 }
-                Pieces[singleMove.Destination] = singleMove.Piece;
+                else
+                {
+                    Pieces[singleMove.Destination] = singleMove.PromotePiece;
+                    MovedPieces.Remove(singleMove.Piece);
+                    MovedPieces.Add(singleMove.PromotePiece);
+                }
 
-                MovedPieces.Add(singleMove.Piece);
             }
 
             if (updateDangerzone)

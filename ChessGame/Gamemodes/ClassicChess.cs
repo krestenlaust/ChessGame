@@ -7,9 +7,13 @@ namespace ChessGame.Gamemodes
     /// </summary>
     public class ClassicChess : Gamemode
     {
-        public override Chessboard GenerateBoard(Player playerWhite, Player playerBlack)
+        public ClassicChess(Player playerWhite, Player playerBlack) : base(playerWhite, playerBlack)
         {
-            Chessboard board = new Chessboard(8, 8, this, playerWhite, playerBlack);
+        }
+
+        public override Chessboard GenerateBoard()
+        {
+            Chessboard board = new Chessboard(8, 8, this);
 
             board[new Coordinate(0, 0)] = new Rook { Color = TeamColor.White };
             board[new Coordinate(1, 0)] = new Knight { Color = TeamColor.White };

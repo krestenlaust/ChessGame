@@ -33,7 +33,7 @@ namespace ChessCommandline
 
             while (true)
             {
-                Chessboard chessboard = new ClassicChess().GenerateBoard(player1, player2);
+                Chessboard chessboard = new PawnTestChess().GenerateBoard(player1, player2);
                 chessboard.StartGame();
 
                 while (chessboard.isGameInProgress)

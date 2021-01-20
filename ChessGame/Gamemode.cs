@@ -15,13 +15,18 @@ namespace ChessGame
     public abstract class Gamemode
     {
         public event Action<GameState> onGameStateUpdated;
+        public Player Winner;
+        public readonly Player PlayerWhite;
+        public readonly Player PlayerBlack;
 
-        public Gamemode()
+        public Gamemode(Player playerWhite, Player playerBlack)
         {
+            PlayerWhite = playerWhite;
+            PlayerBlack = playerBlack;
         }
 
         // TODO: maybe implement classic chess by standard (make this virtual).
-        public abstract Chessboard GenerateBoard(Player playerWhite, Player playerBlack);
+        public abstract Chessboard GenerateBoard();
 
         /// <summary>
         /// Validates a move for a given position. Maybe merge with <c>MakeMove(Move)</c>
@@ -48,7 +53,9 @@ namespace ChessGame
         /// <summary>
         /// 
         /// </summary>
-        public virtual void StartTurn(Chessboard board)
+        /// <param name="board"></param>
+        /// <returns>False if game has ended.</returns>
+        public virtual bool StartTurn(Chessboard board)
         {
             bool isKingChecked;
 
@@ -72,7 +79,7 @@ namespace ChessGame
                 // checkmate
                 if (isKingChecked)
                 {
-                    board.Winner = board.CurrentTurn == TeamColor.White ? board.PlayerBlack : board.PlayerWhite;
+                    Winner = board.CurrentTurn == TeamColor.White ? PlayerBlack : PlayerWhite;
                     gameState = GameState.Checkmate;
                 }
                 else
@@ -81,8 +88,10 @@ namespace ChessGame
                 }
 
                 onGameStateUpdated?.Invoke(gameState);
-                return;
+                return false;
             }
+
+            return true;
         }
     }
 }
