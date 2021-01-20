@@ -9,7 +9,7 @@ namespace ChessCommandline
     class Program
     {
         static ConsoleColor currentColor = ConsoleColor.DarkRed;
-        static bool showDangersquares = false;
+        static bool showDangersquares;
         static readonly Array consoleColors = Enum.GetValues(typeof(ConsoleColor));
 
         static void Main(string[] args)
@@ -53,7 +53,7 @@ namespace ChessCommandline
             }
         }
 
-        private static void AskForMove(Chessboard board)
+        static void AskForMove(Chessboard board)
         {
             DrawBoard(board);
 

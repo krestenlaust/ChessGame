@@ -5,8 +5,17 @@ using ChessGame.Pieces;
 
 namespace ChessGame
 {
+    public enum GameState
+    {
+        Stalemate,
+        Checkmate,
+        Check
+    }
+
     public abstract class Gamemode
     {
+        public event Action<GameState> onGameStateUpdated;
+
         public Gamemode()
         {
         }
@@ -34,6 +43,46 @@ namespace ChessGame
 
             // move is valid
             return true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual void StartTurn(Chessboard board)
+        {
+            bool isKingChecked;
+
+            // check for whether king is in check.
+            if (board.IsKingInCheck(board.CurrentTurn))
+            {
+                isKingChecked = true;
+                onGameStateUpdated?.Invoke(GameState.Check);
+            }
+            else
+            {
+                isKingChecked = false;
+            }
+
+            // no more legal moves, game is over either by stalemate or checkmate.
+            if (!board.GetMoves(board.CurrentTurn).Any())
+            {
+                board.isGameInProgress = false;
+                GameState gameState;
+
+                // checkmate
+                if (isKingChecked)
+                {
+                    board.Winner = board.CurrentTurn == TeamColor.White ? board.PlayerBlack : board.PlayerWhite;
+                    gameState = GameState.Checkmate;
+                }
+                else
+                {
+                    gameState = GameState.Stalemate;
+                }
+
+                onGameStateUpdated?.Invoke(gameState);
+                return;
+            }
         }
     }
 }

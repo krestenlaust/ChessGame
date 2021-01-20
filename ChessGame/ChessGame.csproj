@@ -61,12 +61,12 @@
     <Compile Include="Bots\SimpletronBot.cs" />
     <Compile Include="Chessboard.cs" />
     <Compile Include="Chessbot.cs" />
-    <Compile Include="ChessExceptions\KingNotFoundChessException.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="Gamemode.cs" />
     <Compile Include="Gamemodes\OpenWorldChess.cs" />
     <Compile Include="Gamemodes\ClassicChess.cs" />
-    <Compile Include="Gamemodes\TestGamemode.cs" />
+    <Compile Include="Gamemodes\PawnTestChess.cs" />
+    <Compile Include="Gamemodes\TinyChess.cs" />
     <Compile Include="IMovementPattern.cs" />
     <Compile Include="Move.cs" />
     <Compile Include="MovementPatterns\CardinalPattern.cs" />

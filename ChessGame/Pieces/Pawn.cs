@@ -9,7 +9,9 @@
             MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.PawnCapturePattern(),
                 new MovementPatterns.PawnPushPattern(),
-                new MovementPatterns.EnPassentPattern() };
+                new MovementPatterns.EnPassentPattern(),
+                new MovementPatterns.PromotionPattern()
+            };
         }
     }
 }

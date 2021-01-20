@@ -13,15 +13,13 @@ namespace ChessGame.MovementPatterns
 
             int moveDirectionY = piece.Color == TeamColor.White ? 1 : -1;
 
-            Coordinate forwardPush = position + new Coordinate(0, moveDirectionY);
-            
-            int promotionRank = piece.Color == TeamColor.White ? 6 : 1;
-
             // can't push pawn to eighth rank
-            if (forwardPush.Rank == promotionRank)
+            if (position.Rank == (piece.Color == TeamColor.White ? 6 : 1))
             {
                 yield break;
             }
+
+            Coordinate forwardPush = position + new Coordinate(0, moveDirectionY);
 
             // check forward
             if (board.GetPiece(forwardPush) is Piece)

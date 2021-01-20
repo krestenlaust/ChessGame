@@ -10,13 +10,6 @@ namespace ChessGame
     /// </summary>
     public class Chessboard
     {
-        public enum GameState
-        {
-            InProgress,
-            Stalemate,
-            Checkmate
-        }
-
         public readonly int Height;
         public readonly int Width;
         public readonly Dictionary<Coordinate, Piece> Pieces;
@@ -31,13 +24,6 @@ namespace ChessGame
         public bool isGameInProgress;
         public Player Winner;
 
-        public event Action onKingChecked;
-        public event Action<GameState> onGameStateUpdated;
-
-        /// <summary>
-        /// True if the king, who's turn it is, is in check.
-        /// </summary>
-        private bool isKingChecked;
         private readonly Gamemode gamemode;
         public TeamColor CurrentTurn { get; private set; } // changes on next turn start
         public Player CurrentPlayerTurn
@@ -63,28 +49,29 @@ namespace ChessGame
         {
             Height = board.Height;
             Width = board.Width;
-            Pieces = new Dictionary<Coordinate, Piece>(board.Pieces);
-            Dangerzone = new Dictionary<Coordinate, List<Piece>>(board.Dangerzone);
             CurrentTurn = board.CurrentTurn;
-            Moves = new Stack<Move>(board.Moves);
             PlayerBlack = board.PlayerBlack;
             PlayerWhite = board.PlayerWhite;
             gamemode = board.gamemode;
-            isKingChecked = board.isKingChecked;
-            MovedPieces = board.MovedPieces;
+            
+            Pieces = new Dictionary<Coordinate, Piece>(board.Pieces);
+            Dangerzone = new Dictionary<Coordinate, List<Piece>>(board.Dangerzone);
+            MovedPieces = new HashSet<Piece>(board.MovedPieces);
+            Moves = new Stack<Move>(board.Moves);
         }
 
         public Chessboard(int width, int height, Gamemode gamemode, Player playerWhite, Player playerBlack)
         {
             Width = width;
             Height = height;
-            Pieces = new Dictionary<Coordinate, Piece>();
-            Dangerzone = new Dictionary<Coordinate, List<Piece>>();
-            Moves = new Stack<Move>();
             this.gamemode = gamemode;
             PlayerWhite = playerWhite;
             PlayerBlack = playerBlack;
             CurrentTurn = TeamColor.Black;
+
+            Pieces = new Dictionary<Coordinate, Piece>();
+            Dangerzone = new Dictionary<Coordinate, List<Piece>>();
+            Moves = new Stack<Move>();
             MovedPieces = new HashSet<Piece>();
         }
 
@@ -120,7 +107,7 @@ namespace ChessGame
         public bool PerformMove(Move move)
         {
             // make the actual move change the chessboard state.
-            ExecuteMove(move);
+            ExecuteMove(move, true);
             // add the move to the list of moves.
             Moves.Push(move);
 
@@ -135,44 +122,14 @@ namespace ChessGame
         public void StartNextTurn()
         {
             // refresh dangersquares
-            UpdateDangerzones();
+            //UpdateDangerzones();
 
             Player previousPlayer = CurrentPlayerTurn;
 
             // change turn
             CurrentTurn = CurrentTurn == TeamColor.Black ? TeamColor.White : TeamColor.Black;
 
-            // check for whether king is in check.
-            if (IsKingInCheck(CurrentTurn))
-            {
-                isKingChecked = true;
-                onKingChecked?.Invoke();
-            }
-            else
-            {
-                isKingChecked = false;
-            }
-
-            // no more legal moves, game is over either by stalemate or checkmate.
-            if (!GetMoves(CurrentTurn).Any())
-            {
-                isGameInProgress = false;
-                GameState gameState;
-
-                // checkmate
-                if (isKingChecked)
-                {
-                    Winner = previousPlayer;
-                    gameState = GameState.Checkmate;
-                }
-                else
-                {
-                    gameState = GameState.Stalemate;
-                }
-
-                onGameStateUpdated?.Invoke(gameState);
-                return;
-            }
+            gamemode.StartTurn(this);
 
             CurrentPlayerTurn.TurnStarted(this);
         }
@@ -202,7 +159,7 @@ namespace ChessGame
         /// Executes a move by updating the pieces accordingly.
         /// </summary>
         /// <param name="move"></param>
-        public void ExecuteMove(Move move)
+        public void ExecuteMove(Move move, bool updateDangerzone = false)
         {
             if (move is null)
             {
@@ -216,21 +173,24 @@ namespace ChessGame
                     Pieces.Remove(singleMove.Destination);
                 }
 
-                try
+                if (TryGetCoordinate(singleMove.Piece, out Coordinate key))
                 {
-                    Pieces.Remove(Pieces.First(piece => piece.Value == singleMove.Piece).Key);
-                }
-                catch (InvalidOperationException)
-                {
-                    // Piece doesn't exist already, doesn't matter.
+                    Pieces.Remove(key);
                 }
 
+                if (singleMove.PromotesTo != '\0')
+                {
+
+                }
                 Pieces[singleMove.Destination] = singleMove.Piece;
 
                 MovedPieces.Add(singleMove.Piece);
             }
 
-            UpdateDangerzones();
+            if (updateDangerzone)
+            {
+                UpdateDangerzones();
+            }
         }
 
         public bool IsKingInCheck(TeamColor color)
@@ -249,7 +209,7 @@ namespace ChessGame
 
             if (king is null)
             {
-                throw new ChessExceptions.KingNotFoundChessException();
+                return false;
             }
 
             Coordinate position = GetCoordinate(king);
@@ -274,7 +234,6 @@ namespace ChessGame
         /// <returns></returns>
         public Move GetMoveByNotation(string notation, TeamColor player, MoveNotation notationType)
         {
-            
             Coordinate? source = null;
             Coordinate? destination = null;
             bool? captures = null;
@@ -353,7 +312,7 @@ namespace ChessGame
                 customNotation = true;
             }
 
-            foreach (var move in GetMoves(CurrentTurn))
+            foreach (var move in GetMoves(player))
             {
                 if (customNotation && move.CustomNotation == notation)
                 {

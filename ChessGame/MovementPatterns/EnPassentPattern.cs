@@ -29,7 +29,6 @@ namespace ChessGame.MovementPatterns
                 yield break;
             }
 
-
             Coordinate leftEnPassent = position + new Coordinate(-1, moveDirectionY);
 
             // should be right next to

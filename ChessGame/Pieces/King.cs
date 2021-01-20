@@ -5,7 +5,7 @@
         public King()
         {
             Notation = 'K';
-            MaterialValue = 0;
+            MaterialValue = 100;
             MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.KingPattern(),
                 new MovementPatterns.CastlePattern()
