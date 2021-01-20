@@ -6,6 +6,12 @@ namespace ChessGame.MovementPatterns
     {
         public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool guardedSquaresOnly = false)
         {
+            // can't push pawn to eighth rank
+            if (position.Rank == (piece.Color == TeamColor.White ? 6 : 1))
+            {
+                yield break;
+            }
+            
             int moveDirectionY = piece.Color == TeamColor.White ? 1 : -1;
 
             // get potential flank capture positions.

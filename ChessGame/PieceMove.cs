@@ -19,15 +19,27 @@ namespace ChessGame
         public readonly Coordinate Source;
         public readonly Piece Piece;
         public readonly bool Captures;
-        public readonly char PromotesTo;
+        public char PromotesTo {get
+            {
+                if (PromotePiece is null)
+                {
+                    return '\0';
+                }
+                else
+                {
+                    return PromotePiece.Notation;
+                }
+            }
+        }
+        public readonly Piece PromotePiece;
 
-        public PieceMove(Coordinate destination, Coordinate source, Piece piece, bool captures, char promotesTo = '\0')
+        public PieceMove(Coordinate destination, Coordinate source, Piece piece, bool captures, Piece promotePiece = null)
         {
             Destination = destination;
             Source = source;
             Piece = piece;
             Captures = captures;
-            PromotesTo = promotesTo;
+            PromotePiece = promotePiece;
         }
 
         [DebuggerStepThrough]
@@ -84,16 +96,14 @@ namespace ChessGame
             switch (notation)
             {
                 case MoveNotation.UCI:
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.Append(Source);
-                    sb.Append(Destination);
-
-                    if (PromotesTo != '\0')
+                    if (PromotePiece is null)
                     {
-                        sb.Append(PromotesTo);
+                        return Source.ToString() + Destination.ToString();
                     }
-                    break;
+                    else
+                    {
+                        return Source.ToString() + Destination.ToString() + PromotePiece.Notation;
+                    }
                 case MoveNotation.StandardAlgebraic:
                     return ToString();
                 default:

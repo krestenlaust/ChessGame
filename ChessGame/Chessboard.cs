@@ -178,6 +178,10 @@ namespace ChessGame
                     Pieces.Remove(key);
                 }
 
+                if (singleMove.PromotesTo != '\0')
+                {
+
+                }
                 Pieces[singleMove.Destination] = singleMove.Piece;
 
                 MovedPieces.Add(singleMove.Piece);
@@ -230,7 +234,6 @@ namespace ChessGame
         /// <returns></returns>
         public Move GetMoveByNotation(string notation, TeamColor player, MoveNotation notationType)
         {
-            
             Coordinate? source = null;
             Coordinate? destination = null;
             bool? captures = null;
@@ -309,7 +312,7 @@ namespace ChessGame
                 customNotation = true;
             }
 
-            foreach (var move in GetMoves(CurrentTurn))
+            foreach (var move in GetMoves(player))
             {
                 if (customNotation && move.CustomNotation == notation)
                 {

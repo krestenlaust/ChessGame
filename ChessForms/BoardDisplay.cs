@@ -24,12 +24,14 @@ namespace ChessForms
         private void BoardDisplay_Load(object sender, System.EventArgs e)
         {
             Player playerWhite = new Player("white");
-            playerWhite.onTurnStarted += PlayerWhite_onTurnStarted;
+            playerWhite.onTurnStarted += onTurnStarted;
+            //Player playerBlack = new Player("black");
+            //playerBlack.onTurnStarted += onTurnStarted;
 
             SimpletronBot bot = new SimpletronBot();
 
 
-            Chessboard = new TinyChess().GenerateBoard(playerWhite, bot.GeneratePlayer());
+            Chessboard = new ClassicChess().GenerateBoard(playerWhite, bot.GeneratePlayer());
             CreateBoard(Chessboard.Width, Chessboard.Height);
             BoardWidth = Chessboard.Width;
             BoardHeight = Chessboard.Height;
@@ -39,8 +41,9 @@ namespace ChessForms
             Chessboard.StartGame();
         }
 
-        private void PlayerWhite_onTurnStarted(Chessboard obj)
+        private void onTurnStarted(Chessboard obj)
         {
+            //Text = $"{obj.CurrentPlayerTurn}'s turn";
             UpdateBoard();
         }
 
@@ -125,7 +128,6 @@ namespace ChessForms
         {
             string move = from.ToString() + to.ToString();
 
-            Text = "Bot thinking...";
             Task.Run(() => Chessboard.PerformMove(move, MoveNotation.UCI));
 
             /*
@@ -174,7 +176,6 @@ namespace ChessForms
                         }
 
                         FromPosition = clickTarget;
-                        Text = FromPosition.ToString();
                         SelectPiece(cellX, cellY);
                         SelectedPiece = piece;
                         
@@ -206,7 +207,6 @@ namespace ChessForms
 
                         UpdateBoard();
 
-                        Text = "Select move";
                         DeselectPiece(cellX, cellY);
                         SelectedPiece = null;
                         FromPosition = null;

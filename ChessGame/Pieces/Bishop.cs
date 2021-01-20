@@ -7,8 +7,7 @@
             Notation = 'B';
             MaterialValue = 3;
             MovementPatternList = new IMovementPattern[] {
-                new MovementPatterns.DiagonalPattern(),
-                new MovementPatterns.CastlePattern()
+                new MovementPatterns.DiagonalPattern()
             };
         }
     }
