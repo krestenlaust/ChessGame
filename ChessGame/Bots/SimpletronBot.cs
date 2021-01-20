@@ -5,8 +5,7 @@ namespace ChessGame.Bots
 {
     public class SimpletronBot : Chessbot
     {
-        private TeamColor GetOppositeColor(TeamColor color) => color == TeamColor.Black ? TeamColor.White : TeamColor.Black;
-
+        /*
         private List<(int, Move)> CheckMovesRecursive(Chessboard board, TeamColor color, int depth, List<Move> moveStack = null)
         {
             List<(int, Move)> moves = new List<(int, Move)>();
@@ -30,8 +29,49 @@ namespace ChessGame.Bots
                     moveStack.Add(move);
 
                     
-                    return CheckMovesRecursive(boardSimulation, GetOppositeColor(color), depth - 1, moveStack);
+                    moves.InsertRange(0, CheckMovesRecursive(boardSimulation, GetOppositeColor(color), depth - 1, moveStack));
                 }
+            }
+
+            return moves;
+        }*/
+
+        private List<(int, Move)> CheckMoves4Deep(Chessboard board)
+        {
+            List<(int, Move)> moves = new List<(int, Move)>();
+            Chessboard boardInstance = new Chessboard(board);
+
+            TeamColor botColor = boardInstance.CurrentTurn;
+            TeamColor enemyColor = (TeamColor)(((int)boardInstance.CurrentTurn + 1) % 2);
+
+            foreach (var mainBotMove in boardInstance.GetMoves(boardInstance.CurrentTurn))
+            {
+                Chessboard boardMain1 = new Chessboard(boardInstance);
+                boardMain1.ExecuteMove(mainBotMove);
+
+                foreach (var enemyResponse in boardMain1.GetMoves(enemyColor))
+                {
+                    Chessboard boardMain2 = new Chessboard(boardMain1);
+                    boardMain2.ExecuteMove(enemyResponse);
+
+                    foreach (var secondBotMove in boardMain2.GetMoves(botColor))
+                    {
+                        Chessboard boardMain3 = new Chessboard(boardMain2);
+                        boardMain3.ExecuteMove(secondBotMove);
+
+                        boardMain3.ExecuteMove(FindBestMoves(boardMain3, enemyColor).First());
+                        moves.Add((boardMain3.MaterialSum, mainBotMove));
+                    }
+                }
+
+                /*
+                foreach (var enemyResponseMove in board.GetMoves(board.CurrentTurn))
+                {
+                    Chessboard boardSecond = new Chessboard(boardMain);
+                    boardSecond.ExecuteMove(enemyResponseMove);
+
+
+                }*/
             }
 
             return moves;
@@ -40,7 +80,7 @@ namespace ChessGame.Bots
         protected override Move GenerateMove(Chessboard board)
         {
 
-            List<(int, Move)> longerMoves = CheckMovesRecursive(board, board.CurrentTurn, 2);
+            List<(int, Move)> longerMoves = CheckMoves4Deep(board);
 
             List<(int, Move)> sortedMoves = longerMoves.OrderByDescending(material => material.Item1).ToList();
 
@@ -69,7 +109,6 @@ namespace ChessGame.Bots
             return viableMoves[0];
         }
 
-        /*
         private List<Move> FindBestMoves(Chessboard board, TeamColor teamColor)
         {
             List<(int, Move)> moves = new List<(int, Move)>();
@@ -101,6 +140,5 @@ namespace ChessGame.Bots
 
             return (from move in sortedMoves where move.Item1 == luckyNumber select move.Item2).ToList();
         }
-        */
     }
 }

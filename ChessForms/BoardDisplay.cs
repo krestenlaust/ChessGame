@@ -4,6 +4,7 @@ using ChessGame;
 using ChessGame.Pieces;
 using ChessGame.Bots;
 using ChessGame.Gamemodes;
+using System.Threading.Tasks;
 
 namespace ChessForms
 {
@@ -13,7 +14,7 @@ namespace ChessForms
         public int BoardWidth, BoardHeight;
         public Coordinate? FromPosition = null;
         public Chessboard Chessboard;
-        public Piece SelectedPiece = null;
+        public Piece SelectedPiece;
 
         public BoardDisplay()
         {
@@ -28,7 +29,7 @@ namespace ChessForms
             SimpletronBot bot = new SimpletronBot();
 
 
-            Chessboard = new ClassicChess().GenerateBoard(playerWhite, bot.GeneratePlayer());
+            Chessboard = new TinyChess().GenerateBoard(playerWhite, bot.GeneratePlayer());
             CreateBoard(Chessboard.Width, Chessboard.Height);
             BoardWidth = Chessboard.Width;
             BoardHeight = Chessboard.Height;
@@ -43,7 +44,7 @@ namespace ChessForms
             UpdateBoard();
         }
 
-        private void UpdateBackgroundColors()
+        private void ResetTableStyling()
         {
             int i = 0;
             for (int y = 0; y < Chessboard.Height; y++)
@@ -51,6 +52,7 @@ namespace ChessForms
                 for (int x = 0; x < Chessboard.Width; x++)
                 {
                     Boardcells[x, y].BackColor = ++i % 2 == 0 ? Color.White : Color.CornflowerBlue;
+                    Boardcells[x, y].BorderStyle = BorderStyle.None;
                 }
 
                 i++;
@@ -116,19 +118,25 @@ namespace ChessForms
                 }
             }
 
-            UpdateBackgroundColors();
+            ResetTableStyling();
         }
 
         private void MakeMove(Coordinate from, Coordinate to)
         {
-            if (Chessboard.PerformMove(from.ToString() + to.ToString(), MoveNotation.UCI))
+            string move = from.ToString() + to.ToString();
+
+            Text = "Bot thinking...";
+            Task.Run(() => Chessboard.PerformMove(move, MoveNotation.UCI));
+
+            /*
+            if ()
             {
                 //UpdateBoard();
                 
                 //Image image = Boardcells[from.File, from.Rank].Image;
                 //Boardcells[to.File, to.Rank].Image = image;
                 //Boardcells[from.File, from.Rank].Image = null;
-            }
+            }*/
         }
 
         private void CellClicked(object sender, System.EventArgs e)
@@ -147,7 +155,7 @@ namespace ChessForms
             switch (button)
             {
                 case MouseButtons.Left:
-                    UpdateBackgroundColors();
+                    ResetTableStyling();
 
                     Piece piece = Chessboard[new Coordinate(cellX, cellY)];
 

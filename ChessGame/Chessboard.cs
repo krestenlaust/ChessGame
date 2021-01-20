@@ -107,7 +107,7 @@ namespace ChessGame
         public bool PerformMove(Move move)
         {
             // make the actual move change the chessboard state.
-            ExecuteMove(move);
+            ExecuteMove(move, true);
             // add the move to the list of moves.
             Moves.Push(move);
 
@@ -159,7 +159,7 @@ namespace ChessGame
         /// Executes a move by updating the pieces accordingly.
         /// </summary>
         /// <param name="move"></param>
-        public void ExecuteMove(Move move)
+        public void ExecuteMove(Move move, bool updateDangerzone = false)
         {
             if (move is null)
             {
@@ -173,13 +173,9 @@ namespace ChessGame
                     Pieces.Remove(singleMove.Destination);
                 }
 
-                try
+                if (TryGetCoordinate(singleMove.Piece, out Coordinate key))
                 {
-                    Pieces.Remove(Pieces.First(piece => piece.Value == singleMove.Piece).Key);
-                }
-                catch (InvalidOperationException)
-                {
-                    // Piece doesn't exist already, doesn't matter.
+                    Pieces.Remove(key);
                 }
 
                 Pieces[singleMove.Destination] = singleMove.Piece;
@@ -187,7 +183,10 @@ namespace ChessGame
                 MovedPieces.Add(singleMove.Piece);
             }
 
-            UpdateDangerzones();
+            if (updateDangerzone)
+            {
+                UpdateDangerzones();
+            }
         }
 
         public bool IsKingInCheck(TeamColor color)
