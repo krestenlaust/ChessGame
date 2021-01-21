@@ -14,7 +14,7 @@ namespace ChessForms
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new BoardDisplay());
+            Application.Run(new MatchMaker());
         }
     }
 }

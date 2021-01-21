@@ -60,7 +60,6 @@
   <ItemGroup>
     <Compile Include="Bots\SimpletronBot.cs" />
     <Compile Include="Chessboard.cs" />
-    <Compile Include="Chessbot.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="Gamemode.cs" />
     <Compile Include="Gamemodes\OpenWorldChess.cs" />
@@ -78,6 +77,7 @@
     <Compile Include="MovementPatterns\PawnCapturePattern.cs" />
     <Compile Include="MovementPatterns\PawnPushPattern.cs" />
     <Compile Include="MovementPatterns\PromotionPattern.cs" />
+    <Compile Include="NetworkedPlayer.cs" />
     <Compile Include="Piece.cs" />
     <Compile Include="PieceMove.cs" />
     <Compile Include="Pieces\Bishop.cs" />

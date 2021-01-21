@@ -56,10 +56,19 @@
     <Compile Include="BoardDisplay.Designer.cs">
       <DependentUpon>BoardDisplay.cs</DependentUpon>
     </Compile>
+    <Compile Include="MatchMaker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MatchMaker.Designer.cs">
+      <DependentUpon>MatchMaker.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="BoardDisplay.resx">
       <DependentUpon>BoardDisplay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MatchMaker.resx">
+      <DependentUpon>MatchMaker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

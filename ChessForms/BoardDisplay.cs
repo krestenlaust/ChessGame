@@ -2,60 +2,88 @@
 using System.Windows.Forms;
 using ChessGame;
 using ChessGame.Pieces;
-using ChessGame.Bots;
-using ChessGame.Gamemodes;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace ChessForms
 {
     public partial class BoardDisplay : Form
     {
-        public PictureBox[,] Boardcells;
-        public int BoardWidth, BoardHeight;
-        public Coordinate? FromPosition = null;
-        public Chessboard Chessboard;
-        public Piece SelectedPiece;
+        private PictureBox[,] boardcells;
+        private Coordinate? fromPosition = null;
+        private Piece selectedPiece;
+        private Chessboard chessboard;
+        private readonly Gamemode gamemode;
+        private readonly bool whiteLocal, blackLocal;
 
-        public BoardDisplay()
+        public BoardDisplay(Gamemode gamemode, bool whiteLocal, bool blackLocal)
         {
             InitializeComponent();
+
+            this.gamemode = gamemode;
+            this.whiteLocal = whiteLocal;
+            this.blackLocal = blackLocal;
         }
 
         private void BoardDisplay_Load(object sender, System.EventArgs e)
         {
-            Player playerWhite = new Player("white");
-            playerWhite.onTurnStarted += onTurnStarted;
-            //Player playerBlack = new Player("black");
-            //playerBlack.onTurnStarted += onTurnStarted;
+            gamemode.onTurnChanged += onTurnStarted;
+            gamemode.onGameStateUpdated += onGameStateUpdated;
 
-            SimpletronBot bot = new SimpletronBot();
-
-
-            Chessboard = new ClassicChess().GenerateBoard(playerWhite, bot.GeneratePlayer());
-            CreateBoard(Chessboard.Width, Chessboard.Height);
-            BoardWidth = Chessboard.Width;
-            BoardHeight = Chessboard.Height;
+            chessboard = gamemode.GenerateBoard();
+            CreateBoard(chessboard.Width, chessboard.Height);
 
             UpdateBoard();
 
-            Chessboard.StartGame();
+            Task.Run(() => chessboard.StartGame());
         }
 
-        private void onTurnStarted(Chessboard obj)
+        private void onGameStateUpdated(GameState e)
         {
-            //Text = $"{obj.CurrentPlayerTurn}'s turn";
+            string outputMsg = string.Empty;
+            switch (e)
+            {
+                case GameState.Stalemate:
+                    outputMsg = "The game has stalemated, Game is over";
+                    break;
+                case GameState.Checkmate:
+                    outputMsg = $"{gamemode.Winner} has delivered checkmate!";
+                    break;
+                case GameState.Check:
+                    outputMsg = $"{chessboard.CurrentPlayerTurn} is in check!";
+                    break;
+            }
+
+            if (outputMsg == string.Empty)
+            {
+                return;
+            }
+
+            this.Invoke((MethodInvoker)delegate
+            {
+                Text = outputMsg;
+            });
+        }
+
+        private void onTurnStarted()
+        {
+            Invoke((MethodInvoker)delegate
+           {
+               Text = $"{chessboard.CurrentPlayerTurn}'s turn";
+           });
+
             UpdateBoard();
         }
 
         private void ResetTableStyling()
         {
             int i = 0;
-            for (int y = 0; y < Chessboard.Height; y++)
+            for (int y = 0; y < chessboard.Height; y++)
             {
-                for (int x = 0; x < Chessboard.Width; x++)
+                for (int x = 0; x < chessboard.Width; x++)
                 {
-                    Boardcells[x, y].BackColor = ++i % 2 == 0 ? Color.White : Color.CornflowerBlue;
-                    Boardcells[x, y].BorderStyle = BorderStyle.None;
+                    boardcells[x, y].BackColor = ++i % 2 == 0 ? Color.White : Color.CornflowerBlue;
+                    boardcells[x, y].BorderStyle = BorderStyle.None;
                 }
 
                 i++;
@@ -64,11 +92,11 @@ namespace ChessForms
 
         public void UpdateBoard()
         {
-            for (int y = 0; y < Chessboard.Height; y++)
+            for (int y = 0; y < chessboard.Height; y++)
             {
-                for (int x = 0; x < Chessboard.Width; x++)
+                for (int x = 0; x < chessboard.Width; x++)
                 {
-                    Piece cellPiece = Chessboard.GetPiece(new Coordinate(x, y));
+                    Piece cellPiece = chessboard.GetPiece(new Coordinate(x, y));
 
                     if (cellPiece is null)
                     {
@@ -100,7 +128,7 @@ namespace ChessForms
                 tableLayoutPanel1.RowStyles.Add(new ColumnStyle(SizeType.Percent, 1));
             }
 
-            Boardcells = new PictureBox[width, height];
+            boardcells = new PictureBox[width, height];
 
             for (int y = 0; y < height; y++)
             {
@@ -115,7 +143,7 @@ namespace ChessForms
                     };
 
                     box.Click += CellClicked;
-                    Boardcells[x, y] = box;
+                    boardcells[x, y] = box;
 
                     tableLayoutPanel1.Controls.Add(box);
                 }
@@ -128,7 +156,7 @@ namespace ChessForms
         {
             string move = from.ToString() + to.ToString();
 
-            Task.Run(() => Chessboard.PerformMove(move, MoveNotation.UCI));
+            Task.Run(() => chessboard.PerformMove(move, MoveNotation.UCI));
 
             /*
             if ()
@@ -145,77 +173,87 @@ namespace ChessForms
         {
             MouseButtons button = ((MouseEventArgs)e).Button;
 
+            // translate window coordinates to table-cell coordinates
             Point click = tableLayoutPanel1.PointToClient(MousePosition);
             int windowX = click.X;
             int windowY = click.Y;
             
-            int cellX = windowX / (tableLayoutPanel1.Width / BoardWidth);
-            int cellY = windowY / (tableLayoutPanel1.Height / BoardHeight);
+            int cellX = windowX / (tableLayoutPanel1.Width / chessboard.Width);
+            int cellY = windowY / (tableLayoutPanel1.Height / chessboard.Height);
 
             Coordinate clickTarget = new Coordinate(cellX, cellY);
 
+            // handle click
             switch (button)
             {
                 case MouseButtons.Left:
                     ResetTableStyling();
 
-                    Piece piece = Chessboard[new Coordinate(cellX, cellY)];
+                    Piece piece = chessboard[new Coordinate(cellX, cellY)];
 
-                    if (!(FromPosition is null) && piece?.Color == Chessboard.CurrentTurn && piece != SelectedPiece)
+                    if (!(fromPosition is null) && piece?.Color == chessboard.CurrentTurn && piece != selectedPiece)
                     {
-                        DeselectPiece(FromPosition.Value.File, FromPosition.Value.Rank);
+                        DeselectPiece(fromPosition.Value.File, fromPosition.Value.Rank);
                         UpdateBoard();
-                        FromPosition = null;
+                        fromPosition = null;
                     }
 
-                    if (FromPosition is null)
+                    if (fromPosition is null)
                     {
-                        if (piece is null || piece.Color != Chessboard.CurrentTurn)
+                        // wrong color piece selected
+                        if (piece is null || piece.Color != chessboard.CurrentTurn)
                         {
                             return;
                         }
 
-                        FromPosition = clickTarget;
+                        // only allow selection of local players
+                        if (chessboard.CurrentTurn == TeamColor.Black && !blackLocal ||
+                            chessboard.CurrentTurn == TeamColor.White && !whiteLocal)
+                        {
+                            return;
+                        }
+
+                        fromPosition = clickTarget;
                         SelectPiece(cellX, cellY);
-                        SelectedPiece = piece;
+                        selectedPiece = piece;
                         
 
-                        foreach (var item in piece.GetMoves(Chessboard))
+                        foreach (var item in piece.GetMoves(chessboard))
                         {
                             Coordinate guardedSquare = item.Moves[0].Destination;
 
-                            Image cellImage = Boardcells[guardedSquare.File, guardedSquare.Rank].Image;
+                            Image cellImage = boardcells[guardedSquare.File, guardedSquare.Rank].Image;
 
                             if (cellImage is null)
                             {
-                                Boardcells[guardedSquare.File, guardedSquare.Rank].Image = Properties.Resources.MuligtTrækBrik;
+                                boardcells[guardedSquare.File, guardedSquare.Rank].Image = Properties.Resources.MuligtTrækBrik;
                             }
                             else
                             {
-                                Boardcells[guardedSquare.File, guardedSquare.Rank].BackColor = Color.Red;
+                                boardcells[guardedSquare.File, guardedSquare.Rank].BackColor = Color.Red;
                             }
                         }
                     }
                     else
                     {
                         // select target
-                        if (clickTarget != FromPosition)
+                        if (clickTarget != fromPosition)
                         {
                             DeselectPiece(cellX, cellY);
-                            MakeMove(FromPosition.Value, clickTarget);
+                            MakeMove(fromPosition.Value, clickTarget);
                         }
 
                         UpdateBoard();
 
                         DeselectPiece(cellX, cellY);
-                        SelectedPiece = null;
-                        FromPosition = null;
+                        selectedPiece = null;
+                        fromPosition = null;
                     }
                     break;
                 case MouseButtons.None:
                     break;
                 case MouseButtons.Right:
-                    Boardcells[cellX, cellY].BackColor = Color.Green;
+                    boardcells[cellX, cellY].BackColor = Color.Green;
                     break;
                 case MouseButtons.Middle:
                     break;
@@ -230,22 +268,22 @@ namespace ChessForms
 
         private void DeselectPiece(int x, int y)
         {
-            Boardcells[x, y].BorderStyle = BorderStyle.None;
+            boardcells[x, y].BorderStyle = BorderStyle.None;
         }
 
         private void SelectPiece(int x, int y)
         {
-            Boardcells[x, y].BorderStyle = BorderStyle.FixedSingle;
+            boardcells[x, y].BorderStyle = BorderStyle.FixedSingle;
         }
 
         public void ClearPiece(int x, int y)
         {
-            Boardcells[x, y].Image = null;
+            boardcells[x, y].Image = null;
         }
 
         public void PlacePiece(int x, int y, Piece piece)
         {
-            Boardcells[x, y].Image = GetPieceImage(piece);
+            boardcells[x, y].Image = GetPieceImage(piece);
         }
 
         private Image GetPieceImage(Piece piece)

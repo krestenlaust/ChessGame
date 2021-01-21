@@ -33,20 +33,22 @@ namespace ChessCommandline
 
             while (true)
             {
-                Chessboard chessboard = new ClassicChess().GenerateBoard(player1, player2);
+                Gamemode gamemode = new PawnTestChess(player1, player2);
+
+                Chessboard chessboard = gamemode.GenerateBoard();
                 chessboard.StartGame();
 
                 while (chessboard.isGameInProgress)
                 { // (event-based)
                 }
 
-                if (chessboard.Winner is null)
+                if (gamemode.Winner is null)
                 {
                     Console.WriteLine("Draw!");
                 }
                 else
                 {
-                    Console.WriteLine($"{chessboard.Winner} has won!");
+                    Console.WriteLine($"{gamemode.Winner} has won!");
                 }
 
                 Console.ReadLine();

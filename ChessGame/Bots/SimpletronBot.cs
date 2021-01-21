@@ -3,8 +3,18 @@ using System.Linq;
 
 namespace ChessGame.Bots
 {
-    public class SimpletronBot : Chessbot
+    public class SimpletronBot : Player
     {
+        public SimpletronBot(string name) : base(name)
+        {
+
+        }
+
+        public override void TurnStarted(Chessboard board)
+        {
+            board.PerformMove(GenerateMove(board));
+        }
+
         /*
         private List<(int, Move)> CheckMovesRecursive(Chessboard board, TeamColor color, int depth, List<Move> moveStack = null)
         {
@@ -64,20 +74,12 @@ namespace ChessGame.Bots
                     }
                 }
 
-                /*
-                foreach (var enemyResponseMove in board.GetMoves(board.CurrentTurn))
-                {
-                    Chessboard boardSecond = new Chessboard(boardMain);
-                    boardSecond.ExecuteMove(enemyResponseMove);
-
-
-                }*/
             }
 
             return moves;
         }
 
-        protected override Move GenerateMove(Chessboard board)
+        private Move GenerateMove(Chessboard board)
         {
 
             List<(int, Move)> longerMoves = CheckMoves4Deep(board);
