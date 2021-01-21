@@ -36,7 +36,7 @@ namespace ChessGame.MovementPatterns
             if (enPassentTargetLeft == previousMoveDestination)
             {
                 // capture with e.p.
-                yield return new Move(leftEnPassent, position, piece, true);
+                yield return new Move(leftEnPassent, position, piece, true, piece.Color);
                 yield break;
             }
             
@@ -45,7 +45,7 @@ namespace ChessGame.MovementPatterns
             Coordinate enPassentTargetRight = position + new Coordinate(1, 0);
             if (enPassentTargetRight == previousMoveDestination)
             {
-                yield return new Move(rightEnPassent, position, piece, true);
+                yield return new Move(rightEnPassent, position, piece, true, piece.Color);
             }
 
         }

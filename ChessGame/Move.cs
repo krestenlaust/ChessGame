@@ -25,27 +25,31 @@ namespace ChessGame
 
         public readonly PieceMove[] Moves;
         public readonly string CustomNotation;
+        public readonly TeamColor Color;
 
-        public Move(PieceMove[] moves)
+        public Move(PieceMove[] moves, TeamColor color)
         {
             Moves = moves;
+            Color = color;
         }
 
-        public Move(PieceMove[] moves, string notation)
+        public Move(PieceMove[] moves, string notation, TeamColor color)
         {
             Moves = moves;
             CustomNotation = notation;
+            Color = color;
         }
 
-        public Move(Coordinate position, Coordinate source, Piece piece, bool captures)
+        public Move(Coordinate position, Coordinate source, Piece piece, bool captures, TeamColor color)
         {
             Moves = new []
             {
                 new PieceMove(position, source, piece, captures)
             };
+            Color = color;
         }
 
-        public Move(Coordinate position, Coordinate source, Piece piece, bool captures, string notation)
+        public Move(Coordinate position, Coordinate source, Piece piece, bool captures, string notation, TeamColor color)
         {
             Moves = new []
             {
@@ -53,6 +57,7 @@ namespace ChessGame
             };
 
             CustomNotation = notation;
+            Color = color;
         }
 
         public string ToString(MoveNotation notationType)

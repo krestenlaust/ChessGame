@@ -72,6 +72,7 @@
     <Compile Include="MovementPatterns\CastlePattern.cs" />
     <Compile Include="MovementPatterns\DiagonalPattern.cs" />
     <Compile Include="MovementPatterns\EnPassentPattern.cs" />
+    <Compile Include="MovementPatterns\HypnoJumpPattern.cs" />
     <Compile Include="MovementPatterns\KingPattern.cs" />
     <Compile Include="MovementPatterns\KnightPattern.cs" />
     <Compile Include="MovementPatterns\PawnCapturePattern.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Piece.cs" />
     <Compile Include="PieceMove.cs" />
     <Compile Include="Pieces\Bishop.cs" />
+    <Compile Include="Pieces\Hypnotist.cs" />
     <Compile Include="Pieces\King.cs" />
     <Compile Include="Pieces\Knight.cs" />
     <Compile Include="Pieces\Pawn.cs" />

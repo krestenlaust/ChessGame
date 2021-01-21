@@ -151,6 +151,21 @@ namespace ChessGame
             }
         }
 
+        public bool InsideBoard(Coordinate position)
+        {
+            if (position.Rank >= this.Height || position.Rank < 0)
+            {
+                return false;
+            }
+
+            if (position.File >= this.Width || position.File < 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         /// <summary>
         /// Executes a move by updating the pieces accordingly.
         /// </summary>
@@ -315,6 +330,11 @@ namespace ChessGame
 
             foreach (var move in GetMoves(player))
             {
+                if (player != move.Color)
+                {
+                    continue;
+                }
+
                 if (customNotation && move.CustomNotation == notation)
                 {
                     if (gamemode.ValidateMove(move, this))

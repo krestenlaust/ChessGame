@@ -29,7 +29,7 @@ namespace ChessGame.MovementPatterns
             }
 
             // move 1 tile forward
-            yield return new Move(forwardPush, position, piece, false);
+            yield return new Move(forwardPush, position, piece, false, piece.Color);
 
             forwardPush += new Coordinate(0, moveDirectionY);
 
@@ -39,7 +39,7 @@ namespace ChessGame.MovementPatterns
             if (board.GetPiece(forwardPush) is null && position.Rank == longJumprank)
             {
                 // clear ahead.
-                yield return new Move(forwardPush, position, piece, false);
+                yield return new Move(forwardPush, position, piece, false, piece.Color);
             }
         }
     }

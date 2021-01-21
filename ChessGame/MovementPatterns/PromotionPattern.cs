@@ -34,16 +34,16 @@ namespace ChessGame.MovementPatterns
             {
                 yield return new Move(new PieceMove[] {
                     new PieceMove(leftAttack, position, piece, true, new Pieces.Queen() { Color = piece.Color })
-                });
+                }, piece.Color);
                 yield return new Move(new PieceMove[] {
                     new PieceMove(leftAttack, position, piece, true, new Pieces.Rook() { Color = piece.Color })
-                });
+                }, piece.Color);
                 yield return new Move(new PieceMove[] {
                     new PieceMove(leftAttack, position, piece, true, new Pieces.Knight() { Color = piece.Color })
-                });
+                }, piece.Color);
                 yield return new Move(new PieceMove[] {
                     new PieceMove(leftAttack, position, piece, true, new Pieces.Bishop() { Color = piece.Color })
-                });
+                }, piece.Color);
             }
 
             // check right flank
@@ -51,16 +51,16 @@ namespace ChessGame.MovementPatterns
             {
                 yield return new Move(new PieceMove[] {
                     new PieceMove(rightAttack, position, piece, true, new Pieces.Queen() { Color = piece.Color })
-                });
+                }, piece.Color);
                 yield return new Move(new PieceMove[] {
                     new PieceMove(rightAttack, position, piece, true, new Pieces.Rook() { Color = piece.Color })
-                });
+                }, piece.Color);
                 yield return new Move(new PieceMove[] {
                     new PieceMove(rightAttack, position, piece, true, new Pieces.Knight() { Color = piece.Color })
-                });
+                }, piece.Color);
                 yield return new Move(new PieceMove[] {
                     new PieceMove(rightAttack, position, piece, true, new Pieces.Bishop() { Color = piece.Color })
-                });
+                }, piece.Color);
             }
 
             Coordinate forwardPush = position + new Coordinate(0, moveDirectionY);
@@ -74,16 +74,16 @@ namespace ChessGame.MovementPatterns
 
             yield return new Move(new PieceMove[] {
                     new PieceMove(forwardPush, position, piece, false, new Pieces.Queen() { Color = piece.Color })
-                });
+                }, piece.Color);
             yield return new Move(new PieceMove[] {
                     new PieceMove(forwardPush, position, piece, false, new Pieces.Rook() { Color = piece.Color })
-                });
+                }, piece.Color);
             yield return new Move(new PieceMove[] {
                     new PieceMove(forwardPush, position, piece, false, new Pieces.Knight() { Color = piece.Color })
-                });
+                }, piece.Color);
             yield return new Move(new PieceMove[] {
                     new PieceMove(forwardPush, position, piece, false, new Pieces.Bishop() { Color = piece.Color })
-                });
+                }, piece.Color);
         }
     }
 }

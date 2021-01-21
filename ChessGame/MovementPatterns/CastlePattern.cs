@@ -31,7 +31,7 @@ namespace ChessGame.MovementPatterns
                                 new PieceMove[] {
                                     new PieceMove(position - new Coordinate(2, 0), position, piece, false),
                                     new PieceMove(position - new Coordinate(1, 0), checkPosition, blockingPiece, false)
-                                }, "O-O-O");
+                                }, "O-O-O", piece.Color);
                         }
 
                         blockedLeft = true;
@@ -49,7 +49,7 @@ namespace ChessGame.MovementPatterns
                                 new PieceMove[] {
                                     new PieceMove(position + new Coordinate(2, 0), position, piece, false),
                                     new PieceMove(position + new Coordinate(1, 0), checkPosition, blockingPiece, false)
-                                }, "O-O");
+                                }, "O-O", piece.Color);
                         }
 
                         blockedRight = true;

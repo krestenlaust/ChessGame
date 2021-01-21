@@ -85,7 +85,7 @@ namespace ChessGame.Bots
 
             if (depth == 0)
             {
-                board.ExecuteMove(FindBestMoves(board, currentColor).First());
+                board.ExecuteMove(FindBestMoves(board, currentColor)[0]);
                 moves.Add((board.MaterialSum, baseMove));
                 return;
             }
@@ -115,6 +115,35 @@ namespace ChessGame.Bots
 
             //List<(int, Move)> longerMoves = CheckMoves4Deep(board);
             List<(int, Move)> longerMoves = new List<(int, Move)>();
+
+            /*
+            bool onlyPawns = false;
+            int pieces = 0;
+            foreach (var item in board.Pieces)
+            {
+                if (item.Value.Color != board.CurrentTurn)
+                {
+                    continue;
+                }
+
+                pieces++;
+
+                onlyPawns = item.Value is Pieces.Pawn;
+
+                if (!onlyPawns)
+                {
+                    break;
+                }
+            }
+
+            if (onlyPawns && pieces <= 5)
+            {
+                CheckMovesDeep(board, 5, board.CurrentTurn, longerMoves);
+            }
+            else
+            {
+                CheckMovesDeep(board, 3, board.CurrentTurn, longerMoves);
+            }*/
             CheckMovesDeep(board, 3, board.CurrentTurn, longerMoves);
 
             //List<(int, Move)> sortedMoves = longerMoves.OrderByDescending(material => material.Item1).ToList();
@@ -140,7 +169,7 @@ namespace ChessGame.Bots
                     moveSum.Add(move.Item1);
                 }
 
-                averageSum.Add((move.Item2, moveSum.Average()));
+               averageSum.Add((move.Item2, moveSum.Average()));
 
                 checkedMoves.Add(move.Item2);
             }
