@@ -79,13 +79,75 @@ namespace ChessGame.Bots
             return moves;
         }
 
+        private void CheckMovesDeep(Chessboard boardReadonly, int depth, TeamColor currentColor, List<(int, Move)> moves, Move baseMove=null)
+        {
+            Chessboard board = new Chessboard(boardReadonly);
+
+            if (depth == 0)
+            {
+                board.ExecuteMove(FindBestMoves(board, currentColor).First());
+                moves.Add((board.MaterialSum, baseMove));
+                return;
+            }
+
+            foreach (var move in board.GetMoves(board.CurrentTurn))
+            {
+                Chessboard newBoard = new Chessboard(board);
+                newBoard.ExecuteMove(move);
+
+                Move initialMove;
+
+                if (baseMove is null)
+                {
+                    initialMove = move;
+                }
+                else
+                {
+                    initialMove = baseMove;
+                }
+
+                CheckMovesDeep(newBoard, depth - 1, (TeamColor)(((int)currentColor + 1) % 2), moves, initialMove);
+            }
+        }
+
         private Move GenerateMove(Chessboard board)
         {
 
-            List<(int, Move)> longerMoves = CheckMoves4Deep(board);
+            //List<(int, Move)> longerMoves = CheckMoves4Deep(board);
+            List<(int, Move)> longerMoves = new List<(int, Move)>();
+            CheckMovesDeep(board, 3, board.CurrentTurn, longerMoves);
 
-            List<(int, Move)> sortedMoves = longerMoves.OrderByDescending(material => material.Item1).ToList();
+            //List<(int, Move)> sortedMoves = longerMoves.OrderByDescending(material => material.Item1).ToList();
+            List<(Move, float)> averageSum = new List<(Move, float)>();
 
+            HashSet<Move> checkedMoves = new HashSet<Move>();
+            foreach (var move in longerMoves)
+            {
+                if (checkedMoves.Contains(move.Item2))
+                {
+                    continue;
+                }
+
+                List<float> moveSum = new List<float>();
+
+                foreach (var move2 in longerMoves)
+                {
+                    if (move2.Item2 != move.Item2)
+                    {
+                        continue;
+                    }
+
+                    moveSum.Add(move.Item1);
+                }
+
+                averageSum.Add((move.Item2, moveSum.Average()));
+
+                checkedMoves.Add(move.Item2);
+            }
+
+            List<(Move, float)> sortedMoves = averageSum.OrderByDescending(material => material.Item2).ToList();
+
+            /*
             int newLuckyNumber;
             if (board.CurrentTurn == TeamColor.Black)
             {
@@ -99,16 +161,25 @@ namespace ChessGame.Bots
             List<Move> viableMoves = (from singleMove in sortedMoves 
                                      where singleMove.Item1 == newLuckyNumber 
                                      select singleMove.Item2).ToList();
-
+            
             foreach (var item in viableMoves)
             {
                 if (!board.MovedPieces.Contains(item.Moves[0].Piece))
                 {
                     return item;
                 }
+            }*/
+
+            if (board.CurrentTurn == TeamColor.Black)
+            {
+                return sortedMoves[sortedMoves.Count - 1].Item1;
+            }
+            else
+            {
+                return sortedMoves[0].Item1;
             }
 
-            return viableMoves[0];
+            //return viableMoves[0];
         }
 
         private List<Move> FindBestMoves(Chessboard board, TeamColor teamColor)

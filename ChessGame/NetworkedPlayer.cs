@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace ChessGame
 {
@@ -26,6 +27,7 @@ namespace ChessGame
         {
             while (!stream.DataAvailable)
             {
+                Thread.Sleep(250);
             }
 
             byte[] moveAscii = new byte[5];
