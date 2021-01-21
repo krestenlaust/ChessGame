@@ -5,6 +5,7 @@ namespace ChessGame.Bots
 {
     public class SimpletronBot : Chessbot
     {
+
         /*
         private List<(int, Move)> CheckMovesRecursive(Chessboard board, TeamColor color, int depth, List<Move> moveStack = null)
         {
@@ -64,14 +65,6 @@ namespace ChessGame.Bots
                     }
                 }
 
-                /*
-                foreach (var enemyResponseMove in board.GetMoves(board.CurrentTurn))
-                {
-                    Chessboard boardSecond = new Chessboard(boardMain);
-                    boardSecond.ExecuteMove(enemyResponseMove);
-
-
-                }*/
             }
 
             return moves;

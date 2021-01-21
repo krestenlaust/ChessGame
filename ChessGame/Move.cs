@@ -55,6 +55,21 @@ namespace ChessGame
             CustomNotation = notation;
         }
 
+        public string ToString(MoveNotation notationType)
+        {
+            switch (notationType)
+            {
+                case MoveNotation.UCI:
+                    return Moves[0].ToString(MoveNotation.UCI);
+                case MoveNotation.StandardAlgebraic:
+                    return ToString();
+                default:
+                    break;
+            }
+
+            return "";
+        }
+
         public override string ToString()
         {
             // Return custom notation if it's defined.

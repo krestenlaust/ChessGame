@@ -11,30 +11,35 @@ namespace ChessForms
     public partial class BoardDisplay : Form
     {
         public PictureBox[,] Boardcells;
-        public int BoardWidth, BoardHeight;
         public Coordinate? FromPosition = null;
         public Chessboard Chessboard;
         public Piece SelectedPiece;
+        private Gamemode gamemode;
 
-        public BoardDisplay()
+        public BoardDisplay(Player playerWhite, Player playerBlack)
         {
             InitializeComponent();
+
+            gamemode = new ClassicChess(playerWhite, playerBlack);
         }
 
         private void BoardDisplay_Load(object sender, System.EventArgs e)
         {
-            Player playerWhite = new Player("white");
-            playerWhite.onTurnStarted += onTurnStarted;
-            //Player playerBlack = new Player("black");
-            //playerBlack.onTurnStarted += onTurnStarted;
+            gamemode.PlayerWhite.onTurnStarted += onTurnStarted;
+            gamemode.PlayerBlack.onTurnStarted += onTurnStarted;
 
+            /*
             SimpletronBot bot = new SimpletronBot();
 
 
-            Chessboard = new ClassicChess().GenerateBoard(playerWhite, bot.GeneratePlayer());
+            Chessboard = new ClassicChess(playerWhite, bot.GeneratePlayer()).GenerateBoard();
             CreateBoard(Chessboard.Width, Chessboard.Height);
             BoardWidth = Chessboard.Width;
             BoardHeight = Chessboard.Height;
+            */
+
+            Chessboard = gamemode.GenerateBoard();
+            CreateBoard(Chessboard.Width, Chessboard.Height);
 
             UpdateBoard();
 
@@ -149,8 +154,8 @@ namespace ChessForms
             int windowX = click.X;
             int windowY = click.Y;
             
-            int cellX = windowX / (tableLayoutPanel1.Width / BoardWidth);
-            int cellY = windowY / (tableLayoutPanel1.Height / BoardHeight);
+            int cellX = windowX / (tableLayoutPanel1.Width / Chessboard.Width);
+            int cellY = windowY / (tableLayoutPanel1.Height / Chessboard.Height);
 
             Coordinate clickTarget = new Coordinate(cellX, cellY);
 
