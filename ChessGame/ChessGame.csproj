@@ -60,7 +60,6 @@
   <ItemGroup>
     <Compile Include="Bots\SimpletronBot.cs" />
     <Compile Include="Chessboard.cs" />
-    <Compile Include="Chessbot.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="Gamemode.cs" />
     <Compile Include="Gamemodes\OpenWorldChess.cs" />

@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ChessGame
 {
-    public class NetworkedPlayer
+    public class NetworkedPlayer : Player
     {
-        private NetworkStream stream;
+        private readonly NetworkStream stream;
 
-        public NetworkedPlayer(NetworkStream stream)
+        public NetworkedPlayer(string name, NetworkStream stream) : base(name)
         {
             this.stream = stream;
         }
 
-        public void TurnStart(Chessboard board)
+        public override void TurnStarted(Chessboard board)
         {
             if (board.Moves.Count > 0)
             {

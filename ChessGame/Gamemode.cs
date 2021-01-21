@@ -15,6 +15,8 @@ namespace ChessGame
     public abstract class Gamemode
     {
         public event Action<GameState> onGameStateUpdated;
+        public event Action onTurnChanged;
+
         public Player Winner;
         public readonly Player PlayerWhite;
         public readonly Player PlayerBlack;
@@ -57,6 +59,8 @@ namespace ChessGame
         /// <returns>False if game has ended.</returns>
         public virtual bool StartTurn(Chessboard board)
         {
+            onTurnChanged?.Invoke();
+
             bool isKingChecked;
 
             // check for whether king is in check.

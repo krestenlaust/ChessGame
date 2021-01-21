@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ChessGame;
+using ChessGame.Bots;
+using ChessGame.Gamemodes;
 
 namespace ChessForms
 {
@@ -31,6 +33,13 @@ namespace ChessForms
             InitializeComponent();
         }
 
+        private void InstantiateMatch(Player playerWhite, Player playerBlack)
+        {
+            Gamemode gamemode = new ClassicChess(playerWhite, playerBlack);
+            BoardDisplay board = new BoardDisplay(gamemode, white == PlayerType.Local, black == PlayerType.Local);
+            board.Show();
+        }
+
         private void buttonStartMatch_Click(object sender, EventArgs e)
         {
             if (black == PlayerType.NotSelected)
@@ -39,60 +48,60 @@ namespace ChessForms
                 return;
             }
 
-            Player playerWhite = null;
-            switch (white)
+            Player playerWhite = CreatePlayer(white, textBoxWhiteName.Text, TeamColor.White);
+            Player playerBlack = CreatePlayer(black, textBoxBlackName.Text, TeamColor.Black);
+
+            if (playerWhite is null || playerBlack is null)
             {
-                case PlayerType.Local:
-                    playerWhite = new Player(textBoxWhiteName.Text);
-                    break;
-                case PlayerType.Bot:
-                    playerWhite = new ChessGame.Bots.SimpletronBot().GeneratePlayer();
-                    break;
-                case PlayerType.Network:
-                    if (!IPAddress.TryParse(textBoxWhiteHost.Text, out IPAddress ipaddress))
-                    {
-                        MessageBox.Show("Invalid IP Address...");
-                        return;
-                    }
-                    TcpListener tcpListener = new TcpListener(ipaddress, 5050);
-                    tcpListener.Start();
-
-                    TcpClient tcpClient = tcpListener.AcceptTcpClient();
-                    MessageBox.Show("Client connected");
-
-                    NetworkedPlayer otherPlayer = new NetworkedPlayer(tcpClient.GetStream());
-                    playerWhite = new Player(textBoxWhiteHost.Text);
-                    playerWhite.onTurnStarted += otherPlayer.TurnStart;
-                    break;
+                MessageBox.Show("Unknown exception");
+                return;
             }
 
-            Player playerBlack = null;
-            switch (black)
+            InstantiateMatch(playerWhite, playerBlack);
+        }
+
+        private Player CreatePlayer(PlayerType type, string name, TeamColor color)
+        {
+            switch (type)
             {
                 case PlayerType.Local:
-                    playerBlack = new Player(textBoxWhiteName.Text);
-                    break;
+                    return new Player(name);
                 case PlayerType.Bot:
-                    playerBlack = new ChessGame.Bots.SimpletronBot().GeneratePlayer();
-                    break;
+                    return new SimpletronBot(name);
                 case PlayerType.Network:
-                    if (!IPAddress.TryParse(textBoxBlackServerIP.Text, out IPAddress ipaddress))
+                    if (color == TeamColor.White)
                     {
-                        MessageBox.Show("Invalid IP Address...");
-                        return;
+                        if (!IPAddress.TryParse(textBoxWhiteHost.Text, out IPAddress ipaddress))
+                        {
+                            MessageBox.Show("Invalid IP Address...");
+                            return null;
+                        }
+                        TcpListener tcpListener = new TcpListener(ipaddress, 5050);
+                        tcpListener.Start();
+
+                        TcpClient tcpClient = tcpListener.AcceptTcpClient();
+                        MessageBox.Show("Client connected");
+
+                        return new NetworkedPlayer(textBoxWhiteName.Text, tcpClient.GetStream());
                     }
+                    else
+                    {
+                        if (!IPAddress.TryParse(textBoxBlackServerIP.Text, out IPAddress ipaddress))
+                        {
+                            MessageBox.Show("Invalid IP Address...");
+                            return null;
+                        }
 
-                    TcpClient tcpClient = new TcpClient();
-                    tcpClient.Connect(ipaddress, 5050);
+                        TcpClient tcpClient = new TcpClient();
+                        tcpClient.Connect(ipaddress, 5050);
 
-                    NetworkedPlayer otherPlayer = new NetworkedPlayer(tcpClient.GetStream());
-                    playerBlack = new Player(textBoxBlackName.Text);
-                    playerBlack.onTurnStarted += otherPlayer.TurnStart;
-                    break;
+                        return new NetworkedPlayer(name, tcpClient.GetStream());
+                    }
+                case PlayerType.NotSelected:
+                    return null;
+                default:
+                    return null;
             }
-
-            BoardDisplay board = new BoardDisplay(playerWhite, playerBlack);
-            board.Show();
         }
 
         private void radioButtonWhiteNetworked_CheckedChanged(object sender, EventArgs e)
@@ -131,6 +140,11 @@ namespace ChessForms
             textBoxBlackServerIP.Enabled = isChecked;
 
             black = PlayerType.Network;
+        }
+
+        private void MatchMaker_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
