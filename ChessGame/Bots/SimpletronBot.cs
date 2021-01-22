@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace ChessGame.Bots
 {
@@ -12,7 +13,9 @@ namespace ChessGame.Bots
 
         public override void TurnStarted(Chessboard board)
         {
-            board.PerformMove(GenerateMove(board));
+            Move move = GenerateMove(board);
+
+            board.PerformMove(move);
         }
 
         /*

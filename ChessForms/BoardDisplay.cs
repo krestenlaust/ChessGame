@@ -158,17 +158,11 @@ namespace ChessForms
         {
             string move = from.ToString() + to.ToString();
 
-            Task.Run(() => chessboard.PerformMove(move, MoveNotation.UCI));
+            Thread botThread = new Thread(() => chessboard.PerformMove(move, MoveNotation.UCI));
+            botThread.Priority = ThreadPriority.Highest;
+            botThread.Start();
 
-            /*
-            if ()
-            {
-                //UpdateBoard();
-                
-                //Image image = Boardcells[from.File, from.Rank].Image;
-                //Boardcells[to.File, to.Rank].Image = image;
-                //Boardcells[from.File, from.Rank].Image = null;
-            }*/
+            //Task.Run(() => chessboard.PerformMove(move, MoveNotation.UCI));
         }
 
         private void CellClicked(object sender, System.EventArgs e)
