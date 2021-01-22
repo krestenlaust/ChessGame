@@ -8,7 +8,7 @@ namespace ChessGame
     /// <summary>
     /// A class that describes a game of chess.
     /// </summary>
-    public class Chessboard
+    public struct Chessboard
     {
         public readonly int Height;
         public readonly int Width;
@@ -48,6 +48,7 @@ namespace ChessGame
             Width = board.Width;
             CurrentTurn = board.CurrentTurn;
             gamemode = board.gamemode;
+            isGameInProgress = board.isGameInProgress;
             
             Pieces = new Dictionary<Coordinate, Piece>(board.Pieces);
             Dangerzone = new Dictionary<Coordinate, List<Piece>>(board.Dangerzone);
@@ -61,6 +62,7 @@ namespace ChessGame
             Height = height;
             this.gamemode = gamemode;
             CurrentTurn = TeamColor.Black;
+            isGameInProgress = false;
 
             Pieces = new Dictionary<Coordinate, Piece>();
             Dangerzone = new Dictionary<Coordinate, List<Piece>>();
@@ -97,14 +99,19 @@ namespace ChessGame
         /// </summary>
         /// <param name="move"></param>
         /// <returns></returns>
-        public bool PerformMove(Move move)
+        public bool PerformMove(Move move, bool notifyPlayers = true)
         {
             // make the actual move change the chessboard state.
-            ExecuteMove(move, true);
+            ExecuteMove(move);
             // add the move to the list of moves.
             Moves.Push(move);
 
-            StartNextTurn();
+            CurrentTurn = CurrentTurn == TeamColor.Black ? TeamColor.White : TeamColor.Black;
+
+            if (notifyPlayers)
+            {
+                StartNextTurn();
+            }
 
             return true;
         }
@@ -118,8 +125,6 @@ namespace ChessGame
             //UpdateDangerzones();
 
             // change turn
-            CurrentTurn = CurrentTurn == TeamColor.Black ? TeamColor.White : TeamColor.Black;
-
             if (gamemode.StartTurn(this))
             {
                 CurrentPlayerTurn.TurnStarted(this);   
@@ -127,7 +132,6 @@ namespace ChessGame
             else
             {
             }
-
         }
 
         public IEnumerable<Move> GetMoves(TeamColor teamColor)
@@ -153,12 +157,12 @@ namespace ChessGame
 
         public bool InsideBoard(Coordinate position)
         {
-            if (position.Rank >= this.Height || position.Rank < 0)
+            if (position.Rank >= Height || position.Rank < 0)
             {
                 return false;
             }
 
-            if (position.File >= this.Width || position.File < 0)
+            if (position.File >= Width || position.File < 0)
             {
                 return false;
             }
@@ -167,10 +171,10 @@ namespace ChessGame
         }
 
         /// <summary>
-        /// Executes a move by updating the pieces accordingly.
+        /// Executes a move by updating the board accordingly.
         /// </summary>
         /// <param name="move"></param>
-        public void ExecuteMove(Move move, bool updateDangerzone = false)
+        private void ExecuteMove(Move move)
         {
             if (move is null)
             {
@@ -179,34 +183,47 @@ namespace ChessGame
 
             foreach (var singleMove in move.Moves)
             {
-                if (singleMove.Captures)
+                // remove piece
+                if (singleMove.Destination is null)
                 {
-                    Pieces.Remove(singleMove.Destination);
+                    Pieces.Remove(singleMove.Source.Value);
+                    return;
                 }
 
-                if (TryGetCoordinate(singleMove.Piece, out Coordinate key))
+                Coordinate destination = singleMove.Destination.Value;
+
+                // remove previous instance
+                if (!(singleMove.Source is null))
                 {
-                    Pieces.Remove(key);
+                    Pieces.Remove(singleMove.Source.Value);
+                }
+
+                if (singleMove.Captures)
+                {
+                    try
+                    {
+                        Pieces.Remove(destination);
+                    }
+                    catch (ArgumentException)
+                    {
+                    }
                 }
 
                 if (singleMove.PromotePiece is null)
                 {
-                    Pieces[singleMove.Destination] = singleMove.Piece;
+                    Pieces[destination] = singleMove.Piece;
                     MovedPieces.Add(singleMove.Piece);
                 }
                 else
                 {
-                    Pieces[singleMove.Destination] = singleMove.PromotePiece;
+                    Pieces[destination] = singleMove.PromotePiece;
                     MovedPieces.Remove(singleMove.Piece);
                     MovedPieces.Add(singleMove.PromotePiece);
                 }
 
             }
 
-            if (updateDangerzone)
-            {
-                UpdateDangerzones();
-            }
+            UpdateDangerzones();
         }
 
         public bool IsKingInCheck(TeamColor color)
@@ -423,12 +440,17 @@ namespace ChessGame
             {
                 foreach (var singleMove in move.Moves)
                 {
-                    if (!Dangerzone.ContainsKey(singleMove.Destination))
+                    if (singleMove.Destination is null)
                     {
-                        Dangerzone[singleMove.Destination] = new List<Piece>();
+                        continue;
                     }
 
-                    Dangerzone[singleMove.Destination].Add(singleMove.Piece);
+                    if (!Dangerzone.ContainsKey(singleMove.Destination.Value))
+                    {
+                        Dangerzone[singleMove.Destination.Value] = new List<Piece>();
+                    }
+
+                    Dangerzone[singleMove.Destination.Value].Add(singleMove.Piece);
                 }
             }
         }

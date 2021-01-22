@@ -15,8 +15,14 @@ namespace ChessGame
     /// </summary>
     public readonly struct PieceMove : IEquatable<PieceMove>
     {
-        public readonly Coordinate Destination;
-        public readonly Coordinate Source;
+        /// <summary>
+        /// If null, disappears out of the thin air.
+        /// </summary>
+        public readonly Coordinate? Destination;
+        /// <summary>
+        /// If null, appears out of the thing air.
+        /// </summary>
+        public readonly Coordinate? Source;
         public readonly Piece Piece;
         public readonly bool Captures;
         public char PromotesTo {get
@@ -33,7 +39,7 @@ namespace ChessGame
         }
         public readonly Piece PromotePiece;
 
-        public PieceMove(Coordinate destination, Coordinate source, Piece piece, bool captures, Piece promotePiece = null)
+        public PieceMove(Coordinate? destination, Coordinate? source, Piece piece, bool captures, Piece promotePiece = null)
         {
             Destination = destination;
             Source = source;

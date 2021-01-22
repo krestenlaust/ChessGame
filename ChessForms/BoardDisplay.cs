@@ -220,7 +220,12 @@ namespace ChessForms
 
                         foreach (var item in piece.GetMoves(chessboard))
                         {
-                            Coordinate guardedSquare = item.Moves[0].Destination;
+                            if (item.Moves[0].Destination is null)
+                            {
+                                continue;
+                            }
+
+                            Coordinate guardedSquare = item.Moves[0].Destination.Value;
 
                             Image cellImage = boardcells[guardedSquare.File, guardedSquare.Rank].Image;
 

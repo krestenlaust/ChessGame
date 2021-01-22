@@ -46,6 +46,7 @@ namespace ChessGame.Bots
             return moves;
         }*/
 
+        /*
         private List<(int, Move)> CheckMoves4Deep(Chessboard board)
         {
             List<(int, Move)> moves = new List<(int, Move)>();
@@ -57,7 +58,7 @@ namespace ChessGame.Bots
             foreach (var mainBotMove in boardInstance.GetMoves(boardInstance.CurrentTurn))
             {
                 Chessboard boardMain1 = new Chessboard(boardInstance);
-                boardMain1.ExecuteMove(mainBotMove);
+                boardMain1.PerformMove(mainBotMove);
 
                 foreach (var enemyResponse in boardMain1.GetMoves(enemyColor))
                 {
@@ -77,7 +78,7 @@ namespace ChessGame.Bots
             }
 
             return moves;
-        }
+        }*/
 
         private void CheckMovesDeep(Chessboard boardReadonly, int depth, TeamColor currentColor, List<(int, Move)> moves, Move baseMove=null)
         {
@@ -85,7 +86,7 @@ namespace ChessGame.Bots
 
             if (depth == 0)
             {
-                board.ExecuteMove(FindBestMoves(board, currentColor)[0]);
+                board.PerformMove(FindBestMoves(board, currentColor)[0], false);
                 moves.Add((board.MaterialSum, baseMove));
                 return;
             }
@@ -93,7 +94,7 @@ namespace ChessGame.Bots
             foreach (var move in board.GetMoves(board.CurrentTurn))
             {
                 Chessboard newBoard = new Chessboard(board);
-                newBoard.ExecuteMove(move);
+                newBoard.PerformMove(move, false);
 
                 Move initialMove;
 
@@ -218,7 +219,7 @@ namespace ChessGame.Bots
             foreach (var move in board.GetMoves(teamColor))
             {
                 Chessboard boardCheck = new Chessboard(board);
-                boardCheck.ExecuteMove(move);
+                boardCheck.PerformMove(move, false);
                 moves.Add((boardCheck.MaterialSum, move));
             }
 

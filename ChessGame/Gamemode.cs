@@ -38,9 +38,23 @@ namespace ChessGame
         /// <returns></returns>
         public virtual bool ValidateMove(Move move, Chessboard board)
         {
+            // if move is outside board, then it's invalid.
+            foreach (var singleMove in move.Moves)
+            {
+                if (singleMove.Destination is null)
+                {
+                    continue;
+                }
+
+                if (!board.InsideBoard(singleMove.Destination.Value))
+                {
+                    return false;
+                }
+            }
+
             // if move puts king in check — it's invalid.
             Chessboard boardSimulation = new Chessboard(board);
-            boardSimulation.ExecuteMove(move);
+            boardSimulation.PerformMove(move, false);
 
             // king is in check, move is invalid
             if (boardSimulation.IsKingInCheck(board.CurrentTurn))
