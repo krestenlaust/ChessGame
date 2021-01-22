@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ChessGame.Bots
 {
@@ -8,7 +10,6 @@ namespace ChessGame.Bots
     {
         public SimpletronBot(string name) : base(name)
         {
-
         }
 
         public override void TurnStarted(Chessboard board)
@@ -18,78 +19,75 @@ namespace ChessGame.Bots
             board.PerformMove(move);
         }
 
-        /*
-        private List<(int, Move)> CheckMovesRecursive(Chessboard board, TeamColor color, int depth, List<Move> moveStack = null)
+        private struct NodeState
         {
-            List<(int, Move)> moves = new List<(int, Move)>();
+            public Chessboard Board;
+            public int Depth;
+            public ConcurrentBag<(int, Move)> MoveStorage;
+            public Move RootMove;
+        }
 
-            foreach (var move in board.GetMoves(color))
+        private void CheckMovesDerp(NodeState node)
+        {
+            if (node.Depth == 0)
             {
-                Chessboard boardSimulation = new Chessboard(board);
-                boardSimulation.ExecuteMove(move);
-
-                if (depth == 0)
-                {
-                    moves.Add((boardSimulation.MaterialSum, moveStack[0]));
-                }
-                else
-                {
-                    if (moveStack is null)
-                    {
-                        moveStack = new List<Move>();
-                    }
-
-                    moveStack.Add(move);
-
-                    
-                    moves.InsertRange(0, CheckMovesRecursive(boardSimulation, GetOppositeColor(color), depth - 1, moveStack));
-                }
+                node.Board.SimulateMove(FindBestMoves(node.Board, node.Board.CurrentTurn)[0]);
+                node.MoveStorage.Add((node.Board.MaterialSum, node.RootMove));
+                return;
             }
 
-            return moves;
-        }*/
-
-        /*
-        private List<(int, Move)> CheckMoves4Deep(Chessboard board)
-        {
-            List<(int, Move)> moves = new List<(int, Move)>();
-            Chessboard boardInstance = new Chessboard(board);
-
-            TeamColor botColor = boardInstance.CurrentTurn;
-            TeamColor enemyColor = (TeamColor)(((int)boardInstance.CurrentTurn + 1) % 2);
-
-            foreach (var mainBotMove in boardInstance.GetMoves(boardInstance.CurrentTurn))
+            foreach (var move in node.Board.GetMoves(node.Board.CurrentTurn))
             {
-                Chessboard boardMain1 = new Chessboard(boardInstance);
-                boardMain1.PerformMove(mainBotMove);
+                Chessboard newBoard = new Chessboard(node.Board);
+                newBoard.SimulateMove(move);
 
-                foreach (var enemyResponse in boardMain1.GetMoves(enemyColor))
+                CheckMovesDerp(new NodeState
                 {
-                    Chessboard boardMain2 = new Chessboard(boardMain1);
-                    boardMain2.ExecuteMove(enemyResponse);
-
-                    foreach (var secondBotMove in boardMain2.GetMoves(botColor))
-                    {
-                        Chessboard boardMain3 = new Chessboard(boardMain2);
-                        boardMain3.ExecuteMove(secondBotMove);
-
-                        boardMain3.ExecuteMove(FindBestMoves(boardMain3, enemyColor).First());
-                        moves.Add((boardMain3.MaterialSum, mainBotMove));
-                    }
-                }
-
+                    Board = newBoard,
+                    Depth = node.Depth - 1,
+                    MoveStorage = node.MoveStorage,
+                    RootMove = node.RootMove
+                });
             }
+        }
 
-            return moves;
-        }*/
-
-        private void CheckMovesDeep(Chessboard boardReadonly, int depth, TeamColor currentColor, List<(int, Move)> moves, Move baseMove=null)
+        private void CheckMovesDeep(Chessboard boardReadonly, int depth, ConcurrentBag<(int, Move)> moves, Move baseMove = null)
         {
             Chessboard board = new Chessboard(boardReadonly);
 
             if (depth == 0)
             {
-                board.SimulateMove(FindBestMoves(board, currentColor)[0]);
+                board.SimulateMove(FindBestMoves(board, boardReadonly.CurrentTurn)[0]);
+                moves.Add((board.MaterialSum, baseMove));
+                return;
+            }
+
+            List<Task> rootMoves = new List<Task>();
+
+            foreach (var move in board.GetMoves(board.CurrentTurn))
+            {
+                Chessboard newBoard = new Chessboard(board);
+                newBoard.SimulateMove(move);
+
+                rootMoves.Add(Task.Run(() => CheckMovesDerp(new NodeState{
+                    Board = newBoard,
+                    Depth = depth - 1,
+                    MoveStorage = moves,
+                    RootMove = move
+                })));
+            }
+
+            Task.WaitAll(rootMoves.ToArray());
+        }
+
+        /*
+        private void CheckMovesDeep(Chessboard boardReadonly, int depth, ConcurrentBag<(int, Move)> moves, Move baseMove=null)
+        {
+            Chessboard board = new Chessboard(boardReadonly);
+
+            if (depth == 0)
+            {
+                board.SimulateMove(FindBestMoves(board, boardReadonly.CurrentTurn)[0]);
                 moves.Add((board.MaterialSum, baseMove));
                 return;
             }
@@ -99,28 +97,25 @@ namespace ChessGame.Bots
                 Chessboard newBoard = new Chessboard(board);
                 newBoard.SimulateMove(move);
 
-                Move initialMove;
-
                 if (baseMove is null)
                 {
-                    initialMove = move;
+                    CheckMovesDeep(newBoard, depth - 1, moves, move);
                 }
                 else
                 {
-                    initialMove = baseMove;
+                    CheckMovesDeep(newBoard, depth - 1, moves, baseMove);
                 }
-
-                CheckMovesDeep(newBoard, depth - 1, (TeamColor)(((int)currentColor + 1) % 2), moves, initialMove);
             }
-        }
+        }*/
 
         private Move GenerateMove(Chessboard board)
         {
+            ConcurrentBag<(int, Move)> longerMoves = new ConcurrentBag<(int, Move)>();
 
-            //List<(int, Move)> longerMoves = CheckMoves4Deep(board);
-            List<(int, Move)> longerMoves = new List<(int, Move)>();
+            //List<(int, Move)> longerMoves = new List<(int, Move)>();
 
-            CheckMovesDeep(board, 3, board.CurrentTurn, longerMoves);
+            //CheckMovesDeep(board, 3, board.CurrentTurn, longerMoves);
+            CheckMovesDeep(board, 2, longerMoves);
 
             List<(int, Move)> sortedMoves = longerMoves.OrderByDescending(material => material.Item1).ToList();
 

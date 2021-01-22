@@ -58,7 +58,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bots\SimpletronBot.cs" />
+    <Compile Include="Players\LichessBotPlayer.cs" />
+    <Compile Include="Players\SimpletronBot.cs" />
     <Compile Include="Chessboard.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="Gamemode.cs" />
@@ -78,7 +79,7 @@
     <Compile Include="MovementPatterns\PawnCapturePattern.cs" />
     <Compile Include="MovementPatterns\PawnPushPattern.cs" />
     <Compile Include="MovementPatterns\PromotionPattern.cs" />
-    <Compile Include="NetworkedPlayer.cs" />
+    <Compile Include="Players\NetworkedPlayer.cs" />
     <Compile Include="Piece.cs" />
     <Compile Include="PieceMove.cs" />
     <Compile Include="Pieces\Bishop.cs" />
