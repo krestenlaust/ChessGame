@@ -12,8 +12,8 @@ namespace ChessForms
         private PictureBox[,] boardcells;
         private Coordinate? fromPosition = null;
         private Piece selectedPiece;
-        private Chessboard chessboard;
         private readonly Gamemode gamemode;
+        public Chessboard chessboard;
         private readonly bool whiteLocal, blackLocal;
 
         public BoardDisplay(Gamemode gamemode, bool whiteLocal, bool blackLocal)
@@ -31,11 +31,12 @@ namespace ChessForms
             gamemode.onGameStateUpdated += onGameStateUpdated;
 
             chessboard = gamemode.GenerateBoard();
-            CreateBoard(chessboard.Width, chessboard.Height);
+            InstantiateUIBoard();
 
             UpdateBoard();
 
             Task.Run(() => chessboard.StartGame());
+            //Task.Run(() => chessboard.StartGame());
         }
 
         private void onGameStateUpdated(GameState e)
@@ -110,29 +111,29 @@ namespace ChessForms
             }
         }
 
-        public void CreateBoard(int width, int height)
+        public void InstantiateUIBoard()
         {
-            tableLayoutPanel1.ColumnCount = width;
+            tableLayoutPanel1.ColumnCount = chessboard.Width;
             tableLayoutPanel1.ColumnStyles.Clear();
             int i;
-            for (i = 0; i < width; i++)
+            for (i = 0; i < chessboard.Width; i++)
             {
                 // set size to any percent, doesnt matter
                 tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 1));
             }
 
-            tableLayoutPanel1.RowCount = height;
+            tableLayoutPanel1.RowCount = chessboard.Height;
             tableLayoutPanel1.RowStyles.Clear();
-            for (i = 0; i < height; i++)
+            for (i = 0; i < chessboard.Height; i++)
             {
                 tableLayoutPanel1.RowStyles.Add(new ColumnStyle(SizeType.Percent, 1));
             }
 
-            boardcells = new PictureBox[width, height];
+            boardcells = new PictureBox[chessboard.Width, chessboard.Height];
 
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < chessboard.Height; y++)
             {
-                for (int x = 0; x < width; x++)
+                for (int x = 0; x < chessboard.Width; x++)
                 {
 
                     PictureBox box = new PictureBox

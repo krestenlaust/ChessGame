@@ -8,7 +8,7 @@ namespace ChessGame
     /// <summary>
     /// A class that describes a game of chess.
     /// </summary>
-    public struct Chessboard
+    public class Chessboard
     {
         public readonly int Height;
         public readonly int Width;
@@ -22,7 +22,7 @@ namespace ChessGame
         public bool isGameInProgress;
 
         private readonly Gamemode gamemode;
-        public TeamColor CurrentTurn { get; private set; } // changes on next turn start
+        public TeamColor CurrentTurn { get; private set; }
         public Player CurrentPlayerTurn
         {
             get
@@ -61,7 +61,7 @@ namespace ChessGame
             Width = width;
             Height = height;
             this.gamemode = gamemode;
-            CurrentTurn = TeamColor.Black;
+            CurrentTurn = TeamColor.White;
             isGameInProgress = false;
 
             Pieces = new Dictionary<Coordinate, Piece>();
@@ -99,19 +99,23 @@ namespace ChessGame
         /// </summary>
         /// <param name="move"></param>
         /// <returns></returns>
-        public bool PerformMove(Move move, bool notifyPlayers = true)
+        public bool PerformMove(Move move)
         {
-            // make the actual move change the chessboard state.
             ExecuteMove(move);
-            // add the move to the list of moves.
             Moves.Push(move);
 
             CurrentTurn = CurrentTurn == TeamColor.Black ? TeamColor.White : TeamColor.Black;
 
-            if (notifyPlayers)
-            {
-                StartNextTurn();
-            }
+            StartNextTurn();
+
+            return true;
+        }
+
+        // doesn't notify event listeners
+        public bool SimulateMove(Move move)
+        {
+            ExecuteMove(move);
+            Moves.Push(move);
 
             return true;
         }
@@ -127,7 +131,7 @@ namespace ChessGame
             // change turn
             if (gamemode.StartTurn(this))
             {
-                CurrentPlayerTurn.TurnStarted(this);   
+                CurrentPlayerTurn.TurnStarted(this);
             }
             else
             {

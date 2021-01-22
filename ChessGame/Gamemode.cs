@@ -54,7 +54,7 @@ namespace ChessGame
 
             // if move puts king in check — it's invalid.
             Chessboard boardSimulation = new Chessboard(board);
-            boardSimulation.PerformMove(move, false);
+            boardSimulation.SimulateMove(move);
 
             // king is in check, move is invalid
             if (boardSimulation.IsKingInCheck(board.CurrentTurn))
@@ -73,8 +73,6 @@ namespace ChessGame
         /// <returns>False if game has ended.</returns>
         public virtual bool StartTurn(Chessboard board)
         {
-            onTurnChanged?.Invoke();
-
             bool isKingChecked;
 
             // check for whether king is in check.
@@ -109,6 +107,7 @@ namespace ChessGame
                 return false;
             }
 
+            onTurnChanged?.Invoke();
             return true;
         }
     }

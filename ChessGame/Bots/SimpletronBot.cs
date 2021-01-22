@@ -86,7 +86,7 @@ namespace ChessGame.Bots
 
             if (depth == 0)
             {
-                board.PerformMove(FindBestMoves(board, currentColor)[0], false);
+                board.SimulateMove(FindBestMoves(board, currentColor)[0]);
                 moves.Add((board.MaterialSum, baseMove));
                 return;
             }
@@ -94,7 +94,7 @@ namespace ChessGame.Bots
             foreach (var move in board.GetMoves(board.CurrentTurn))
             {
                 Chessboard newBoard = new Chessboard(board);
-                newBoard.PerformMove(move, false);
+                newBoard.SimulateMove(move);
 
                 Move initialMove;
 
@@ -219,7 +219,7 @@ namespace ChessGame.Bots
             foreach (var move in board.GetMoves(teamColor))
             {
                 Chessboard boardCheck = new Chessboard(board);
-                boardCheck.PerformMove(move, false);
+                boardCheck.SimulateMove(move);
                 moves.Add((boardCheck.MaterialSum, move));
             }
 
