@@ -4,6 +4,7 @@ using ChessGame;
 using ChessGame.Pieces;
 using System.Threading.Tasks;
 using System.Threading;
+using System;
 
 namespace ChessForms
 {
@@ -19,7 +20,7 @@ namespace ChessForms
         public BoardDisplay(Gamemode gamemode, bool whiteLocal, bool blackLocal)
         {
             InitializeComponent();
-
+            
             this.gamemode = gamemode;
             this.whiteLocal = whiteLocal;
             this.blackLocal = blackLocal;
@@ -34,9 +35,8 @@ namespace ChessForms
             InstantiateUIBoard();
 
             UpdateBoard();
-
+            
             Task.Run(() => chessboard.StartGame());
-            //Task.Run(() => chessboard.StartGame());
         }
 
         private void onGameStateUpdated(GameState e)
@@ -73,6 +73,7 @@ namespace ChessForms
                Text = $"{chessboard.CurrentPlayerTurn}'s turn";
            });
 
+            Console.Beep();
             UpdateBoard();
         }
 
