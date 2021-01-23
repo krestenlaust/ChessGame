@@ -7,7 +7,7 @@ namespace ChessGame.MovementPatterns
         public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool guardedSquaresOnly = false)
         {
             // can't push pawn to eighth rank
-            if (position.Rank == (piece.Color == TeamColor.White ? 6 : 1))
+            if (position.Rank == (piece.Color == TeamColor.White ? 6 : 1) && guardedSquaresOnly)
             {
                 yield break;
             }
@@ -21,13 +21,13 @@ namespace ChessGame.MovementPatterns
             // check left flank
             if (board.GetPiece(leftAttack) is Piece LeftAttackedPiece && LeftAttackedPiece.Color != piece.Color || guardedSquaresOnly)
             {
-                yield return new Move(leftAttack, position, piece, true);
+                yield return new Move(leftAttack, position, piece, true, piece.Color);
             }
 
             // check right flank
             if (board.GetPiece(rightAttack) is Piece rightAttackedPiece && rightAttackedPiece.Color != piece.Color || guardedSquaresOnly)
             {
-                yield return new Move(rightAttack, position, piece, true);
+                yield return new Move(rightAttack, position, piece, true, piece.Color);
             }
         }
     }

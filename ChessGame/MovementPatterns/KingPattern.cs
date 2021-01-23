@@ -38,21 +38,21 @@ namespace ChessGame.MovementPatterns
                     }
                     else if (guardedSquaresOnly) // return all protected squares
                     {
-                        yield return new Move(newPosition, position, piece, false);
+                        yield return new Move(newPosition, position, piece, false, piece.Color);
                         continue;
                     }
 
                     // is position empty?
                     if (occupyingPiece is null)
                     {
-                        yield return new Move(newPosition, position, piece, false);
+                        yield return new Move(newPosition, position, piece, false, piece.Color);
                         continue;
                     }
 
                     // is piece of opposite color (can capture)
                     if (occupyingPiece.Color != piece.Color)
                     {
-                        yield return new Move(newPosition, position, piece, true);
+                        yield return new Move(newPosition, position, piece, true, piece.Color);
                     }
                 }
             }

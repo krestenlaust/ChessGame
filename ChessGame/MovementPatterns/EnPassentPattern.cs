@@ -20,8 +20,8 @@ namespace ChessGame.MovementPatterns
                 yield break;
             }
 
-            Coordinate previousMoveDestination = previousMove.Moves[0].Destination;
-            Coordinate previousMoveSource = previousMove.Moves[0].Source;
+            Coordinate previousMoveDestination = previousMove.Moves[0].Destination.Value;
+            Coordinate previousMoveSource = previousMove.Moves[0].Source.Value;
 
             // if pawn didn't make long jump, then break.
             if (previousMoveSource != new Coordinate(0, moveDirectionY * 2) + previousMoveDestination)
@@ -35,8 +35,21 @@ namespace ChessGame.MovementPatterns
             Coordinate enPassentTargetLeft = position + new Coordinate(-1, 0);
             if (enPassentTargetLeft == previousMoveDestination)
             {
-                // capture with e.p.
-                yield return new Move(leftEnPassent, position, piece, true);
+                Piece capturedPiece = board.GetPiece(enPassentTargetLeft);
+
+                if (capturedPiece is null)
+                {
+
+                }
+                else
+                {
+                    // capture with e.p.
+                    yield return new Move(new PieceMove[]
+                    {
+                        new PieceMove(leftEnPassent, position, piece, true),
+                        new PieceMove(null, enPassentTargetLeft, capturedPiece, false)
+                    }, piece.Color);
+                }
                 yield break;
             }
             
@@ -45,7 +58,21 @@ namespace ChessGame.MovementPatterns
             Coordinate enPassentTargetRight = position + new Coordinate(1, 0);
             if (enPassentTargetRight == previousMoveDestination)
             {
-                yield return new Move(rightEnPassent, position, piece, true);
+                Piece capturedPiece = board.GetPiece(enPassentTargetRight);
+
+                if (capturedPiece is null)
+                {
+
+                }
+                else
+                {
+                    // capture with e.p.
+                    yield return new Move(new PieceMove[]
+                    {
+                        new PieceMove(rightEnPassent, position, piece, true),
+                        new PieceMove(null, enPassentTargetRight, capturedPiece, false)
+                    }, piece.Color);
+                }
             }
 
         }

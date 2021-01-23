@@ -14,20 +14,26 @@ namespace ChessGame
         public readonly int Width;
         public readonly Dictionary<Coordinate, Piece> Pieces;
         /// <summary>
-        /// Describes intersection squares.
+        /// Describes intersection squares. An intersection square is a square which one or more pieces threaten at once.
         /// </summary>
         public readonly Dictionary<Coordinate, List<Piece>> Dangerzone;
+        /// <summary>
+        /// Previous moves, that resolve to this position.
+        /// </summary>
         public readonly Stack<Move> Moves;
+        /// <summary>
+        /// A list of pieces, that have moved.
+        /// </summary>
         public readonly HashSet<Piece> MovedPieces;
-        public bool isGameInProgress;
-
         private readonly Gamemode gamemode;
-        public TeamColor CurrentTurn { get; private set; } // changes on next turn start
+
+        public GameState CurrentState { get; internal set; }
+        public TeamColor CurrentTeamTurn { get; private set; }
         public Player CurrentPlayerTurn
         {
             get
             {
-                return CurrentTurn == TeamColor.White ? gamemode.PlayerWhite : gamemode.PlayerBlack;
+                return CurrentTeamTurn == TeamColor.White ? gamemode.PlayerWhite : gamemode.PlayerBlack;
             }
         }
         public int MaterialSum
@@ -46,8 +52,9 @@ namespace ChessGame
         {
             Height = board.Height;
             Width = board.Width;
-            CurrentTurn = board.CurrentTurn;
+            CurrentTeamTurn = board.CurrentTeamTurn;
             gamemode = board.gamemode;
+            CurrentState = board.CurrentState;
             
             Pieces = new Dictionary<Coordinate, Piece>(board.Pieces);
             Dangerzone = new Dictionary<Coordinate, List<Piece>>(board.Dangerzone);
@@ -55,12 +62,34 @@ namespace ChessGame
             Moves = new Stack<Move>(board.Moves);
         }
 
+        /// <summary>
+        /// Instantiate board and simulate <c>move</c>.
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="move"></param>
+        public Chessboard(Chessboard board, Move move)
+        {
+            Height = board.Height;
+            Width = board.Width;
+            CurrentTeamTurn = board.CurrentTeamTurn;
+            gamemode = board.gamemode;
+            CurrentState = board.CurrentState;
+
+            Pieces = new Dictionary<Coordinate, Piece>(board.Pieces);
+            Dangerzone = new Dictionary<Coordinate, List<Piece>>(board.Dangerzone);
+            MovedPieces = new HashSet<Piece>(board.MovedPieces);
+            Moves = new Stack<Move>(board.Moves);
+
+            SimulateMove(move);
+        }
+
         public Chessboard(int width, int height, Gamemode gamemode)
         {
             Width = width;
             Height = height;
             this.gamemode = gamemode;
-            CurrentTurn = TeamColor.Black;
+            CurrentTeamTurn = TeamColor.White;
+            CurrentState = GameState.NotStarted;
 
             Pieces = new Dictionary<Coordinate, Piece>();
             Dangerzone = new Dictionary<Coordinate, List<Piece>>();
@@ -73,7 +102,7 @@ namespace ChessGame
         /// </summary>
         public void StartGame()
         {
-            isGameInProgress = true;
+            CurrentState = GameState.Started;
             StartNextTurn();
         }
 
@@ -84,7 +113,7 @@ namespace ChessGame
         /// <returns></returns>
         public bool PerformMove(string move, MoveNotation notationType)
         {
-            Move pieceMove = GetMoveByNotation(move, CurrentTurn, notationType);
+            Move pieceMove = GetMoveByNotation(move, CurrentTeamTurn, notationType);
 
             if (pieceMove is null)
                 return false;
@@ -99,12 +128,29 @@ namespace ChessGame
         /// <returns></returns>
         public bool PerformMove(Move move)
         {
-            // make the actual move change the chessboard state.
-            ExecuteMove(move, true);
-            // add the move to the list of moves.
+            ExecuteMove(move);
             Moves.Push(move);
 
+            CurrentTeamTurn = (TeamColor)(((int)CurrentTeamTurn + 1) % 2);
+
             StartNextTurn();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Updates the chessboard state, but doesnt call event listeners.
+        /// </summary>
+        /// <param name="move"></param>
+        /// <returns></returns>
+        public bool SimulateMove(Move move)
+        {
+            ExecuteMove(move);
+            Moves.Push(move);
+
+            CurrentTeamTurn = (TeamColor)(((int)CurrentTeamTurn + 1) % 2);
+
+            gamemode.UpdateGameState(this);
 
             return true;
         }
@@ -114,22 +160,27 @@ namespace ChessGame
         /// </summary>
         public void StartNextTurn()
         {
-            // refresh dangersquares
-            //UpdateDangerzones();
-
             // change turn
-            CurrentTurn = CurrentTurn == TeamColor.Black ? TeamColor.White : TeamColor.Black;
-
             if (gamemode.StartTurn(this))
             {
-                CurrentPlayerTurn.TurnStarted(this);   
+                CurrentPlayerTurn.TurnStarted(this);
             }
             else
             {
             }
-
         }
 
+        /// <summary>
+        /// Gets all legal moves for current team.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Move> GetMoves() => GetMoves(CurrentTeamTurn);
+
+        /// <summary>
+        /// Gets all legal moves for a team.
+        /// </summary>
+        /// <param name="teamColor"></param>
+        /// <returns></returns>
         public IEnumerable<Move> GetMoves(TeamColor teamColor)
         {
             foreach (var piece in Pieces.Values.ToList())
@@ -152,10 +203,30 @@ namespace ChessGame
         }
 
         /// <summary>
-        /// Executes a move by updating the pieces accordingly.
+        /// Checks if a given position is outside the board (and thereby invalid).
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public bool InsideBoard(Coordinate position)
+        {
+            if (position.Rank >= Height || position.Rank < 0)
+            {
+                return false;
+            }
+
+            if (position.File >= Width || position.File < 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Executes a move by updating the board accordingly.
         /// </summary>
         /// <param name="move"></param>
-        public void ExecuteMove(Move move, bool updateDangerzone = false)
+        private void ExecuteMove(Move move)
         {
             if (move is null)
             {
@@ -164,36 +235,54 @@ namespace ChessGame
 
             foreach (var singleMove in move.Moves)
             {
-                if (singleMove.Captures)
+                // remove piece
+                if (singleMove.Destination is null)
                 {
-                    Pieces.Remove(singleMove.Destination);
+                    Pieces.Remove(singleMove.Source.Value);
+                    return;
                 }
 
-                if (TryGetCoordinate(singleMove.Piece, out Coordinate key))
+                Coordinate destination = singleMove.Destination.Value;
+
+                // remove previous instance
+                if (!(singleMove.Source is null))
                 {
-                    Pieces.Remove(key);
+                    Pieces.Remove(singleMove.Source.Value);
+                }
+
+                if (singleMove.Captures)
+                {
+                    try
+                    {
+                        Pieces.Remove(destination);
+                    }
+                    catch (ArgumentException)
+                    {
+                    }
                 }
 
                 if (singleMove.PromotePiece is null)
                 {
-                    Pieces[singleMove.Destination] = singleMove.Piece;
+                    Pieces[destination] = singleMove.Piece;
                     MovedPieces.Add(singleMove.Piece);
                 }
                 else
                 {
-                    Pieces[singleMove.Destination] = singleMove.PromotePiece;
+                    Pieces[destination] = singleMove.PromotePiece;
                     MovedPieces.Remove(singleMove.Piece);
                     MovedPieces.Add(singleMove.PromotePiece);
                 }
 
             }
 
-            if (updateDangerzone)
-            {
-                UpdateDangerzones();
-            }
+            UpdateDangerzones();
         }
 
+        /// <summary>
+        /// Returns whether the king of a team is in check.
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
         public bool IsKingInCheck(TeamColor color)
         {
             Piece king = null;
@@ -226,9 +315,8 @@ namespace ChessGame
             }
         }
 
-        // GetMoves
         /// <summary>
-        /// Translates algebraic notation into move.
+        /// Translates move notation into a move instance.
         /// </summary>
         /// <param name="notation"></param>
         /// <param name="player"></param>
@@ -310,11 +398,17 @@ namespace ChessGame
                 }
             }catch (Exception)
             {
+                // if notation parsing threw exception, then it's probably custom notation.
                 customNotation = true;
             }
 
             foreach (var move in GetMoves(player))
             {
+                if (player != move.Color)
+                {
+                    continue;
+                }
+
                 if (customNotation && move.CustomNotation == notation)
                 {
                     if (gamemode.ValidateMove(move, this))
@@ -403,16 +497,24 @@ namespace ChessGame
             {
                 foreach (var singleMove in move.Moves)
                 {
-                    if (!Dangerzone.ContainsKey(singleMove.Destination))
+                    if (singleMove.Destination is null)
                     {
-                        Dangerzone[singleMove.Destination] = new List<Piece>();
+                        continue;
                     }
 
-                    Dangerzone[singleMove.Destination].Add(singleMove.Piece);
+                    if (!Dangerzone.ContainsKey(singleMove.Destination.Value))
+                    {
+                        Dangerzone[singleMove.Destination.Value] = new List<Piece>();
+                    }
+
+                    Dangerzone[singleMove.Destination.Value].Add(singleMove.Piece);
                 }
             }
         }
 
+        /// <summary>
+        /// Clears and refreshes dangerzone for all pieces.
+        /// </summary>
         public void UpdateDangerzones()
         {
             Dangerzone.Clear();
@@ -436,6 +538,12 @@ namespace ChessGame
 
         public Coordinate GetCoordinate(Piece piece) => Pieces.FirstOrDefault(p => p.Value == piece).Key;
 
+        /// <summary>
+        /// Returns position of a piece.
+        /// </summary>
+        /// <param name="piece"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
         public bool TryGetCoordinate(Piece piece, out Coordinate position)
         {
             try
@@ -451,6 +559,11 @@ namespace ChessGame
             }
         }
 
+        /// <summary>
+        /// Gets a piece by position, (the same as using indexer).
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
         public Piece GetPiece(Coordinate position)
         {
             if (Pieces.TryGetValue(position, out Piece piece))
@@ -459,7 +572,12 @@ namespace ChessGame
             return null;
         }
 
-        public List<Piece> GetPieces<T>() => (from piece in Pieces.Values
+        /// <summary>
+        /// Gets all pieces by type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public List<Piece> GetPieces<T>() where T : Piece => (from piece in Pieces.Values
                                          where piece is T
                                          select piece).ToList();
     }

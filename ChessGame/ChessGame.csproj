@@ -48,6 +48,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -58,7 +61,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bots\SimpletronBot.cs" />
+    <Compile Include="Players\LichessBotPlayer.cs" />
+    <Compile Include="Players\SimpletronBot.cs" />
     <Compile Include="Chessboard.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="Gamemode.cs" />
@@ -72,21 +76,24 @@
     <Compile Include="MovementPatterns\CastlePattern.cs" />
     <Compile Include="MovementPatterns\DiagonalPattern.cs" />
     <Compile Include="MovementPatterns\EnPassentPattern.cs" />
+    <Compile Include="MovementPatterns\HypnoJumpPattern.cs" />
     <Compile Include="MovementPatterns\KingPattern.cs" />
     <Compile Include="MovementPatterns\KnightPattern.cs" />
     <Compile Include="MovementPatterns\PawnCapturePattern.cs" />
     <Compile Include="MovementPatterns\PawnPushPattern.cs" />
     <Compile Include="MovementPatterns\PromotionPattern.cs" />
-    <Compile Include="NetworkedPlayer.cs" />
+    <Compile Include="Players\NetworkedPlayer.cs" />
     <Compile Include="Piece.cs" />
     <Compile Include="PieceMove.cs" />
     <Compile Include="Pieces\Bishop.cs" />
+    <Compile Include="Pieces\Hypnotist.cs" />
     <Compile Include="Pieces\King.cs" />
     <Compile Include="Pieces\Knight.cs" />
     <Compile Include="Pieces\Pawn.cs" />
     <Compile Include="Pieces\Queen.cs" />
     <Compile Include="Pieces\Rook.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="Players\Skakinator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Timer.cs" />
   </ItemGroup>
@@ -96,6 +103,7 @@
     </None>
     <None Include="App.config" />
     <None Include="ChessGame.ruleset" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

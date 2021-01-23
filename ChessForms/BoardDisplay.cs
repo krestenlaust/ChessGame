@@ -4,6 +4,7 @@ using ChessGame;
 using ChessGame.Pieces;
 using System.Threading.Tasks;
 using System.Threading;
+using System;
 
 namespace ChessForms
 {
@@ -12,29 +13,30 @@ namespace ChessForms
         private PictureBox[,] boardcells;
         private Coordinate? fromPosition = null;
         private Piece selectedPiece;
-        private Chessboard chessboard;
         private readonly Gamemode gamemode;
+        public Chessboard chessboard;
         private readonly bool whiteLocal, blackLocal;
+        private bool flipped = true;
 
         public BoardDisplay(Gamemode gamemode, bool whiteLocal, bool blackLocal)
         {
             InitializeComponent();
-
+            
             this.gamemode = gamemode;
             this.whiteLocal = whiteLocal;
             this.blackLocal = blackLocal;
         }
 
-        private void BoardDisplay_Load(object sender, System.EventArgs e)
+        private void BoardDisplay_Load(object sender, EventArgs e)
         {
             gamemode.onTurnChanged += onTurnStarted;
             gamemode.onGameStateUpdated += onGameStateUpdated;
 
             chessboard = gamemode.GenerateBoard();
-            CreateBoard(chessboard.Width, chessboard.Height);
+            InstantiateUIBoard();
 
             UpdateBoard();
-
+            
             Task.Run(() => chessboard.StartGame());
         }
 
@@ -72,6 +74,7 @@ namespace ChessForms
                Text = $"{chessboard.CurrentPlayerTurn}'s turn";
            });
 
+            Console.Beep();
             UpdateBoard();
         }
 
@@ -94,9 +97,11 @@ namespace ChessForms
         {
             for (int y = 0; y < chessboard.Height; y++)
             {
-                for (int x = 0; x < chessboard.Width; x++)
+                for (int x = chessboard.Width - 1; x >= 0; x--)
                 {
-                    Piece cellPiece = chessboard.GetPiece(new Coordinate(x, y));
+                    Coordinate pieceCoordinate = new Coordinate(x, (chessboard.Height - 1) - y);
+
+                    Piece cellPiece = chessboard.GetPiece(pieceCoordinate);
 
                     if (cellPiece is null)
                     {
@@ -110,29 +115,29 @@ namespace ChessForms
             }
         }
 
-        public void CreateBoard(int width, int height)
+        public void InstantiateUIBoard()
         {
-            tableLayoutPanel1.ColumnCount = width;
+            tableLayoutPanel1.ColumnCount = chessboard.Width;
             tableLayoutPanel1.ColumnStyles.Clear();
             int i;
-            for (i = 0; i < width; i++)
+            for (i = 0; i < chessboard.Width; i++)
             {
                 // set size to any percent, doesnt matter
                 tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 1));
             }
 
-            tableLayoutPanel1.RowCount = height;
+            tableLayoutPanel1.RowCount = chessboard.Height;
             tableLayoutPanel1.RowStyles.Clear();
-            for (i = 0; i < height; i++)
+            for (i = 0; i < chessboard.Height; i++)
             {
                 tableLayoutPanel1.RowStyles.Add(new ColumnStyle(SizeType.Percent, 1));
             }
 
-            boardcells = new PictureBox[width, height];
+            boardcells = new PictureBox[chessboard.Width, chessboard.Height];
 
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < chessboard.Height; y++)
             {
-                for (int x = 0; x < width; x++)
+                for (int x = 0; x < chessboard.Width; x++)
                 {
 
                     PictureBox box = new PictureBox
@@ -156,20 +161,11 @@ namespace ChessForms
         {
             string move = from.ToString() + to.ToString();
 
-            Task.Run(() => chessboard.PerformMove(move, MoveNotation.UCI));
-
-            /*
-            if ()
-            {
-                //UpdateBoard();
-                
-                //Image image = Boardcells[from.File, from.Rank].Image;
-                //Boardcells[to.File, to.Rank].Image = image;
-                //Boardcells[from.File, from.Rank].Image = null;
-            }*/
+            Thread moveThread = new Thread(() => chessboard.PerformMove(move, MoveNotation.UCI));
+            moveThread.Start();
         }
 
-        private void CellClicked(object sender, System.EventArgs e)
+        private void CellClicked(object sender, EventArgs e)
         {
             MouseButtons button = ((MouseEventArgs)e).Button;
 
@@ -181,7 +177,17 @@ namespace ChessForms
             int cellX = windowX / (tableLayoutPanel1.Width / chessboard.Width);
             int cellY = windowY / (tableLayoutPanel1.Height / chessboard.Height);
 
+            if (flipped)
+            {
+                cellY = (chessboard.Height - 1) - cellY;
+            }
+            else
+            {
+                cellX = (chessboard.Width - 1) - cellX;
+            }
+
             Coordinate clickTarget = new Coordinate(cellX, cellY);
+            MessageBox.Show(clickTarget.ToString());
 
             // handle click
             switch (button)
@@ -189,9 +195,9 @@ namespace ChessForms
                 case MouseButtons.Left:
                     ResetTableStyling();
 
-                    Piece piece = chessboard[new Coordinate(cellX, cellY)];
+                    Piece piece = chessboard[clickTarget];
 
-                    if (!(fromPosition is null) && piece?.Color == chessboard.CurrentTurn && piece != selectedPiece)
+                    if (!(fromPosition is null) && piece?.Color == chessboard.CurrentTeamTurn && piece != selectedPiece)
                     {
                         DeselectPiece(fromPosition.Value.File, fromPosition.Value.Rank);
                         UpdateBoard();
@@ -201,14 +207,14 @@ namespace ChessForms
                     if (fromPosition is null)
                     {
                         // wrong color piece selected
-                        if (piece is null || piece.Color != chessboard.CurrentTurn)
+                        if (piece is null || piece.Color != chessboard.CurrentTeamTurn)
                         {
                             return;
                         }
 
                         // only allow selection of local players
-                        if (chessboard.CurrentTurn == TeamColor.Black && !blackLocal ||
-                            chessboard.CurrentTurn == TeamColor.White && !whiteLocal)
+                        if (chessboard.CurrentTeamTurn == TeamColor.Black && !blackLocal ||
+                            chessboard.CurrentTeamTurn == TeamColor.White && !whiteLocal)
                         {
                             return;
                         }
@@ -220,7 +226,12 @@ namespace ChessForms
 
                         foreach (var item in piece.GetMoves(chessboard))
                         {
-                            Coordinate guardedSquare = item.Moves[0].Destination;
+                            if (item.Moves[0].Destination is null)
+                            {
+                                continue;
+                            }
+
+                            Coordinate guardedSquare = item.Moves[0].Destination.Value;
 
                             Image cellImage = boardcells[guardedSquare.File, guardedSquare.Rank].Image;
 
@@ -268,21 +279,51 @@ namespace ChessForms
 
         private void DeselectPiece(int x, int y)
         {
+            if (flipped)
+            {
+                //y = (chessboard.Height - 1) - y;
+            }
+            else
+            {
+                x = (chessboard.Width - 1) - x;
+            }
+
             boardcells[x, y].BorderStyle = BorderStyle.None;
         }
 
         private void SelectPiece(int x, int y)
         {
+            if (flipped)
+            {
+                y = (chessboard.Height - 1) - y;
+            }
+            else
+            {
+                x = (chessboard.Width - 1) - x;
+            }
+
             boardcells[x, y].BorderStyle = BorderStyle.FixedSingle;
         }
 
         public void ClearPiece(int x, int y)
         {
+            if (!flipped)
+            {
+                x = (chessboard.Width - 1) - x;
+                y = (chessboard.Height - 1) - y;
+            }
+
             boardcells[x, y].Image = null;
         }
 
         public void PlacePiece(int x, int y, Piece piece)
         {
+            if (!flipped)
+            {
+                x = (chessboard.Width - 1) - x;
+                y = (chessboard.Height - 1) - y;
+            }
+
             boardcells[x, y].Image = GetPieceImage(piece);
         }
 

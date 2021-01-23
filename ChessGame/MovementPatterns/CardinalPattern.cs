@@ -49,18 +49,18 @@ namespace ChessGame.MovementPatterns
 
                     if (occupyingPiece is null) // is position empty?
                     {
-                        yield return new Move(checkPosition, position, piece, false);
+                        yield return new Move(checkPosition, position, piece, false, piece.Color);
                         continue;
                     }
                     else if (guardedSquaresOnly) // if not empty
                     {
-                        yield return new Move(checkPosition, position, piece, false);
+                        yield return new Move(checkPosition, position, piece, false, piece.Color);
                         break;
                     }
 
                     if (occupyingPiece.Color != piece.Color || guardedSquaresOnly) // There is a enemy piece
                     {
-                        yield return new Move(checkPosition, position, piece, true); //Sends the move 
+                        yield return new Move(checkPosition, position, piece, true, piece.Color); //Sends the move 
                     }
 
                     break;

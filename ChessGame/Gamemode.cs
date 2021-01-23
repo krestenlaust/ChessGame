@@ -9,7 +9,9 @@ namespace ChessGame
     {
         Stalemate,
         Checkmate,
-        Check
+        Check,
+        NotStarted,
+        Started
     }
 
     public abstract class Gamemode
@@ -38,12 +40,26 @@ namespace ChessGame
         /// <returns></returns>
         public virtual bool ValidateMove(Move move, Chessboard board)
         {
+            // if move is outside board, then it's invalid.
+            foreach (var singleMove in move.Moves)
+            {
+                if (singleMove.Destination is null)
+                {
+                    continue;
+                }
+
+                if (!board.InsideBoard(singleMove.Destination.Value))
+                {
+                    return false;
+                }
+            }
+
             // if move puts king in check — it's invalid.
             Chessboard boardSimulation = new Chessboard(board);
-            boardSimulation.ExecuteMove(move);
+            boardSimulation.SimulateMove(move);
 
             // king is in check, move is invalid
-            if (boardSimulation.IsKingInCheck(board.CurrentTurn))
+            if (boardSimulation.IsKingInCheck(board.CurrentTeamTurn))
             {
                 return false;
             }
@@ -53,48 +69,58 @@ namespace ChessGame
         }
 
         /// <summary>
+        /// Updates gamestate, e.g. checks for mate/checkmate or stalemate. Run at end of turn.
+        /// </summary>
+        /// <returns>Whether the gamestate has updated.</returns>
+        /// <param name="board"></param>
+        public virtual bool UpdateGameState(Chessboard board)
+        {
+            GameState previousState = board.CurrentState;
+
+            // check for whether king is in check.
+            if (board.IsKingInCheck(board.CurrentTeamTurn))
+            {
+                board.CurrentState = GameState.Check;
+            }
+
+            // no more legal moves, game is over either by stalemate or checkmate.
+            if (!board.GetMoves(board.CurrentTeamTurn).Any())
+            {
+                // checkmate
+                if (board.CurrentState == GameState.Check)
+                {
+                    Winner = board.CurrentTeamTurn == TeamColor.White ? PlayerBlack : PlayerWhite;
+                    board.CurrentState = GameState.Checkmate;
+                }
+                else
+                {
+                    board.CurrentState = GameState.Stalemate;
+                }
+            }
+
+            return previousState != board.CurrentState;
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="board"></param>
         /// <returns>False if game has ended.</returns>
         public virtual bool StartTurn(Chessboard board)
         {
+            if (UpdateGameState(board))
+            {
+                onGameStateUpdated?.Invoke(board.CurrentState);
+
+                switch (board.CurrentState)
+                {
+                    case GameState.Stalemate:
+                    case GameState.Checkmate:
+                        return false;
+                }
+            }
+
             onTurnChanged?.Invoke();
-
-            bool isKingChecked;
-
-            // check for whether king is in check.
-            if (board.IsKingInCheck(board.CurrentTurn))
-            {
-                isKingChecked = true;
-                onGameStateUpdated?.Invoke(GameState.Check);
-            }
-            else
-            {
-                isKingChecked = false;
-            }
-
-            // no more legal moves, game is over either by stalemate or checkmate.
-            if (!board.GetMoves(board.CurrentTurn).Any())
-            {
-                board.isGameInProgress = false;
-                GameState gameState;
-
-                // checkmate
-                if (isKingChecked)
-                {
-                    Winner = board.CurrentTurn == TeamColor.White ? PlayerBlack : PlayerWhite;
-                    gameState = GameState.Checkmate;
-                }
-                else
-                {
-                    gameState = GameState.Stalemate;
-                }
-
-                onGameStateUpdated?.Invoke(gameState);
-                return false;
-            }
-
             return true;
         }
     }
