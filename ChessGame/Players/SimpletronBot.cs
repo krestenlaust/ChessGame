@@ -133,7 +133,7 @@ namespace ChessGame.Bots
             List<Move> viableMoves = (from singleMove in sortedMoves
                                      where singleMove.Item1 == newLuckyNumber 
                                      select singleMove.Item2).ToList();
-            
+
             foreach (var item in viableMoves)
             {
                 if (!board.MovedPieces.Contains(item.Moves[0].Piece))
