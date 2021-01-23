@@ -226,7 +226,7 @@ namespace ChessGame
         /// Executes a move by updating the board accordingly.
         /// </summary>
         /// <param name="move"></param>
-        private void ExecuteMove(Move move)
+        public void ExecuteMove(Move move)
         {
             if (move is null)
             {

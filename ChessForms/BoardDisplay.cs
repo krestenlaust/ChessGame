@@ -97,7 +97,7 @@ namespace ChessForms
         {
             for (int y = 0; y < chessboard.Height; y++)
             {
-                for (int x = chessboard.Width - 1; x >= 0; x--)
+                for (int x = 0; x < chessboard.Width; x++)
                 {
                     Coordinate pieceCoordinate = new Coordinate(x, (chessboard.Height - 1) - y);
 
@@ -135,6 +135,8 @@ namespace ChessForms
 
             boardcells = new PictureBox[chessboard.Width, chessboard.Height];
 
+            // TODO: Patrick fixer det her, tror nok at det kan løses ved at flippe en af de her løkker på en måde.
+            // derefter kan PlacePiece, ClearPiece etc. "unflippes".
             for (int y = 0; y < chessboard.Height; y++)
             {
                 for (int x = 0; x < chessboard.Width; x++)
@@ -233,6 +235,7 @@ namespace ChessForms
 
                             Coordinate guardedSquare = item.Moves[0].Destination.Value;
 
+                            // TODO: Patrick fixer brættet, cirka her omkring
                             Image cellImage = boardcells[guardedSquare.File, guardedSquare.Rank].Image;
 
                             if (cellImage is null)
@@ -281,7 +284,7 @@ namespace ChessForms
         {
             if (flipped)
             {
-                //y = (chessboard.Height - 1) - y;
+                y = (chessboard.Height - 1) - y;
             }
             else
             {
@@ -307,22 +310,30 @@ namespace ChessForms
 
         public void ClearPiece(int x, int y)
         {
-            if (!flipped)
+            if (flipped)
             {
-                x = (chessboard.Width - 1) - x;
                 y = (chessboard.Height - 1) - y;
             }
+            else
+            {
+                x = (chessboard.Width - 1) - x;
+            }
+
 
             boardcells[x, y].Image = null;
         }
 
         public void PlacePiece(int x, int y, Piece piece)
         {
-            if (!flipped)
+            if (flipped)
             {
-                x = (chessboard.Width - 1) - x;
                 y = (chessboard.Height - 1) - y;
             }
+            else
+            {
+                x = (chessboard.Width - 1) - x;
+            }
+
 
             boardcells[x, y].Image = GetPieceImage(piece);
         }
