@@ -35,6 +35,8 @@ namespace ChessForms
 
         private void InstantiateMatch(Player playerWhite, Player playerBlack)
         {
+            //playerBlack = new ChessGame.Players.LichessBotPlayer("lichess-bot", "46nn2kjrrGTFaMN4", "GVZ4hkf7");
+
             Gamemode gamemode = new ClassicChess(playerWhite, playerBlack);
             BoardDisplay board = new BoardDisplay(gamemode, white == PlayerType.Local, black == PlayerType.Local);
             board.Show();

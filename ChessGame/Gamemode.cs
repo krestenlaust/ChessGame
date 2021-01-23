@@ -9,7 +9,9 @@ namespace ChessGame
     {
         Stalemate,
         Checkmate,
-        Check
+        Check,
+        NotStarted,
+        Started
     }
 
     public abstract class Gamemode
@@ -57,7 +59,7 @@ namespace ChessGame
             boardSimulation.SimulateMove(move);
 
             // king is in check, move is invalid
-            if (boardSimulation.IsKingInCheck(board.CurrentTurn))
+            if (boardSimulation.IsKingInCheck(board.CurrentTeamTurn))
             {
                 return false;
             }
@@ -67,44 +69,55 @@ namespace ChessGame
         }
 
         /// <summary>
+        /// Updates gamestate, e.g. checks for mate/checkmate or stalemate. Run at end of turn.
+        /// </summary>
+        /// <returns>Whether the gamestate has updated.</returns>
+        /// <param name="board"></param>
+        public virtual bool UpdateGameState(Chessboard board)
+        {
+            GameState previousState = board.CurrentState;
+
+            // check for whether king is in check.
+            if (board.IsKingInCheck(board.CurrentTeamTurn))
+            {
+                board.CurrentState = GameState.Check;
+            }
+
+            // no more legal moves, game is over either by stalemate or checkmate.
+            if (!board.GetMoves(board.CurrentTeamTurn).Any())
+            {
+                // checkmate
+                if (board.CurrentState == GameState.Check)
+                {
+                    Winner = board.CurrentTeamTurn == TeamColor.White ? PlayerBlack : PlayerWhite;
+                    board.CurrentState = GameState.Checkmate;
+                }
+                else
+                {
+                    board.CurrentState = GameState.Stalemate;
+                }
+            }
+
+            return previousState != board.CurrentState;
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="board"></param>
         /// <returns>False if game has ended.</returns>
         public virtual bool StartTurn(Chessboard board)
         {
-            bool isKingChecked;
-
-            // check for whether king is in check.
-            if (board.IsKingInCheck(board.CurrentTurn))
+            if (UpdateGameState(board))
             {
-                isKingChecked = true;
-                onGameStateUpdated?.Invoke(GameState.Check);
-            }
-            else
-            {
-                isKingChecked = false;
-            }
+                onGameStateUpdated?.Invoke(board.CurrentState);
 
-            // no more legal moves, game is over either by stalemate or checkmate.
-            if (!board.GetMoves(board.CurrentTurn).Any())
-            {
-                board.isGameInProgress = false;
-                GameState gameState;
-
-                // checkmate
-                if (isKingChecked)
+                switch (board.CurrentState)
                 {
-                    Winner = board.CurrentTurn == TeamColor.White ? PlayerBlack : PlayerWhite;
-                    gameState = GameState.Checkmate;
+                    case GameState.Stalemate:
+                    case GameState.Checkmate:
+                        return false;
                 }
-                else
-                {
-                    gameState = GameState.Stalemate;
-                }
-
-                onGameStateUpdated?.Invoke(gameState);
-                return false;
             }
 
             onTurnChanged?.Invoke();

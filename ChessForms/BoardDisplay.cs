@@ -197,7 +197,7 @@ namespace ChessForms
 
                     Piece piece = chessboard[clickTarget];
 
-                    if (!(fromPosition is null) && piece?.Color == chessboard.CurrentTurn && piece != selectedPiece)
+                    if (!(fromPosition is null) && piece?.Color == chessboard.CurrentTeamTurn && piece != selectedPiece)
                     {
                         DeselectPiece(fromPosition.Value.File, fromPosition.Value.Rank);
                         UpdateBoard();
@@ -207,14 +207,14 @@ namespace ChessForms
                     if (fromPosition is null)
                     {
                         // wrong color piece selected
-                        if (piece is null || piece.Color != chessboard.CurrentTurn)
+                        if (piece is null || piece.Color != chessboard.CurrentTeamTurn)
                         {
                             return;
                         }
 
                         // only allow selection of local players
-                        if (chessboard.CurrentTurn == TeamColor.Black && !blackLocal ||
-                            chessboard.CurrentTurn == TeamColor.White && !whiteLocal)
+                        if (chessboard.CurrentTeamTurn == TeamColor.Black && !blackLocal ||
+                            chessboard.CurrentTeamTurn == TeamColor.White && !whiteLocal)
                         {
                             return;
                         }

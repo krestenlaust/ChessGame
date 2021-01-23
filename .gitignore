@@ -367,3 +367,4 @@ ChessCommandline/App.config
 .vs/ChessGame/v15/.suo
 ChessCommandline/ChessCommandline.csproj
 ChessCommandline/App.config
+/token.txt

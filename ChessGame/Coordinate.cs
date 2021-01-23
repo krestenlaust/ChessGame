@@ -20,7 +20,7 @@ namespace ChessGame
         public readonly int Rank;
 
         /// <summary>
-        /// Coordinate that describes the position of a piece. Null can be used to show ambiguity.
+        /// Coordinate that describes the position of a piece. Null can be used to show ambiguity (not implemented).
         /// </summary>
         /// <param name="file">The x-coordinate, the column. Usually expressed using the letters A-G.</param>
         /// <param name="rank">The y-coordinate, the row.</param>
@@ -30,13 +30,17 @@ namespace ChessGame
             Rank = rank;
         }
 
+        /// <summary>
+        /// Converts coordinate notation into <c>Coordinate</c>.
+        /// </summary>
+        /// <param name="notation"></param>
         public Coordinate(string notation)
         {
             File = char.ToLower(notation[0]) - 97;
             Rank = notation[1] - 49;
         }
 
-        /*
+        /* // proposed null functionality
         [DebuggerStepThrough]
         public static bool operator ==(Coordinate coordinate1, Coordinate coordinate2)
         {

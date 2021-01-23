@@ -39,7 +39,7 @@ namespace ChessGame.Players
                 SendMove(board.Moves.Peek());
             }
 
-            board.PerformMove(ReceieveMove(board.CurrentTurn), MoveNotation.UCI);
+            board.PerformMove(ReceieveMove(board.CurrentTeamTurn), MoveNotation.UCI);
         }
 
         private string ReceieveMove(TeamColor player)

@@ -31,12 +31,12 @@ namespace ChessGame.Bots
         {
             if (node.Depth == 0)
             {
-                node.Board.SimulateMove(FindBestMoves(node.Board, node.Board.CurrentTurn)[0]);
+                node.Board.SimulateMove(FindBestMoves(node.Board, node.Board.CurrentTeamTurn)[0]);
                 node.MoveStorage.Add((node.Board.MaterialSum, node.RootMove));
                 return;
             }
 
-            foreach (var move in node.Board.GetMoves(node.Board.CurrentTurn))
+            foreach (var move in node.Board.GetMoves(node.Board.CurrentTeamTurn))
             {
                 Chessboard newBoard = new Chessboard(node.Board);
                 newBoard.SimulateMove(move);
@@ -57,14 +57,14 @@ namespace ChessGame.Bots
 
             if (depth == 0)
             {
-                board.SimulateMove(FindBestMoves(board, boardReadonly.CurrentTurn)[0]);
+                board.SimulateMove(FindBestMoves(board, boardReadonly.CurrentTeamTurn)[0]);
                 moves.Add((board.MaterialSum, baseMove));
                 return;
             }
 
             List<Task> rootMoves = new List<Task>();
 
-            foreach (var move in board.GetMoves(board.CurrentTurn))
+            foreach (var move in board.GetMoves(board.CurrentTeamTurn))
             {
                 Chessboard newBoard = new Chessboard(board);
                 newBoard.SimulateMove(move);
@@ -121,7 +121,7 @@ namespace ChessGame.Bots
 
 
             int newLuckyNumber;
-            if (board.CurrentTurn == TeamColor.Black)
+            if (board.CurrentTeamTurn == TeamColor.Black)
             {
                 newLuckyNumber = sortedMoves[sortedMoves.Count - 1].Item1;
             }
@@ -142,7 +142,7 @@ namespace ChessGame.Bots
                 }
             }
 
-            if (board.CurrentTurn == TeamColor.Black)
+            if (board.CurrentTeamTurn == TeamColor.Black)
             {
                 return sortedMoves[sortedMoves.Count - 1].Item2;
             }
