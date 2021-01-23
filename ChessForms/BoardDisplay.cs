@@ -16,6 +16,7 @@ namespace ChessForms
         private readonly Gamemode gamemode;
         public Chessboard chessboard;
         private readonly bool whiteLocal, blackLocal;
+        private bool flipped = false;
 
         public BoardDisplay(Gamemode gamemode, bool whiteLocal, bool blackLocal)
         {
@@ -26,7 +27,7 @@ namespace ChessForms
             this.blackLocal = blackLocal;
         }
 
-        private void BoardDisplay_Load(object sender, System.EventArgs e)
+        private void BoardDisplay_Load(object sender, EventArgs e)
         {
             gamemode.onTurnChanged += onTurnStarted;
             gamemode.onGameStateUpdated += onGameStateUpdated;
@@ -96,9 +97,11 @@ namespace ChessForms
         {
             for (int y = 0; y < chessboard.Height; y++)
             {
-                for (int x = 0; x < chessboard.Width; x++)
+                for (int x = chessboard.Width - 1; x >= 0; x--)
                 {
-                    Piece cellPiece = chessboard.GetPiece(new Coordinate(x, y));
+                    Coordinate pieceCoordinate = new Coordinate(x, y);
+
+                    Piece cellPiece = chessboard.GetPiece(pieceCoordinate);
 
                     if (cellPiece is null)
                     {
@@ -158,14 +161,11 @@ namespace ChessForms
         {
             string move = from.ToString() + to.ToString();
 
-            Thread botThread = new Thread(() => chessboard.PerformMove(move, MoveNotation.UCI));
-            botThread.Priority = ThreadPriority.Highest;
-            botThread.Start();
-
-            //Task.Run(() => chessboard.PerformMove(move, MoveNotation.UCI));
+            Thread moveThread = new Thread(() => chessboard.PerformMove(move, MoveNotation.UCI));
+            moveThread.Start();
         }
 
-        private void CellClicked(object sender, System.EventArgs e)
+        private void CellClicked(object sender, EventArgs e)
         {
             MouseButtons button = ((MouseEventArgs)e).Button;
 
@@ -178,6 +178,7 @@ namespace ChessForms
             int cellY = windowY / (tableLayoutPanel1.Height / chessboard.Height);
 
             Coordinate clickTarget = new Coordinate(cellX, cellY);
+            MessageBox.Show(clickTarget.ToString());
 
             // handle click
             switch (button)
@@ -185,7 +186,7 @@ namespace ChessForms
                 case MouseButtons.Left:
                     ResetTableStyling();
 
-                    Piece piece = chessboard[new Coordinate(cellX, cellY)];
+                    Piece piece = chessboard[clickTarget];
 
                     if (!(fromPosition is null) && piece?.Color == chessboard.CurrentTurn && piece != selectedPiece)
                     {
@@ -269,21 +270,45 @@ namespace ChessForms
 
         private void DeselectPiece(int x, int y)
         {
+            if (!flipped)
+            {
+                x = (chessboard.Width - 1) - x;
+                y = (chessboard.Height - 1) - y;
+            }
+
             boardcells[x, y].BorderStyle = BorderStyle.None;
         }
 
         private void SelectPiece(int x, int y)
         {
+            if (!flipped)
+            {
+                x = (chessboard.Width - 1) - x;
+                y = (chessboard.Height - 1) - y;
+            }
+
             boardcells[x, y].BorderStyle = BorderStyle.FixedSingle;
         }
 
         public void ClearPiece(int x, int y)
         {
+            if (!flipped)
+            {
+                x = (chessboard.Width - 1) - x;
+                y = (chessboard.Height - 1) - y;
+            }
+
             boardcells[x, y].Image = null;
         }
 
         public void PlacePiece(int x, int y, Piece piece)
         {
+            if (!flipped)
+            {
+                x = (chessboard.Width - 1) - x;
+                y = (chessboard.Height - 1) - y;
+            }
+
             boardcells[x, y].Image = GetPieceImage(piece);
         }
 
