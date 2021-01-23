@@ -16,7 +16,7 @@ namespace ChessForms
         private readonly Gamemode gamemode;
         public Chessboard chessboard;
         private readonly bool whiteLocal, blackLocal;
-        private bool flipped = false;
+        private bool flipped = true;
 
         public BoardDisplay(Gamemode gamemode, bool whiteLocal, bool blackLocal)
         {
@@ -99,7 +99,7 @@ namespace ChessForms
             {
                 for (int x = chessboard.Width - 1; x >= 0; x--)
                 {
-                    Coordinate pieceCoordinate = new Coordinate(x, y);
+                    Coordinate pieceCoordinate = new Coordinate(x, (chessboard.Height - 1) - y);
 
                     Piece cellPiece = chessboard.GetPiece(pieceCoordinate);
 
@@ -176,6 +176,15 @@ namespace ChessForms
             
             int cellX = windowX / (tableLayoutPanel1.Width / chessboard.Width);
             int cellY = windowY / (tableLayoutPanel1.Height / chessboard.Height);
+
+            if (flipped)
+            {
+                cellY = (chessboard.Height - 1) - cellY;
+            }
+            else
+            {
+                cellX = (chessboard.Width - 1) - cellX;
+            }
 
             Coordinate clickTarget = new Coordinate(cellX, cellY);
             MessageBox.Show(clickTarget.ToString());
@@ -270,10 +279,13 @@ namespace ChessForms
 
         private void DeselectPiece(int x, int y)
         {
-            if (!flipped)
+            if (flipped)
+            {
+                //y = (chessboard.Height - 1) - y;
+            }
+            else
             {
                 x = (chessboard.Width - 1) - x;
-                y = (chessboard.Height - 1) - y;
             }
 
             boardcells[x, y].BorderStyle = BorderStyle.None;
@@ -281,10 +293,13 @@ namespace ChessForms
 
         private void SelectPiece(int x, int y)
         {
-            if (!flipped)
+            if (flipped)
+            {
+                y = (chessboard.Height - 1) - y;
+            }
+            else
             {
                 x = (chessboard.Width - 1) - x;
-                y = (chessboard.Height - 1) - y;
             }
 
             boardcells[x, y].BorderStyle = BorderStyle.FixedSingle;
