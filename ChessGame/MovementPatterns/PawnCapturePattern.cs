@@ -7,7 +7,7 @@ namespace ChessGame.MovementPatterns
         public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool guardedSquaresOnly = false)
         {
             // can't push pawn to eighth rank
-            if (position.Rank == (piece.Color == TeamColor.White ? 6 : 1))
+            if (position.Rank == (piece.Color == TeamColor.White ? 6 : 1) && guardedSquaresOnly)
             {
                 yield break;
             }
