@@ -150,7 +150,7 @@ namespace ChessForms
                     };
 
                     box.Click += CellClicked;
-                    boardcells[x, y] = box;
+                    boardcells[x, (chessboard.Height - 1) - y] = box;
 
                     tableLayoutPanel1.Controls.Add(box);
                 }
