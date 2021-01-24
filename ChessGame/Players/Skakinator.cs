@@ -12,12 +12,12 @@ namespace ChessGame.Players
         {
         }
 
-        private int MinimaxSearch(Chessboard board, int depth, int alpha, int beta)
+        private int MinimaxSearch(Chessboard board, int depth)
         {
             if (board.CurrentState == GameState.Checkmate)
             {
                 // note: the turn is updated even after checkmate
-                return (depth + 1) * (board.CurrentTeamTurn == TeamColor.Black ? short.MaxValue : short.MinValue);
+                return board.CurrentTeamTurn == TeamColor.Black ? int.MaxValue : int.MinValue;
             }
 
             if (board.CurrentState == GameState.Stalemate)
@@ -38,14 +38,7 @@ namespace ChessGame.Players
                 {
                     Chessboard childNode = new Chessboard(board, move);
 
-                    maxEvaluation = Math.Max(maxEvaluation, MinimaxSearch(childNode, depth - 1, alpha, beta));
-                    alpha = Math.Max(alpha, maxEvaluation);
-
-                    // a better move was found earlier.
-                    if (beta <= alpha)
-                    {
-                        break;
-                    }
+                    maxEvaluation = Math.Max(maxEvaluation, MinimaxSearch(childNode, depth - 1));
                 }
 
                 return maxEvaluation;
@@ -58,13 +51,7 @@ namespace ChessGame.Players
                 {
                     Chessboard childNode = new Chessboard(board, move);
 
-                    minEvaluation = Math.Min(minEvaluation, MinimaxSearch(childNode, depth - 1, alpha, beta));
-                    beta = Math.Min(beta, minEvaluation);
-
-                    if (beta <= alpha)
-                    {
-                        break;
-                    }
+                    minEvaluation = Math.Min(minEvaluation, MinimaxSearch(childNode, depth - 1));
                 }
 
                 return minEvaluation;
@@ -78,7 +65,7 @@ namespace ChessGame.Players
             {
                 Chessboard rootNode = new Chessboard(board, move);
 
-                moves.Add((MinimaxSearch(rootNode, 3, int.MinValue, int.MaxValue), move));
+                moves.Add((MinimaxSearch(rootNode, 3), move));
             }
 
             List<Move> sortedMoves;

@@ -20,7 +20,7 @@ namespace ChessGame.Gamemodes
             board[new Coordinate(5, 3)] = new Pawn { Color = TeamColor.White };
             board[new Coordinate(6, 3)] = new Pawn { Color = TeamColor.White };
             board[new Coordinate(7, 3)] = new Pawn { Color = TeamColor.White };
-            //board[new Coordinate(2, 3)] = new Hypnotist { Color = TeamColor.White };
+            board[new Coordinate(2, 3)] = new Hypnotist { Color = TeamColor.White };
 
             board[new Coordinate(0, 6)] = new Pawn { Color = TeamColor.Black };
             board[new Coordinate(1, 6)] = new Pawn { Color = TeamColor.Black };

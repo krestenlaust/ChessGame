@@ -10,8 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ChessGame;
+using ChessGame.Bots;
 using ChessGame.Gamemodes;
-using ChessGame.Players;
 
 namespace ChessForms
 {
@@ -37,7 +37,7 @@ namespace ChessForms
         {
             //playerBlack = new ChessGame.Players.LichessBotPlayer("lichess-bot", "46nn2kjrrGTFaMN4", "GVZ4hkf7");
 
-            Gamemode gamemode = new CheckMateTest(playerWhite, playerBlack);
+            Gamemode gamemode = new ClassicChess(playerWhite, playerBlack);
             BoardDisplay board = new BoardDisplay(gamemode, white == PlayerType.Local, black == PlayerType.Local);
             board.Show();
         }
@@ -69,7 +69,7 @@ namespace ChessForms
                 case PlayerType.Local:
                     return new Player(name);
                 case PlayerType.Bot:
-                    return new Skakinator(name);
+                    return new SimpletronBot(name);
                 case PlayerType.Network:
                     if (color == TeamColor.White)
                     {
