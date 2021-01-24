@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gamemodes\CheckMateTest.cs" />
     <Compile Include="Players\LichessBotPlayer.cs" />
     <Compile Include="Players\SimpletronBot.cs" />
     <Compile Include="Chessboard.cs" />
