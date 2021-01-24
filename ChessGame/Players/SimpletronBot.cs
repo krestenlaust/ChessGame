@@ -1,10 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace ChessGame.Bots
+namespace ChessGame.Players
 {
     public class SimpletronBot : Player
     {
