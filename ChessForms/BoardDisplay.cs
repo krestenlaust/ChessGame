@@ -16,7 +16,7 @@ namespace ChessForms
         private readonly Gamemode gamemode;
         public Chessboard chessboard;
         private readonly bool whiteLocal, blackLocal;
-        private bool flipped = true;
+        private bool flipped;
 
         public BoardDisplay(Gamemode gamemode, bool whiteLocal, bool blackLocal)
         {
@@ -25,6 +25,15 @@ namespace ChessForms
             this.gamemode = gamemode;
             this.whiteLocal = whiteLocal;
             this.blackLocal = blackLocal;
+            
+            if (blackLocal && !whiteLocal)
+            {
+                flipped = false;
+            }
+            else
+            {
+                flipped = true;
+            }
         }
 
         private void BoardDisplay_Load(object sender, EventArgs e)
@@ -99,7 +108,16 @@ namespace ChessForms
             {
                 for (int x = 0; x < chessboard.Width; x++)
                 {
-                    Coordinate pieceCoordinate = new Coordinate(x, (chessboard.Height - 1) - y);
+                    Coordinate pieceCoordinate;
+
+                    if (flipped)
+                    {
+                        pieceCoordinate = new Coordinate(x, (chessboard.Height - 1) - y); //Det her burde også fikse noget
+                    }
+                    else
+                    {
+                        pieceCoordinate = new Coordinate(x, y);
+                    }
 
                     Piece cellPiece = chessboard.GetPiece(pieceCoordinate);
 
@@ -136,7 +154,7 @@ namespace ChessForms
             boardcells = new PictureBox[chessboard.Width, chessboard.Height];
 
             // TODO: Patrick fixer det her, tror nok at det kan løses ved at flippe en af de her løkker på en måde.
-            // derefter kan PlacePiece, ClearPiece etc. "unflippes".
+            // derefter kan PlacePiece, ClearPiece etc. "unflippes"
             for (int y = 0; y < chessboard.Height; y++)
             {
                 for (int x = 0; x < chessboard.Width; x++)
@@ -150,7 +168,15 @@ namespace ChessForms
                     };
 
                     box.Click += CellClicked;
-                    boardcells[x, (chessboard.Height - 1) - y] = box;
+
+                    if (flipped) //Fikset
+                    {
+                        boardcells[x, (chessboard.Height - 1) - y] = box;
+                    }
+                    else
+                    {
+                        boardcells[x, y] = box;
+                    }
 
                     tableLayoutPanel1.Controls.Add(box);
                 }
@@ -185,11 +211,11 @@ namespace ChessForms
             }
             else
             {
-                cellX = (chessboard.Width - 1) - cellX;
+                //cellX = (chessboard.Width - 1) - cellX; //Det her fikser lidt et problem
             }
 
             Coordinate clickTarget = new Coordinate(cellX, cellY);
-            MessageBox.Show(clickTarget.ToString());
+            //MessageBox.Show(clickTarget.ToString());
 
             // handle click
             switch (button)
@@ -288,7 +314,7 @@ namespace ChessForms
             }
             else
             {
-                x = (chessboard.Width - 1) - x;
+                //x = (chessboard.Width - 1) - x;
             }
 
             boardcells[x, y].BorderStyle = BorderStyle.None;
@@ -296,14 +322,14 @@ namespace ChessForms
 
         private void SelectPiece(int x, int y)
         {
-            if (flipped)
+            /*if (flipped) //flip fiks
             {
                 y = (chessboard.Height - 1) - y;
             }
             else
             {
                 x = (chessboard.Width - 1) - x;
-            }
+            }*/
 
             boardcells[x, y].BorderStyle = BorderStyle.FixedSingle;
         }
@@ -316,7 +342,7 @@ namespace ChessForms
             }
             else
             {
-                x = (chessboard.Width - 1) - x;
+                //x = (chessboard.Width - 1) - x;
             }
 
 
@@ -331,7 +357,7 @@ namespace ChessForms
             }
             else
             {
-                x = (chessboard.Width - 1) - x;
+                //x = (chessboard.Width - 1) - x;
             }
 
 
