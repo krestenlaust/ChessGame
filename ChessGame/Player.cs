@@ -14,9 +14,6 @@
 
         }
 
-        public override string ToString()
-        {
-            return Nickname;
-        }
+        public override string ToString() => Nickname;
     }
 }

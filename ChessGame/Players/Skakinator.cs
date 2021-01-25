@@ -14,6 +14,7 @@ namespace ChessGame.Players
 
         private class TreeNode
         {
+            public static Dictionary<int, TreeNode> TranspositionTable = new Dictionary<int, TreeNode>();
             public readonly Chessboard Chessboard;
             public int? Value = null;
             private readonly Dictionary<Move, TreeNode> children;
@@ -49,11 +50,7 @@ namespace ChessGame.Players
 
             public TreeNode this[Move move]
             {
-                get
-                {
-
-                    return children[move];
-                }
+                get { return children[move]; }
                 set { children[move] = value; }
             }
 
@@ -63,14 +60,20 @@ namespace ChessGame.Players
                 {
                     foreach (var move in Chessboard.GetMoves())
                     {
-                        TreeNode node = new TreeNode(new Chessboard(Chessboard, move));
+                        Chessboard newBoard = new Chessboard(Chessboard, move);
+                        
+                        TreeNode node = new TreeNode(newBoard);
+
                         children[move] = node;
+                        yield return node;
                     }
                 }
-
-                foreach (var node in children.Values)
+                else
                 {
-                    yield return node;
+                    foreach (var node in children.Values)
+                    {
+                        yield return node;
+                    }
                 }
             }
 
@@ -103,14 +106,33 @@ namespace ChessGame.Players
 
             foreach (var childNode in node.GetChildren())
             {
+                int hashCode = childNode.Chessboard.GetHashCode();
+                int evaluation;
+                if (TreeNode.TranspositionTable.TryGetValue(hashCode, out TreeNode precalculatedChildNode))
+                {
+                    if (precalculatedChildNode.Value is null)
+                    {
+                        evaluation = MinimaxSearch(childNode, depth - 1, alpha, beta);
+                    }
+                    else
+                    {
+                        evaluation = precalculatedChildNode.Value.Value;
+                    }
+                }
+                else
+                {
+                    evaluation = MinimaxSearch(childNode, depth - 1, alpha, beta);
+                    TreeNode.TranspositionTable[hashCode] = childNode;
+                }
+
                 if (node.Maximize)
                 {
-                    bestEvaluation = Math.Max(bestEvaluation, MinimaxSearch(childNode, depth - 1, alpha, beta));
+                    bestEvaluation = Math.Max(bestEvaluation, evaluation);
                     alpha = Math.Max(alpha, bestEvaluation);
                 }
                 else
                 {
-                    bestEvaluation = Math.Min(bestEvaluation, MinimaxSearch(childNode, depth - 1, alpha, beta));
+                    bestEvaluation = Math.Min(bestEvaluation, evaluation);
                     alpha = Math.Min(alpha, bestEvaluation);
                 }
 
@@ -137,6 +159,8 @@ namespace ChessGame.Players
                 rootNode = rootNode[board.Moves.Peek()];
                 GC.Collect();
             }
+
+            TreeNode.TranspositionTable.Clear();
 
             int bestEvaluation = rootNode.Maximize ? int.MinValue : int.MaxValue;
 
@@ -190,6 +214,7 @@ namespace ChessGame.Players
             rootNode = rootNode[chosenMove];
 
             board.PerformMove(chosenMove);
+            GC.Collect();
         }
     }
 }

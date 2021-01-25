@@ -13,21 +13,27 @@ namespace ChessGame
         /// <summary>
         /// Zero-indexed. e.g. A would be 0.
         /// </summary>
-        public readonly int File;
+        public readonly byte File;
         /// <summary>
         /// Zero-indexed. Row 1 is actually row 0.
         /// </summary>
-        public readonly int Rank;
+        public readonly byte Rank;
 
         /// <summary>
         /// Coordinate that describes the position of a piece. Null can be used to show ambiguity (not implemented).
         /// </summary>
         /// <param name="file">The x-coordinate, the column. Usually expressed using the letters A-G.</param>
         /// <param name="rank">The y-coordinate, the row.</param>
-        public Coordinate(int file, int rank)
+        public Coordinate(byte file, byte rank)
         {
             File = file;
             Rank = rank;
+        }
+
+        public Coordinate(int file, int rank)
+        {
+            File = (byte)file;
+            Rank = (byte)rank;
         }
 
         /// <summary>
@@ -36,8 +42,8 @@ namespace ChessGame
         /// <param name="notation"></param>
         public Coordinate(string notation)
         {
-            File = char.ToLower(notation[0]) - 97;
-            Rank = notation[1] - 49;
+            File = (byte)(char.ToLower(notation[0]) - 97);
+            Rank = (byte)(notation[1] - 49);
         }
 
         /* // proposed null functionality
@@ -82,9 +88,9 @@ namespace ChessGame
         public static bool operator ==(Coordinate coordinate1, Coordinate coordinate2) => coordinate1.Rank == coordinate2.Rank && coordinate1.File == coordinate2.File;
 
         [DebuggerStepThrough]
-        public static Coordinate operator +(Coordinate coordinate1, Coordinate coordinate2) => new Coordinate(coordinate1.File + coordinate2.File, coordinate1.Rank + coordinate2.Rank);
+        public static Coordinate operator +(Coordinate coordinate1, Coordinate coordinate2) => new Coordinate((byte)(coordinate1.File + coordinate2.File), (byte)(coordinate1.Rank + coordinate2.Rank));
         [DebuggerStepThrough]
-        public static Coordinate operator -(Coordinate coordinate1, Coordinate coordinate2) => new Coordinate(coordinate1.File - coordinate2.File, coordinate1.Rank - coordinate2.Rank);
+        public static Coordinate operator -(Coordinate coordinate1, Coordinate coordinate2) => new Coordinate((byte)(coordinate1.File - coordinate2.File), (byte)(coordinate1.Rank - coordinate2.Rank));
 
         /// <summary>
         /// Converts a coordinate to one with file as letter and rank as one-indexed number.

@@ -7,9 +7,7 @@
             Notation = 'N';
             MaterialValue = 3;
             MovementPatternList = new IMovementPattern[] {
-                new MovementPatterns.KnightPattern(),
-                //new MovementPatterns.PawnPushPattern(),
-                //new MovementPatterns.PawnCapturePattern()
+                new MovementPatterns.KnightPattern()
             };
         }
     }

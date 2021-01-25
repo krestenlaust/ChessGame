@@ -14,10 +14,10 @@ namespace ChessGame
     /// <summary>
     /// A class that describes a game of chess.
     /// </summary>
-    public class Chessboard
+    public class Chessboard : IEquatable<Chessboard>
     {
-        public readonly int Height;
-        public readonly int Width;
+        public readonly byte Height;
+        public readonly byte Width;
         public readonly Dictionary<Coordinate, Piece> Pieces;
         /// <summary>
         /// Describes intersection squares. An intersection square is a square which one or more pieces threaten at once.
@@ -63,9 +63,10 @@ namespace ChessGame
             CurrentState = board.CurrentState;
 
             Pieces = new Dictionary<Coordinate, Piece>(board.Pieces);
-            Dangerzone = new Dictionary<Coordinate, List<Piece>>(board.Dangerzone);
             MovedPieces = new HashSet<Piece>(board.MovedPieces);
             Moves = new Stack<Move>(board.Moves);
+            // not needed before executing move
+            Dangerzone = new Dictionary<Coordinate, List<Piece>>();
         }
 
         /// <summary>
@@ -82,14 +83,16 @@ namespace ChessGame
             CurrentState = board.CurrentState;
 
             Pieces = new Dictionary<Coordinate, Piece>(board.Pieces);
-            Dangerzone = new Dictionary<Coordinate, List<Piece>>(board.Dangerzone);
             MovedPieces = new HashSet<Piece>(board.MovedPieces);
             Moves = new Stack<Move>(board.Moves);
+
+            // is refreshed in simulatemove
+            Dangerzone = new Dictionary<Coordinate, List<Piece>>();
 
             SimulateMove(move);
         }
 
-        public Chessboard(int width, int height, Gamemode gamemode)
+        public Chessboard(byte width, byte height, Gamemode gamemode)
         {
             Width = width;
             Height = height;
@@ -594,5 +597,55 @@ namespace ChessGame
         public List<Piece> GetPieces<T>() where T : Piece => (from piece in Pieces.Values
                                                               where piece is T
                                                               select piece).ToList();
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Chessboard);
+        }
+
+        public bool Equals(Chessboard other)
+        {
+            return other != null &&
+                   Height == other.Height &&
+                   Width == other.Width &&
+                   EqualityComparer<Dictionary<Coordinate, Piece>>.Default.Equals(Pieces, other.Pieces) &&
+                   EqualityComparer<Stack<Move>>.Default.Equals(Moves, other.Moves) &&
+                   EqualityComparer<HashSet<Piece>>.Default.Equals(MovedPieces, other.MovedPieces) &&
+                   EqualityComparer<Gamemode>.Default.Equals(gamemode, other.gamemode) &&
+                   CurrentState == other.CurrentState &&
+                   CurrentTeamTurn == other.CurrentTeamTurn &&
+                   MaterialSum == other.MaterialSum;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 1077646461;
+            hashCode = hashCode * -1521134295 + Height.GetHashCode();
+            hashCode = hashCode * -1521134295 + Width.GetHashCode();
+            foreach (var item in Pieces)
+            {
+                hashCode = hashCode * -1521134295 + item.Key.GetHashCode();
+                hashCode = hashCode * -1521134295 + item.Value.GetHashCode();
+            }
+            foreach (var item in MovedPieces)
+            {
+                hashCode = hashCode * -1521134295 + item.GetHashCode();
+            }
+            hashCode = hashCode * -1521134295 + EqualityComparer<Gamemode>.Default.GetHashCode(gamemode);
+            hashCode = hashCode * -1521134295 + CurrentState.GetHashCode();
+            hashCode = hashCode * -1521134295 + CurrentTeamTurn.GetHashCode();
+            hashCode = hashCode * -1521134295 + MaterialSum.GetHashCode();
+            return hashCode;
+        }
+
+        public static bool operator ==(Chessboard left, Chessboard right)
+        {
+            return EqualityComparer<Chessboard>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(Chessboard left, Chessboard right)
+        {
+            return !(left == right);
+        }
     }
 }

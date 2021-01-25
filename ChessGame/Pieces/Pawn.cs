@@ -7,10 +7,10 @@
             Notation = '\0'; // nothing
             MaterialValue = 1;
             MovementPatternList = new IMovementPattern[] {
+                new MovementPatterns.PromotionPattern(),
                 new MovementPatterns.PawnCapturePattern(),
-                new MovementPatterns.PawnPushPattern(),
                 new MovementPatterns.EnPassentPattern(),
-                new MovementPatterns.PromotionPattern()
+                new MovementPatterns.PawnPushPattern()
             };
         }
     }
