@@ -52,7 +52,7 @@ namespace ChessGame.MovementPatterns
                 }
                 yield break;
             }
-            
+
             Coordinate rightEnPassent = position + new Coordinate(1, moveDirectionY);
 
             Coordinate enPassentTargetRight = position + new Coordinate(1, 0);

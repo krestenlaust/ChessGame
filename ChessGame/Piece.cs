@@ -5,7 +5,7 @@ namespace ChessGame
     /// <summary>
     /// The color of a piece.
     /// </summary>
-    public enum TeamColor
+    public enum TeamColor : byte
     {
         Black = 0,
         White = 1
@@ -20,11 +20,11 @@ namespace ChessGame
         /// <summary>
         /// Whether a piece is White or Black.
         /// </summary>
-        public TeamColor Color { get; set; }
+        public TeamColor Color;
         /// <summary>
         /// The different movement patterns the piece uses.
         /// </summary>
-        public int MaterialValue { get; protected set; }
+        public byte MaterialValue { get; protected set; }
         protected IMovementPattern[] MovementPatternList;
 
         /// <summary>

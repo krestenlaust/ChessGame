@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using ChessGame;
+﻿using ChessGame;
 using ChessGame.Gamemodes;
 using ChessGame.Players;
+using System;
+using System.Net;
+using System.Net.Sockets;
+using System.Windows.Forms;
 
 namespace ChessForms
 {
@@ -25,7 +18,7 @@ namespace ChessForms
 
     public partial class MatchMaker : Form
     {
-        private PlayerType white = PlayerType.Local; 
+        private PlayerType white = PlayerType.Local;
         private PlayerType black = PlayerType.NotSelected;
 
         public MatchMaker()
@@ -37,7 +30,7 @@ namespace ChessForms
         {
             //playerBlack = new ChessGame.Players.LichessBotPlayer("lichess-bot", "46nn2kjrrGTFaMN4", "GVZ4hkf7");
 
-            Gamemode gamemode = new CheckMateTest(playerWhite, playerBlack);
+            Gamemode gamemode = new ClassicChess(playerWhite, playerBlack);
             BoardDisplay board = new BoardDisplay(gamemode, white == PlayerType.Local, black == PlayerType.Local);
             board.Show();
         }

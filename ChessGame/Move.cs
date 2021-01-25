@@ -1,8 +1,9 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 
 namespace ChessGame
 {
-    public class Move
+    public class Move : IEqualityComparer<Move>
     {
         /// <summary>
         /// Returns true if any of <c>Moves</c> captures.
@@ -42,7 +43,7 @@ namespace ChessGame
 
         public Move(Coordinate position, Coordinate source, Piece piece, bool captures, TeamColor color)
         {
-            Moves = new []
+            Moves = new[]
             {
                 new PieceMove(position, source, piece, captures)
             };
@@ -51,7 +52,7 @@ namespace ChessGame
 
         public Move(Coordinate position, Coordinate source, Piece piece, bool captures, string notation, TeamColor color)
         {
-            Moves = new []
+            Moves = new[]
             {
                 new PieceMove(position, source, piece, captures)
             };
@@ -59,6 +60,10 @@ namespace ChessGame
             CustomNotation = notation;
             Color = color;
         }
+
+        public static bool operator ==(Move a, Move b) => a.Equals(b);
+
+        public static bool operator !=(Move a, Move b) => !a.Equals(b);
 
         public string ToString(MoveNotation notationType)
         {
@@ -93,5 +98,26 @@ namespace ChessGame
 
             return sb.ToString().Substring(1);
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Move move &&
+                   ToString() == move.ToString() &&
+                   CustomNotation == move.CustomNotation &&
+                   Color == move.Color;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = -895752563;
+            hashCode = hashCode * -1521134295 + ToString().GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CustomNotation);
+            hashCode = hashCode * -1521134295 + Color.GetHashCode();
+            return hashCode;
+        }
+
+        public bool Equals(Move x, Move y) => x.Equals(y);
+
+        public int GetHashCode(Move obj) => obj.GetHashCode();
     }
 }

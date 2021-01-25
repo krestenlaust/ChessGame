@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ChessGame
+﻿namespace ChessGame
 {
     public class Player
     {

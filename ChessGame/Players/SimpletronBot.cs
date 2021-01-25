@@ -68,7 +68,8 @@ namespace ChessGame.Players
                 Chessboard newBoard = new Chessboard(board);
                 newBoard.SimulateMove(move);
 
-                rootMoves.Add(Task.Run(() => CheckMovesDerp(new NodeState{
+                rootMoves.Add(Task.Run(() => CheckMovesDerp(new NodeState
+                {
                     Board = newBoard,
                     Depth = depth - 1,
                     MoveStorage = moves,
@@ -130,8 +131,8 @@ namespace ChessGame.Players
             }
 
             List<Move> viableMoves = (from singleMove in sortedMoves
-                                     where singleMove.Item1 == newLuckyNumber 
-                                     select singleMove.Item2).ToList();
+                                      where singleMove.Item1 == newLuckyNumber
+                                      select singleMove.Item2).ToList();
 
             foreach (var item in viableMoves)
             {

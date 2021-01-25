@@ -83,7 +83,7 @@ namespace ChessCommandline
                 if (move == "r")
                 {
                     board.UpdateDangerzones();
-                    
+
                     DrawBoard(board);
                     continue;
                 }
@@ -141,7 +141,7 @@ namespace ChessCommandline
                             boardTile = ' ';
                         }
                     }
-                    
+
 
                     Piece piece = board[new Coordinate(x, y)];
 

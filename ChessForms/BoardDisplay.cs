@@ -1,10 +1,10 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
-using ChessGame;
+﻿using ChessGame;
 using ChessGame.Pieces;
-using System.Threading.Tasks;
-using System.Threading;
 using System;
+using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ChessForms
 {
@@ -21,11 +21,11 @@ namespace ChessForms
         public BoardDisplay(Gamemode gamemode, bool whiteLocal, bool blackLocal)
         {
             InitializeComponent();
-            
+
             this.gamemode = gamemode;
             this.whiteLocal = whiteLocal;
             this.blackLocal = blackLocal;
-            
+
             if (blackLocal && !whiteLocal)
             {
                 flipped = false;
@@ -45,7 +45,7 @@ namespace ChessForms
             InstantiateUIBoard();
 
             UpdateBoard();
-            
+
             Task.Run(() => chessboard.StartGame());
         }
 
@@ -201,7 +201,7 @@ namespace ChessForms
             Point click = tableLayoutPanel1.PointToClient(MousePosition);
             int windowX = click.X;
             int windowY = click.Y;
-            
+
             int cellX = windowX / (tableLayoutPanel1.Width / chessboard.Width);
             int cellY = windowY / (tableLayoutPanel1.Height / chessboard.Height);
 
@@ -250,7 +250,7 @@ namespace ChessForms
                         fromPosition = clickTarget;
                         SelectPiece(cellX, cellY);
                         selectedPiece = piece;
-                        
+
 
                         foreach (var item in piece.GetMoves(chessboard))
                         {
@@ -402,14 +402,14 @@ namespace ChessForms
                         return Properties.Resources.HestSort;
                 }
             }
-            
+
 
             return null;
         }
 
         private void pictureBox1_Click(object sender, System.EventArgs e)
         {
-            
+
         }
     }
 }

@@ -4,12 +4,6 @@ using System.Text;
 
 namespace ChessGame
 {
-    public enum MoveNotation
-    {
-        UCI,
-        StandardAlgebraic
-    }
-
     /// <summary>
     /// Describes a single piece's move.
     /// </summary>
@@ -23,9 +17,12 @@ namespace ChessGame
         /// If null, appears out of the thing air.
         /// </summary>
         public readonly Coordinate? Source;
-        public readonly Piece Piece;
         public readonly bool Captures;
-        public char PromotesTo {get
+        public readonly Piece Piece;
+        public readonly Piece PromotePiece;
+        public char PromotesTo
+        {
+            get
             {
                 if (PromotePiece is null)
                 {
@@ -37,7 +34,6 @@ namespace ChessGame
                 }
             }
         }
-        public readonly Piece PromotePiece;
 
         public PieceMove(Coordinate? destination, Coordinate? source, Piece piece, bool captures, Piece promotePiece = null)
         {

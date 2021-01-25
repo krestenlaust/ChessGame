@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using ChessGame.Pieces;
 
 namespace ChessGame
 {
-    public enum GameState
+    public enum GameState : byte
     {
         Stalemate,
         Checkmate,

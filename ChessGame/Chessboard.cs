@@ -1,10 +1,16 @@
-﻿using System;
+﻿using ChessGame.Pieces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using ChessGame.Pieces;
 
 namespace ChessGame
 {
+    public enum MoveNotation : byte
+    {
+        UCI,
+        StandardAlgebraic
+    }
+
     /// <summary>
     /// A class that describes a game of chess.
     /// </summary>
@@ -55,7 +61,7 @@ namespace ChessGame
             CurrentTeamTurn = board.CurrentTeamTurn;
             gamemode = board.gamemode;
             CurrentState = board.CurrentState;
-            
+
             Pieces = new Dictionary<Coordinate, Piece>(board.Pieces);
             Dangerzone = new Dictionary<Coordinate, List<Piece>>(board.Dangerzone);
             MovedPieces = new HashSet<Piece>(board.MovedPieces);
@@ -95,6 +101,17 @@ namespace ChessGame
             Dangerzone = new Dictionary<Coordinate, List<Piece>>();
             Moves = new Stack<Move>();
             MovedPieces = new HashSet<Piece>();
+        }
+
+        /// <summary>
+        /// Gets piece by position.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public Piece this[Coordinate position]
+        {
+            get { return GetPiece(position); }
+            set { Pieces[position] = value; }
         }
 
         /// <summary>
@@ -175,6 +192,13 @@ namespace ChessGame
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Move> GetMoves() => GetMoves(CurrentTeamTurn);
+
+        public IEnumerable<Move> GetMovesSorted()
+        {
+            return (from move in GetMoves()
+                    orderby move.Captures
+                    select move);
+        }
 
         /// <summary>
         /// Gets all legal moves for a team.
@@ -286,7 +310,7 @@ namespace ChessGame
         public bool IsKingInCheck(TeamColor color)
         {
             Piece king = null;
-            
+
             foreach (var item in GetPieces<King>())
             {
                 if (item.Color != color)
@@ -396,7 +420,8 @@ namespace ChessGame
                         }
                         break;
                 }
-            }catch (Exception)
+            }
+            catch (Exception)
             {
                 // if notation parsing threw exception, then it's probably custom notation.
                 customNotation = true;
@@ -525,17 +550,6 @@ namespace ChessGame
             }
         }
 
-        /// <summary>
-        /// Gets piece by position.
-        /// </summary>
-        /// <param name="position"></param>
-        /// <returns></returns>
-        public Piece this[Coordinate position]
-        {
-            get { return GetPiece(position); }
-            set { Pieces[position] = value; }
-        }
-
         public Coordinate GetCoordinate(Piece piece) => Pieces.FirstOrDefault(p => p.Value == piece).Key;
 
         /// <summary>
@@ -578,7 +592,7 @@ namespace ChessGame
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public List<Piece> GetPieces<T>() where T : Piece => (from piece in Pieces.Values
-                                         where piece is T
-                                         select piece).ToList();
+                                                              where piece is T
+                                                              select piece).ToList();
     }
 }

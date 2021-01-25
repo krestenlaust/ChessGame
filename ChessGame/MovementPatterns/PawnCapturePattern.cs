@@ -11,7 +11,7 @@ namespace ChessGame.MovementPatterns
             {
                 yield break;
             }
-            
+
             int moveDirectionY = piece.Color == TeamColor.White ? 1 : -1;
 
             // get potential flank capture positions.
