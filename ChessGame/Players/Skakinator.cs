@@ -12,6 +12,8 @@ namespace ChessGame.Players
         {
         }
 
+        private Dictionary<Chessboard, float> TranspositionTable = new Dictionary<Chessboard, float>();
+
         private static float StaticEvaluation(Chessboard board, int depth)
         {
             if (board.CurrentState == GameState.Checkmate)
@@ -71,15 +73,31 @@ namespace ChessGame.Players
                     newDepth = depth - 1;
                 }
 
-                if (maximize)
+                if (TranspositionTable.TryGetValue(childNode, out float precalculatedEvaluation))
                 {
-                    bestEvaluation = Math.Max(bestEvaluation, MinimaxSearch(childNode, newDepth, alpha, beta));
-                    alpha = Math.Max(alpha, bestEvaluation);                
+                    if (maximize)
+                    {
+                        bestEvaluation = precalculatedEvaluation;
+                        alpha = Math.Max(alpha, bestEvaluation);
+                    }
+                    else
+                    {
+                        bestEvaluation = precalculatedEvaluation;
+                        beta = Math.Min(beta, bestEvaluation);
+                    }
                 }
                 else
                 {
-                    bestEvaluation = Math.Min(bestEvaluation, MinimaxSearch(childNode, newDepth, alpha, beta));
-                    beta = Math.Min(beta, bestEvaluation);
+                    if (maximize)
+                    {
+                        bestEvaluation = Math.Max(bestEvaluation, MinimaxSearch(childNode, newDepth, alpha, beta));
+                        alpha = Math.Max(alpha, bestEvaluation);
+                    }
+                    else
+                    {
+                        bestEvaluation = Math.Min(bestEvaluation, MinimaxSearch(childNode, newDepth, alpha, beta));
+                        beta = Math.Min(beta, bestEvaluation);
+                    }
                 }
 
                 if (beta <= alpha)
@@ -88,11 +106,14 @@ namespace ChessGame.Players
                 }
             }
 
+            TranspositionTable[board] = bestEvaluation;
             return bestEvaluation;
         }
 
         public override void TurnStarted(Chessboard board)
         {
+            TranspositionTable.Clear();
+
             List<(float, Move)> moves = new List<(float, Move)>();
             foreach (var move in board.GetMoves())
             {

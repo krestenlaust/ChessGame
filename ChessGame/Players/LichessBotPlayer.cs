@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
@@ -11,6 +12,7 @@ namespace ChessGame.Players
         private readonly StreamReader streamReader;
         private string gameId;
         private string[] lichessMoves;
+        private bool receivedMove;
 
         public LichessBotPlayer(string name, string token, string gameID) : base(name)
         {
@@ -50,8 +52,9 @@ namespace ChessGame.Players
                 TeamColor waitingFor = lichessMoves.Length % 2 != 0 ? TeamColor.White : TeamColor.Black;
 
                 // should be waiting for this player
-                if (waitingFor == player)
+                if (waitingFor == player && receivedMove)
                 {
+                    receivedMove = false;
                     return lichessMoves[lichessMoves.Length - 1];
                 }
                 else
@@ -81,6 +84,7 @@ namespace ChessGame.Players
                     }
 
                     lichessMoves = ((string)gameState["moves"]).Split(' ');
+                    receivedMove = true;
                     break;
                 default:
                     break;
