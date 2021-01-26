@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ChessGame.Players
@@ -45,6 +46,7 @@ namespace ChessGame.Players
                 }
             }
 
+            /*
             foreach (KeyValuePair<Coordinate, Piece> item in board.Pieces)
             {
                 if (board.IsDangerSquare(item.Key, item.Value.Color) > 0)
@@ -58,7 +60,7 @@ namespace ChessGame.Players
                         centipawns -= ((float)item.Value.MaterialValue / 10);
                     }
                 }
-            }
+            }*/
             
             return board.MaterialSum + centipawns;
         }
@@ -129,13 +131,27 @@ namespace ChessGame.Players
         {
             transpositionTable.Clear();
 
+            SemaphoreSlim ss = new SemaphoreSlim(3);
+            List<Task> moveTasks = new List<Task>();
+            
             List<(float, Move)> moves = new List<(float, Move)>();
             foreach (var move in board.GetMoves())
             {
                 Chessboard rootNode = new Chessboard(board, move);
 
-                moves.Add((MinimaxSearch(rootNode, 2, float.MinValue, float.MaxValue), move));
+                ss.Wait();
+
+                moveTasks.Add(
+                    Task.Run(() =>
+                    {
+                        moves.Add((MinimaxSearch(rootNode, 2, float.MinValue, float.MaxValue), move));
+                        ss.Release();
+                    }
+                    ));
             }
+
+            Task.WaitAll(moveTasks.ToArray());
+
 
             float bestEvaluation;
             if (board.CurrentTeamTurn == TeamColor.White)
