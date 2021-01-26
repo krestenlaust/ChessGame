@@ -16,7 +16,7 @@ namespace ChessForms
         private readonly Gamemode gamemode;
         private Chessboard chessboard;
         private readonly bool whiteLocal, blackLocal;
-        private bool flipped = true;
+        private bool unFlipped = false;
 
         public BoardDisplay(Gamemode gamemode, bool whiteLocal, bool blackLocal)
         {
@@ -27,7 +27,7 @@ namespace ChessForms
             this.blackLocal = blackLocal;
 
             // flip board if black is only local player
-            //flipped = !(blackLocal && !whiteLocal);
+            //unFlipped = !(blackLocal && !whiteLocal);
         }
 
         private void BoardDisplay_Load(object sender, EventArgs e)
@@ -106,10 +106,10 @@ namespace ChessForms
                 {
                     Coordinate pieceCoordinate;
 
-                    if (flipped)
+                    if (unFlipped)
                     {
-                        pieceCoordinate = new Coordinate(x, chessboard.Height - 1 - y); //Det her burde også fikse noget
-                    }
+                        pieceCoordinate = new Coordinate(chessboard.Width - 1 - x, chessboard.Height - 1 - y); //Det her burde også fikse noget
+                    } //#442
                     else
                     {
                         pieceCoordinate = new Coordinate(x, y);
@@ -166,10 +166,10 @@ namespace ChessForms
 
                     box.Click += CellClicked;
 
-                    if (flipped)
+                    if (unFlipped)
                     {
-                        boardcells[x, (chessboard.Height - 1) - y] = box;
-                    }
+                        boardcells[chessboard.Width - 1 - x, (chessboard.Height - 1) - y] = box;
+                    } //#442
                     else
                     {
                         boardcells[x, y] = box;
@@ -229,7 +229,7 @@ namespace ChessForms
             int cellX = windowX / (tableLayoutPanel1.Width / chessboard.Width);
             int cellY = windowY / (tableLayoutPanel1.Height / chessboard.Height);
 
-            if (flipped)
+            if (unFlipped)
             {
                 cellY = (chessboard.Height - 1) - cellY;
             }
@@ -337,7 +337,7 @@ namespace ChessForms
 
         private void DeselectPiece(int x, int y)
         {
-            if (flipped)
+            if (unFlipped)
             {
                 y = (chessboard.Height - 1) - y;
             }
@@ -365,7 +365,7 @@ namespace ChessForms
 
         public void ClearPiece(int x, int y)
         {
-            if (flipped)
+            if (unFlipped)
             {
                 y = (chessboard.Height - 1) - y;
             }
@@ -379,7 +379,7 @@ namespace ChessForms
 
         public void PlacePiece(int x, int y, Piece piece)
         {
-            if (flipped)
+            if (unFlipped)
             {
                 y = (chessboard.Height - 1) - y;
             }
