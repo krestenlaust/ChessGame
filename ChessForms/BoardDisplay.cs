@@ -14,7 +14,7 @@ namespace ChessForms
         private Coordinate? fromPosition = null;
         private Piece selectedPiece;
         private readonly Gamemode gamemode;
-        public Chessboard chessboard;
+        private Chessboard chessboard;
         private readonly bool whiteLocal, blackLocal;
         private bool flipped;
 
@@ -26,14 +26,8 @@ namespace ChessForms
             this.whiteLocal = whiteLocal;
             this.blackLocal = blackLocal;
 
-            if (blackLocal && !whiteLocal)
-            {
-                flipped = false;
-            }
-            else
-            {
-                flipped = true;
-            }
+            // flip board if black is only local player
+            flipped = !(blackLocal && !whiteLocal);
         }
 
         private void BoardDisplay_Load(object sender, EventArgs e)
@@ -89,16 +83,13 @@ namespace ChessForms
 
         private void ResetTableStyling()
         {
-            int i = 0;
             for (int y = 0; y < chessboard.Height; y++)
             {
                 for (int x = 0; x < chessboard.Width; x++)
                 {
-                    boardcells[x, y].BackColor = ++i % 2 == 0 ? Color.White : Color.CornflowerBlue;
+                    boardcells[x, y].BackColor = (x % 2) == (y % 2) ? Color.White : Color.CornflowerBlue;
                     boardcells[x, y].BorderStyle = BorderStyle.None;
                 }
-
-                i++;
             }
         }
 
@@ -112,7 +103,7 @@ namespace ChessForms
 
                     if (flipped)
                     {
-                        pieceCoordinate = new Coordinate(x, (chessboard.Height - 1) - y); //Det her burde også fikse noget
+                        pieceCoordinate = new Coordinate(x, chessboard.Height - 1 - y); //Det her burde også fikse noget
                     }
                     else
                     {
@@ -153,13 +144,10 @@ namespace ChessForms
 
             boardcells = new PictureBox[chessboard.Width, chessboard.Height];
 
-            // TODO: Patrick fixer det her, tror nok at det kan løses ved at flippe en af de her løkker på en måde.
-            // derefter kan PlacePiece, ClearPiece etc. "unflippes"
             for (int y = 0; y < chessboard.Height; y++)
             {
                 for (int x = 0; x < chessboard.Width; x++)
                 {
-
                     PictureBox box = new PictureBox
                     {
                         Dock = DockStyle.Fill,
@@ -169,7 +157,7 @@ namespace ChessForms
 
                     box.Click += CellClicked;
 
-                    if (flipped) //Fikset
+                    if (flipped)
                     {
                         boardcells[x, (chessboard.Height - 1) - y] = box;
                     }
@@ -215,7 +203,6 @@ namespace ChessForms
             }
 
             Coordinate clickTarget = new Coordinate(cellX, cellY);
-            //MessageBox.Show(clickTarget.ToString());
 
             // handle click
             switch (button)
