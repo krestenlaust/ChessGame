@@ -64,6 +64,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TilePictureControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <EmbeddedResource Include="BoardDisplay.resx">
       <DependentUpon>BoardDisplay.cs</DependentUpon>
     </EmbeddedResource>

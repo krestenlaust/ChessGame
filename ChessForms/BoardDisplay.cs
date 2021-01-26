@@ -10,7 +10,7 @@ namespace ChessForms
 {
     public partial class BoardDisplay : Form
     {
-        private PictureBox[,] boardcells;
+        private TilePictureControl[,] boardcells;
         private Coordinate? fromPosition = null;
         private Piece selectedPiece;
         private readonly Gamemode gamemode;
@@ -87,10 +87,15 @@ namespace ChessForms
             {
                 for (int x = 0; x < chessboard.Width; x++)
                 {
-                    boardcells[x, y].BackColor = (x % 2) == (y % 2) ? Color.White : Color.CornflowerBlue;
+                    ResetTileColor(x, y);
                     boardcells[x, y].BorderStyle = BorderStyle.None;
                 }
             }
+        }
+
+        public void ResetTileColor(int x, int y)
+        {
+            boardcells[x, y].BackColor = (x % 2) == (y % 2) ? Color.White : Color.CornflowerBlue;
         }
 
         public void UpdateBoard()
@@ -142,17 +147,17 @@ namespace ChessForms
                 tableLayoutPanel1.RowStyles.Add(new ColumnStyle(SizeType.Percent, 1));
             }
 
-            boardcells = new PictureBox[chessboard.Width, chessboard.Height];
+            boardcells = new TilePictureControl[chessboard.Width, chessboard.Height];
 
             for (int y = 0; y < chessboard.Height; y++)
             {
                 for (int x = 0; x < chessboard.Width; x++)
                 {
-                    PictureBox box = new PictureBox
+                    TilePictureControl box = new TilePictureControl
                     {
                         Dock = DockStyle.Fill,
                         BorderStyle = BorderStyle.None,
-                        SizeMode = PictureBoxSizeMode.Zoom,
+                        SizeMode = PictureBoxSizeMode.Zoom
                     };
 
                     box.Click += CellClicked;
@@ -280,7 +285,14 @@ namespace ChessForms
                 case MouseButtons.None:
                     break;
                 case MouseButtons.Right:
-                    boardcells[cellX, cellY].BackColor = Color.Green;
+                    if (boardcells[cellX, cellY].BackColor == Color.Green)
+                    {
+                        ResetTileColor(cellX, cellY);
+                    }
+                    else
+                    {
+                        boardcells[cellX, cellY].BackColor = Color.Green;
+                    }
                     break;
                 case MouseButtons.Middle:
                     break;
