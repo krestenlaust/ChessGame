@@ -12,7 +12,7 @@ namespace ChessGame.Players
         {
         }
 
-        private Dictionary<Chessboard, float> TranspositionTable = new Dictionary<Chessboard, float>();
+        private Dictionary<Chessboard, float> transpositionTable = new Dictionary<Chessboard, float>();
 
         private static float StaticEvaluation(Chessboard board, int depth)
         {
@@ -44,6 +44,21 @@ namespace ChessGame.Players
                     centipawns -= 0.1f * (7 - position.Rank);
                 }
             }
+
+            foreach (KeyValuePair<Coordinate, Piece> item in board.Pieces)
+            {
+                if (board.IsDangerSquare(item.Key, item.Value.Color) > 0)
+                {
+                    if (item.Value.Color == TeamColor.White)
+                    {
+                        centipawns += ((float)item.Value.MaterialValue / 10);
+                    }
+                    else
+                    {
+                        centipawns -= ((float)item.Value.MaterialValue / 10);
+                    }
+                }
+            }
             
             return board.MaterialSum + centipawns;
         }
@@ -73,7 +88,7 @@ namespace ChessGame.Players
                     newDepth = depth - 1;
                 }
 
-                if (TranspositionTable.TryGetValue(childNode, out float precalculatedEvaluation))
+                if (transpositionTable.TryGetValue(childNode, out float precalculatedEvaluation))
                 {
                     if (maximize)
                     {
@@ -106,13 +121,13 @@ namespace ChessGame.Players
                 }
             }
 
-            TranspositionTable[board] = bestEvaluation;
+            transpositionTable[board] = bestEvaluation;
             return bestEvaluation;
         }
 
         public override void TurnStarted(Chessboard board)
         {
-            TranspositionTable.Clear();
+            transpositionTable.Clear();
 
             List<(float, Move)> moves = new List<(float, Move)>();
             foreach (var move in board.GetMoves())
