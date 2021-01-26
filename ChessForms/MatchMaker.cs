@@ -94,7 +94,7 @@ namespace ChessForms
                 case PlayerType.NotSelected:
                     return null;
                 case PlayerType.LichessPlayer:
-                    return new LichessBotPlayer("lichess-player", "dH8TtzcSduH5qyJv", "DWoOvyXs");
+                    return new LichessBotPlayer("lichess-player", "dH8TtzcSduH5qyJv", textBoxBlackLichessMatchID.Text);
                 default:
                     return null;
             }
@@ -145,6 +145,10 @@ namespace ChessForms
 
         private void radioButtonBlackLichessPlayer_CheckedChanged(object sender, EventArgs e)
         {
+            bool isChecked = (sender as RadioButton).Checked;
+
+            textBoxBlackLichessMatchID.Enabled = isChecked;
+
             black = PlayerType.LichessPlayer;
         }
     }
