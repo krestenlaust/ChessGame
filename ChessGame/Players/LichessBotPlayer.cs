@@ -8,7 +8,6 @@ namespace ChessGame.Players
     public class LichessBotPlayer : Player
     {
         private readonly HttpClient httpClient = new HttpClient();
-        //public readonly HttpClient httpStreamClient = new HttpClient();
         private readonly StreamReader streamReader;
         private string gameId;
         private string[] lichessMoves;
@@ -17,7 +16,6 @@ namespace ChessGame.Players
         {
             this.gameId = gameID;
             httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            //httpStreamClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             streamReader = new StreamReader(GetStream());
         }
 

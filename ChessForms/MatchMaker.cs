@@ -11,6 +11,7 @@ namespace ChessForms
     public enum PlayerType
     {
         Local,
+        LichessPlayer,
         Bot,
         Network,
         NotSelected
@@ -28,10 +29,8 @@ namespace ChessForms
 
         private void InstantiateMatch(Player playerWhite, Player playerBlack)
         {
-            //playerBlack = new ChessGame.Players.LichessBotPlayer("lichess-bot", "46nn2kjrrGTFaMN4", "GVZ4hkf7");
-
             Gamemode gamemode = new ClassicChess(playerWhite, playerBlack);
-            BoardDisplay board = new BoardDisplay(gamemode, white == PlayerType.Local, black == PlayerType.Local);
+            BoardDisplay board = new BoardDisplay(gamemode, white == PlayerType.Local, black == PlayerType.Local || black == PlayerType.LichessPlayer);
             board.Show();
         }
 
@@ -94,6 +93,8 @@ namespace ChessForms
                     }
                 case PlayerType.NotSelected:
                     return null;
+                case PlayerType.LichessPlayer:
+                    return new LichessBotPlayer("lichess-player", "dH8TtzcSduH5qyJv", "DWoOvyXs");
                 default:
                     return null;
             }
@@ -140,6 +141,11 @@ namespace ChessForms
         private void MatchMaker_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void radioButtonBlackLichessPlayer_CheckedChanged(object sender, EventArgs e)
+        {
+            black = PlayerType.LichessPlayer;
         }
     }
 }

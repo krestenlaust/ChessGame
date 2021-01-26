@@ -16,7 +16,7 @@ namespace ChessForms
         private readonly Gamemode gamemode;
         private Chessboard chessboard;
         private readonly bool whiteLocal, blackLocal;
-        private bool flipped;
+        private bool flipped = true;
 
         public BoardDisplay(Gamemode gamemode, bool whiteLocal, bool blackLocal)
         {
@@ -27,7 +27,7 @@ namespace ChessForms
             this.blackLocal = blackLocal;
 
             // flip board if black is only local player
-            flipped = !(blackLocal && !whiteLocal);
+            //flipped = !(blackLocal && !whiteLocal);
         }
 
         private void BoardDisplay_Load(object sender, EventArgs e)

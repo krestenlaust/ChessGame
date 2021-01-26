@@ -49,6 +49,7 @@ namespace ChessForms
             this.radioButtonBlackLocal = new System.Windows.Forms.RadioButton();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.buttonStartMatch = new System.Windows.Forms.Button();
+            this.radioButtonBlackLichessPlayer = new System.Windows.Forms.RadioButton();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -157,6 +158,7 @@ namespace ChessForms
             // 
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox4.Controls.Add(this.radioButtonBlackLichessPlayer);
             this.groupBox4.Controls.Add(this.groupBox6);
             this.groupBox4.Controls.Add(this.radioButtonBlackNetworked);
             this.groupBox4.Controls.Add(this.radioButtonBlackBot);
@@ -272,6 +274,18 @@ namespace ChessForms
             this.buttonStartMatch.UseVisualStyleBackColor = true;
             this.buttonStartMatch.Click += new System.EventHandler(this.buttonStartMatch_Click);
             // 
+            // radioButtonBlackLichessPlayer
+            // 
+            this.radioButtonBlackLichessPlayer.AutoSize = true;
+            this.radioButtonBlackLichessPlayer.Location = new System.Drawing.Point(21, 113);
+            this.radioButtonBlackLichessPlayer.Name = "radioButtonBlackLichessPlayer";
+            this.radioButtonBlackLichessPlayer.Size = new System.Drawing.Size(121, 21);
+            this.radioButtonBlackLichessPlayer.TabIndex = 5;
+            this.radioButtonBlackLichessPlayer.TabStop = true;
+            this.radioButtonBlackLichessPlayer.Text = "Lichess Player";
+            this.radioButtonBlackLichessPlayer.UseVisualStyleBackColor = true;
+            this.radioButtonBlackLichessPlayer.CheckedChanged += new System.EventHandler(this.radioButtonBlackLichessPlayer_CheckedChanged);
+            // 
             // MatchMaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -316,5 +330,6 @@ namespace ChessForms
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox textBoxWhiteName;
         private System.Windows.Forms.TextBox textBoxWhiteHost;
+        private System.Windows.Forms.RadioButton radioButtonBlackLichessPlayer;
     }
 }
