@@ -131,7 +131,7 @@ namespace ChessForms
 
         public void InstantiateUIBoard()
         {
-            tableLayoutPanel1.ColumnCount = chessboard.Width;
+            tableLayoutPanel1.ColumnCount = chessboard.Width + 1;
             tableLayoutPanel1.ColumnStyles.Clear();
             int i;
             for (i = 0; i < chessboard.Width; i++)
@@ -140,12 +140,16 @@ namespace ChessForms
                 tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 1));
             }
 
-            tableLayoutPanel1.RowCount = chessboard.Height;
+            tableLayoutPanel1.RowCount = chessboard.Height + 1;
             tableLayoutPanel1.RowStyles.Clear();
             for (i = 0; i < chessboard.Height; i++)
             {
                 tableLayoutPanel1.RowStyles.Add(new ColumnStyle(SizeType.Percent, 1));
             }
+
+            // Coordinate row and column
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 25));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 25));
 
             boardcells = new TilePictureControl[chessboard.Width, chessboard.Height];
 
@@ -171,8 +175,35 @@ namespace ChessForms
                         boardcells[x, y] = box;
                     }
 
-                    tableLayoutPanel1.Controls.Add(box);
+                    tableLayoutPanel1.Controls.Add(box, x, y);
                 }
+            }
+
+            Font labelFont = new Font("ariel", 15, FontStyle.Bold);
+            // Instantiate coordinates
+            for (int x = 0; x < tableLayoutPanel1.ColumnCount - 1; x++)
+            {
+                Label label = new Label
+                {
+                    Text = ((char)(65 + x)).ToString(),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Dock = DockStyle.Fill,
+                    Font = labelFont
+                };
+
+                tableLayoutPanel1.Controls.Add(label, x, tableLayoutPanel1.RowCount - 1);
+            }
+            for (int y = 0; y < tableLayoutPanel1.RowCount - 1; y++)
+            {
+                Label label = new Label
+                {
+                    Text =  (chessboard.Height - y).ToString(),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Dock = DockStyle.Fill,
+                    Font = labelFont
+                };
+
+                tableLayoutPanel1.Controls.Add(label, tableLayoutPanel1.ColumnCount - 1, y);
             }
 
             ResetTableStyling();
@@ -242,7 +273,6 @@ namespace ChessForms
                         fromPosition = clickTarget;
                         SelectPiece(cellX, cellY);
                         selectedPiece = piece;
-
 
                         foreach (var item in piece.GetMoves(chessboard))
                         {
@@ -344,7 +374,6 @@ namespace ChessForms
                 //x = (chessboard.Width - 1) - x;
             }
 
-
             boardcells[x, y].Image = null;
         }
 
@@ -358,7 +387,6 @@ namespace ChessForms
             {
                 //x = (chessboard.Width - 1) - x;
             }
-
 
             boardcells[x, y].Image = GetPieceImage(piece);
         }
