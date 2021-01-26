@@ -30,45 +30,41 @@ namespace ChessGame.Players
                 return board.MaterialSum;
             }
 
-            if (board.CurrentTeamTurn == TeamColor.White)
+            bool maximize = board.CurrentTeamTurn == TeamColor.White;
+            int bestEvaluation = maximize ? int.MinValue : int.MaxValue;
+            foreach (var move in board.GetMoves())
             {
-                int maxEvaluation = int.MinValue;
+                Chessboard childNode = new Chessboard(board, move);
 
-                foreach (var move in board.GetMoves())
+                int newDepth;
+                if (move.Captures && depth == 1)
                 {
-                    Chessboard childNode = new Chessboard(board, move);
-
-                    maxEvaluation = Math.Max(maxEvaluation, MinimaxSearch(childNode, depth - 1, alpha, beta));
-                    alpha = Math.Max(alpha, maxEvaluation);
-
-                    // a better move was found earlier.
-                    if (beta <= alpha)
-                    {
-                        break;
-                    }
+                    // check one level deeper because last move was a capture move.
+                    newDepth = depth;
+                }
+                else
+                {
+                    newDepth = depth - 1;
                 }
 
-                return maxEvaluation;
-            }
-            else
-            {
-                int minEvaluation = int.MaxValue;
-
-                foreach (var move in board.GetMoves())
+                if (maximize)
                 {
-                    Chessboard childNode = new Chessboard(board, move);
-
-                    minEvaluation = Math.Min(minEvaluation, MinimaxSearch(childNode, depth - 1, alpha, beta));
-                    beta = Math.Min(beta, minEvaluation);
-
-                    if (beta <= alpha)
-                    {
-                        break;
-                    }
+                    bestEvaluation = Math.Max(bestEvaluation, MinimaxSearch(childNode, newDepth, alpha, beta));
+                    alpha = Math.Max(alpha, bestEvaluation);                
+                }
+                else
+                {
+                    bestEvaluation = Math.Min(bestEvaluation, MinimaxSearch(childNode, newDepth, alpha, beta));
+                    beta = Math.Min(beta, bestEvaluation);
                 }
 
-                return minEvaluation;
+                if (beta <= alpha)
+                {
+                    break;
+                }
             }
+
+            return bestEvaluation;
         }
 
         public override void TurnStarted(Chessboard board)
@@ -94,7 +90,6 @@ namespace ChessGame.Players
                                orderby moveEvaluation.Item1 ascending
                                select moveEvaluation.Item2).ToList();
             }
-
 
             board.PerformMove(sortedMoves[0]);
         }
