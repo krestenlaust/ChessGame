@@ -77,7 +77,7 @@ namespace ChessForms
                Text = $"{chessboard.CurrentPlayerTurn}'s turn";
            });
 
-            Console.Beep();
+            //Console.Beep();
             UpdateBoard();
         }
 
@@ -157,12 +157,7 @@ namespace ChessForms
             {
                 for (int x = 0; x < chessboard.Width; x++)
                 {
-                    TilePictureControl box = new TilePictureControl
-                    {
-                        Dock = DockStyle.Fill,
-                        BorderStyle = BorderStyle.None,
-                        SizeMode = PictureBoxSizeMode.Zoom
-                    };
+                    TilePictureControl box = new TilePictureControl();
 
                     box.Click += CellClicked;
 

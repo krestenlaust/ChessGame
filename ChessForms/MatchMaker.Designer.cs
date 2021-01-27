@@ -41,6 +41,8 @@ namespace ChessForms
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.radioButtonBlackLichessPlayer = new System.Windows.Forms.RadioButton();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.textBoxBlackLichessMatchID = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxBlackName = new System.Windows.Forms.TextBox();
@@ -50,18 +52,21 @@ namespace ChessForms
             this.radioButtonBlackLocal = new System.Windows.Forms.RadioButton();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.buttonStartMatch = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
-            this.textBoxBlackLichessMatchID = new System.Windows.Forms.TextBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.listBoxGamemode = new System.Windows.Forms.ListBox();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // radioButtonWhiteLocal
             // 
             this.radioButtonWhiteLocal.AutoSize = true;
+            this.radioButtonWhiteLocal.Checked = true;
             this.radioButtonWhiteLocal.Location = new System.Drawing.Point(21, 32);
             this.radioButtonWhiteLocal.Name = "radioButtonWhiteLocal";
             this.radioButtonWhiteLocal.Size = new System.Drawing.Size(63, 21);
@@ -82,7 +87,7 @@ namespace ChessForms
             this.groupBox3.Location = new System.Drawing.Point(3, 3);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(500, 200);
-            this.groupBox3.TabIndex = 1;
+            this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "White player type";
             // 
@@ -95,7 +100,7 @@ namespace ChessForms
             this.groupBox1.Location = new System.Drawing.Point(253, 21);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(241, 173);
-            this.groupBox1.TabIndex = 5;
+            this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             // 
             // label3
@@ -121,7 +126,7 @@ namespace ChessForms
             this.textBoxWhiteName.Location = new System.Drawing.Point(9, 37);
             this.textBoxWhiteName.Name = "textBoxWhiteName";
             this.textBoxWhiteName.Size = new System.Drawing.Size(199, 22);
-            this.textBoxWhiteName.TabIndex = 1;
+            this.textBoxWhiteName.TabIndex = 3;
             this.textBoxWhiteName.Text = "White";
             // 
             // textBoxWhiteHost
@@ -130,7 +135,7 @@ namespace ChessForms
             this.textBoxWhiteHost.Location = new System.Drawing.Point(9, 89);
             this.textBoxWhiteHost.Name = "textBoxWhiteHost";
             this.textBoxWhiteHost.Size = new System.Drawing.Size(199, 22);
-            this.textBoxWhiteHost.TabIndex = 0;
+            this.textBoxWhiteHost.TabIndex = 4;
             // 
             // radioButtonWhiteNetworked
             // 
@@ -139,7 +144,6 @@ namespace ChessForms
             this.radioButtonWhiteNetworked.Name = "radioButtonWhiteNetworked";
             this.radioButtonWhiteNetworked.Size = new System.Drawing.Size(191, 21);
             this.radioButtonWhiteNetworked.TabIndex = 2;
-            this.radioButtonWhiteNetworked.TabStop = true;
             this.radioButtonWhiteNetworked.Text = "Networked (You are host)";
             this.radioButtonWhiteNetworked.UseVisualStyleBackColor = true;
             this.radioButtonWhiteNetworked.CheckedChanged += new System.EventHandler(this.radioButtonWhiteNetworked_CheckedChanged);
@@ -151,7 +155,6 @@ namespace ChessForms
             this.radioButtonWhiteBot.Name = "radioButtonWhiteBot";
             this.radioButtonWhiteBot.Size = new System.Drawing.Size(50, 21);
             this.radioButtonWhiteBot.TabIndex = 1;
-            this.radioButtonWhiteBot.TabStop = true;
             this.radioButtonWhiteBot.Text = "Bot";
             this.radioButtonWhiteBot.UseVisualStyleBackColor = true;
             this.radioButtonWhiteBot.CheckedChanged += new System.EventHandler(this.radioButtonWhiteBot_CheckedChanged);
@@ -178,8 +181,7 @@ namespace ChessForms
             this.radioButtonBlackLichessPlayer.Location = new System.Drawing.Point(21, 113);
             this.radioButtonBlackLichessPlayer.Name = "radioButtonBlackLichessPlayer";
             this.radioButtonBlackLichessPlayer.Size = new System.Drawing.Size(121, 21);
-            this.radioButtonBlackLichessPlayer.TabIndex = 5;
-            this.radioButtonBlackLichessPlayer.TabStop = true;
+            this.radioButtonBlackLichessPlayer.TabIndex = 8;
             this.radioButtonBlackLichessPlayer.Text = "Lichess Player";
             this.radioButtonBlackLichessPlayer.UseVisualStyleBackColor = true;
             this.radioButtonBlackLichessPlayer.CheckedChanged += new System.EventHandler(this.radioButtonBlackLichessPlayer_CheckedChanged);
@@ -195,8 +197,25 @@ namespace ChessForms
             this.groupBox6.Location = new System.Drawing.Point(253, 21);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(241, 173);
-            this.groupBox6.TabIndex = 4;
+            this.groupBox6.TabIndex = 3;
             this.groupBox6.TabStop = false;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(6, 112);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(115, 17);
+            this.label5.TabIndex = 5;
+            this.label5.Text = "Lichess Match ID";
+            // 
+            // textBoxBlackLichessMatchID
+            // 
+            this.textBoxBlackLichessMatchID.Enabled = false;
+            this.textBoxBlackLichessMatchID.Location = new System.Drawing.Point(9, 132);
+            this.textBoxBlackLichessMatchID.Name = "textBoxBlackLichessMatchID";
+            this.textBoxBlackLichessMatchID.Size = new System.Drawing.Size(199, 22);
+            this.textBoxBlackLichessMatchID.TabIndex = 11;
             // 
             // label2
             // 
@@ -221,7 +240,7 @@ namespace ChessForms
             this.textBoxBlackName.Location = new System.Drawing.Point(9, 37);
             this.textBoxBlackName.Name = "textBoxBlackName";
             this.textBoxBlackName.Size = new System.Drawing.Size(199, 22);
-            this.textBoxBlackName.TabIndex = 1;
+            this.textBoxBlackName.TabIndex = 9;
             this.textBoxBlackName.Text = "Black";
             // 
             // textBoxBlackServerIP
@@ -230,7 +249,7 @@ namespace ChessForms
             this.textBoxBlackServerIP.Location = new System.Drawing.Point(9, 87);
             this.textBoxBlackServerIP.Name = "textBoxBlackServerIP";
             this.textBoxBlackServerIP.Size = new System.Drawing.Size(199, 22);
-            this.textBoxBlackServerIP.TabIndex = 0;
+            this.textBoxBlackServerIP.TabIndex = 10;
             // 
             // radioButtonBlackNetworked
             // 
@@ -238,8 +257,7 @@ namespace ChessForms
             this.radioButtonBlackNetworked.Location = new System.Drawing.Point(21, 86);
             this.radioButtonBlackNetworked.Name = "radioButtonBlackNetworked";
             this.radioButtonBlackNetworked.Size = new System.Drawing.Size(197, 21);
-            this.radioButtonBlackNetworked.TabIndex = 2;
-            this.radioButtonBlackNetworked.TabStop = true;
+            this.radioButtonBlackNetworked.TabIndex = 7;
             this.radioButtonBlackNetworked.Text = "Networked (You are client)";
             this.radioButtonBlackNetworked.UseVisualStyleBackColor = true;
             this.radioButtonBlackNetworked.CheckedChanged += new System.EventHandler(this.radioButtonBlackNetworked_CheckedChanged);
@@ -250,8 +268,7 @@ namespace ChessForms
             this.radioButtonBlackBot.Location = new System.Drawing.Point(21, 59);
             this.radioButtonBlackBot.Name = "radioButtonBlackBot";
             this.radioButtonBlackBot.Size = new System.Drawing.Size(50, 21);
-            this.radioButtonBlackBot.TabIndex = 1;
-            this.radioButtonBlackBot.TabStop = true;
+            this.radioButtonBlackBot.TabIndex = 6;
             this.radioButtonBlackBot.Text = "Bot";
             this.radioButtonBlackBot.UseVisualStyleBackColor = true;
             this.radioButtonBlackBot.CheckedChanged += new System.EventHandler(this.radioButtonBlackBot_CheckedChanged);
@@ -259,10 +276,11 @@ namespace ChessForms
             // radioButtonBlackLocal
             // 
             this.radioButtonBlackLocal.AutoSize = true;
+            this.radioButtonBlackLocal.Checked = true;
             this.radioButtonBlackLocal.Location = new System.Drawing.Point(21, 32);
             this.radioButtonBlackLocal.Name = "radioButtonBlackLocal";
             this.radioButtonBlackLocal.Size = new System.Drawing.Size(63, 21);
-            this.radioButtonBlackLocal.TabIndex = 0;
+            this.radioButtonBlackLocal.TabIndex = 5;
             this.radioButtonBlackLocal.TabStop = true;
             this.radioButtonBlackLocal.Text = "Local";
             this.radioButtonBlackLocal.UseVisualStyleBackColor = true;
@@ -270,8 +288,6 @@ namespace ChessForms
             // 
             // flowLayoutPanel1
             // 
-            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.Controls.Add(this.groupBox3);
             this.flowLayoutPanel1.Controls.Add(this.groupBox4);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(12, 12);
@@ -284,34 +300,48 @@ namespace ChessForms
             this.buttonStartMatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonStartMatch.Location = new System.Drawing.Point(12, 445);
             this.buttonStartMatch.Name = "buttonStartMatch";
-            this.buttonStartMatch.Size = new System.Drawing.Size(182, 30);
+            this.buttonStartMatch.Size = new System.Drawing.Size(215, 30);
             this.buttonStartMatch.TabIndex = 4;
             this.buttonStartMatch.Text = "Start match";
             this.buttonStartMatch.UseVisualStyleBackColor = true;
             this.buttonStartMatch.Click += new System.EventHandler(this.buttonStartMatch_Click);
             // 
-            // label5
+            // groupBox2
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 112);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(115, 17);
-            this.label5.TabIndex = 5;
-            this.label5.Text = "Lichess Match ID";
+            this.groupBox2.Controls.Add(this.label6);
+            this.groupBox2.Controls.Add(this.listBoxGamemode);
+            this.groupBox2.Location = new System.Drawing.Point(534, 12);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(164, 427);
+            this.groupBox2.TabIndex = 5;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Game settings";
             // 
-            // textBoxBlackLichessMatchID
+            // label6
             // 
-            this.textBoxBlackLichessMatchID.Enabled = false;
-            this.textBoxBlackLichessMatchID.Location = new System.Drawing.Point(9, 132);
-            this.textBoxBlackLichessMatchID.Name = "textBoxBlackLichessMatchID";
-            this.textBoxBlackLichessMatchID.Size = new System.Drawing.Size(199, 22);
-            this.textBoxBlackLichessMatchID.TabIndex = 4;
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 53);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(121, 17);
+            this.label6.TabIndex = 7;
+            this.label6.Text = "Select gamemode";
+            // 
+            // listBoxGamemode
+            // 
+            this.listBoxGamemode.FormattingEnabled = true;
+            this.listBoxGamemode.ItemHeight = 16;
+            this.listBoxGamemode.Location = new System.Drawing.Point(6, 73);
+            this.listBoxGamemode.Name = "listBoxGamemode";
+            this.listBoxGamemode.Size = new System.Drawing.Size(120, 84);
+            this.listBoxGamemode.TabIndex = 12;
+            this.listBoxGamemode.SelectedIndexChanged += new System.EventHandler(this.listBoxGamemode_SelectedIndexChanged);
             // 
             // MatchMaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(544, 481);
+            this.ClientSize = new System.Drawing.Size(714, 481);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.buttonStartMatch);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Name = "MatchMaker";
@@ -326,6 +356,8 @@ namespace ChessForms
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -354,5 +386,8 @@ namespace ChessForms
         private System.Windows.Forms.RadioButton radioButtonBlackLichessPlayer;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBoxBlackLichessMatchID;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ListBox listBoxGamemode;
     }
 }

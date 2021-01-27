@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ChessForms
@@ -11,7 +7,12 @@ namespace ChessForms
     {
         public TilePictureControl()
         {
-            this.SetStyle(ControlStyles.StandardDoubleClick, false);
+            SetStyle(ControlStyles.StandardDoubleClick, false);
+            Dock = DockStyle.Fill;
+            BorderStyle = BorderStyle.None;
+            SizeMode = PictureBoxSizeMode.Zoom;
+            Padding = new Padding(0);
+            Margin = new Padding(0);
         }
     }
 }

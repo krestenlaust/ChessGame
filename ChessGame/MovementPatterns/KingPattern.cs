@@ -20,8 +20,7 @@ namespace ChessGame.MovementPatterns
                     Coordinate newPosition = new Coordinate(x + position.File, y + position.Rank);
 
                     // if the checking position is outside of the board - ignore it.
-                    if (newPosition.Rank >= board.Height || newPosition.Rank < 0 ||
-                        newPosition.File >= board.Width || newPosition.File < 0)
+                    if (!board.InsideBoard(newPosition))
                     {
                         continue;
                     }
@@ -36,7 +35,8 @@ namespace ChessGame.MovementPatterns
                     {
                         continue;
                     }
-                    else if (guardedSquaresOnly) // return all protected squares
+                    
+                    if (guardedSquaresOnly) // return all protected squares
                     {
                         yield return new Move(newPosition, position, piece, false, piece.Color);
                         continue;

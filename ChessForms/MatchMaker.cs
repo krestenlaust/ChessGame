@@ -2,8 +2,10 @@
 using ChessGame.Gamemodes;
 using ChessGame.Players;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace ChessForms
@@ -13,14 +15,21 @@ namespace ChessForms
         Local,
         LichessPlayer,
         Bot,
-        Network,
-        NotSelected
+        Network
+    }
+    public enum GamemodeType
+    {
+        Classic = 0,
+        CheckMateTest = 1,
+        PawnTest = 2,
+        Tiny = 3,
     }
 
     public partial class MatchMaker : Form
     {
         private PlayerType white = PlayerType.Local;
-        private PlayerType black = PlayerType.NotSelected;
+        private PlayerType black = PlayerType.Local;
+        private GamemodeType gamemodeType = GamemodeType.Classic;
 
         public MatchMaker()
         {
@@ -29,19 +38,13 @@ namespace ChessForms
 
         private void InstantiateMatch(Player playerWhite, Player playerBlack)
         {
-            Gamemode gamemode = new ClassicChess(playerWhite, playerBlack);
+            Gamemode gamemode = CreateGamemode(gamemodeType, playerWhite, playerBlack);
             BoardDisplay board = new BoardDisplay(gamemode, white == PlayerType.Local, black == PlayerType.Local || black == PlayerType.LichessPlayer);
             board.Show();
         }
 
         private void buttonStartMatch_Click(object sender, EventArgs e)
         {
-            if (black == PlayerType.NotSelected)
-            {
-                MessageBox.Show("You need to select a player to play black");
-                return;
-            }
-
             Player playerWhite = CreatePlayer(white, textBoxWhiteName.Text, TeamColor.White);
             Player playerBlack = CreatePlayer(black, textBoxBlackName.Text, TeamColor.Black);
 
@@ -91,13 +94,28 @@ namespace ChessForms
 
                         return new NetworkedPlayer(name, tcpClient.GetStream());
                     }
-                case PlayerType.NotSelected:
-                    return null;
                 case PlayerType.LichessPlayer:
                     return new LichessBotPlayer("lichess-player", "dH8TtzcSduH5qyJv", textBoxBlackLichessMatchID.Text);
                 default:
                     return null;
             }
+        }
+
+        private static Gamemode CreateGamemode(GamemodeType gamemodeType, Player playerWhite, Player playerBlack)
+        {
+            switch (gamemodeType)
+            {
+                case GamemodeType.Classic:
+                    return new ClassicChess(playerWhite, playerBlack);
+                case GamemodeType.CheckMateTest:
+                    return new CheckMateTest(playerWhite, playerBlack);
+                case GamemodeType.PawnTest:
+                    return new PawnTestChess(playerWhite, playerBlack);
+                case GamemodeType.Tiny:
+                    return new TinyChess(playerWhite, playerBlack);
+            }
+
+            return null;
         }
 
         private void radioButtonWhiteNetworked_CheckedChanged(object sender, EventArgs e)
@@ -140,7 +158,8 @@ namespace ChessForms
 
         private void MatchMaker_Load(object sender, EventArgs e)
         {
-
+            listBoxGamemode.Items.AddRange(Enum.GetNames(typeof(GamemodeType)));
+            listBoxGamemode.SelectedIndex = 0;
         }
 
         private void radioButtonBlackLichessPlayer_CheckedChanged(object sender, EventArgs e)
@@ -150,6 +169,11 @@ namespace ChessForms
             textBoxBlackLichessMatchID.Enabled = isChecked;
 
             black = PlayerType.LichessPlayer;
+        }
+
+        private void listBoxGamemode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            gamemodeType = (GamemodeType)Enum.Parse(typeof(GamemodeType), (string)listBoxGamemode.SelectedItem);
         }
     }
 }

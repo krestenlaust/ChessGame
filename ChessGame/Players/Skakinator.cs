@@ -38,29 +38,62 @@ namespace ChessGame.Players
 
                 if (item.Color == TeamColor.White)
                 {
-                    centipawns += 0.1f * (position.Rank - 1);
+                    centipawns += 0.05f * (position.Rank - 1);
                 }
                 else
                 {
-                    centipawns -= 0.1f * (7 - position.Rank);
+                    centipawns -= 0.05f * (7 - position.Rank);
                 }
-            }
 
-            /*
-            foreach (KeyValuePair<Coordinate, Piece> item in board.Pieces)
-            {
-                if (board.IsDangerSquare(item.Key, item.Value.Color) > 0)
+                /*
+                foreach (var dangersquarePawn in board.Dangerzone[position])
                 {
-                    if (item.Value.Color == TeamColor.White)
+                    if (!(dangersquarePawn is Pieces.Pawn))
                     {
-                        centipawns += ((float)item.Value.MaterialValue / 10);
+                        continue;
+                    }
+
+                    if (item.Color != dangersquarePawn.Color)
+                    {
+                        if (item.Color == TeamColor.White)
+                        {
+                            centipawns -= 0.05f;
+                        }
+                        else
+                        {
+                            centipawns += 0.05f;
+                        }
                     }
                     else
                     {
-                        centipawns -= ((float)item.Value.MaterialValue / 10);
+                        if (item.Color == TeamColor.White)
+                        {
+                            centipawns += 0.05f;
+                        }
+                        else
+                        {
+                            centipawns -= 0.05f;
+                        }
                     }
+                }*/
+            }
+
+            foreach (var item in board.Pieces)
+            {
+                if (item.Value is Pieces.King || item.Value is Pieces.Pawn || item.Value is Pieces.Rook)
+                {
+                    continue;
                 }
-            }*/
+
+                if (item.Key.Rank == 0 && item.Value.Color == TeamColor.White)
+                {
+                    centipawns -= 0.2f;
+                }
+                else if (item.Key.Rank == 7 && item.Value.Color == TeamColor.Black)
+                {
+                    centipawns += 0.2f;
+                }
+            }
             
             return board.MaterialSum + centipawns;
         }
@@ -80,7 +113,7 @@ namespace ChessGame.Players
                 Chessboard childNode = new Chessboard(board, move);
 
                 int newDepth;
-                if (move.Captures && depth == 1)
+                if (depth == 1 && (move.Captures || !(move.Moves[0].PromotePiece is null)))
                 {
                     // check one level deeper because last move was a capture move.
                     newDepth = depth;
@@ -129,8 +162,6 @@ namespace ChessGame.Players
 
         public override void TurnStarted(Chessboard board)
         {
-            transpositionTable.Clear();
-
             SemaphoreSlim ss = new SemaphoreSlim(3);
             List<Task> moveTasks = new List<Task>();
             
@@ -180,6 +211,10 @@ namespace ChessGame.Players
             }
 
             board.PerformMove(sortedMoves[0]);
+
+            // Clean-up
+            transpositionTable.Clear();
+            GC.Collect();
         }
     }
 }
