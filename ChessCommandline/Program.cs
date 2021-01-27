@@ -11,6 +11,7 @@ namespace ChessCommandline
         static ConsoleColor currentColor = ConsoleColor.DarkRed;
         static bool showDangersquares;
         static readonly Array consoleColors = Enum.GetValues(typeof(ConsoleColor));
+        static Chessboard chessboard;
 
         static void Main(string[] args)
         {
@@ -19,26 +20,17 @@ namespace ChessCommandline
             Console.WriteLine("Nickname for player 1 [default: white]? ");
             string nickname = Console.ReadLine();
             Player player1 = new Player(nickname == string.Empty ? "white" : nickname);
-            player1.onTurnStarted += AskForMove;
             Player player2 = new Player(nickname == string.Empty ? "black" : nickname);
-            player2.onTurnStarted += AskForMove;
-
-            /*
-            Console.WriteLine("Nickname for player 2? [default: black]");
-            nickname = Console.ReadLine();
-            Player player2 = new Player(nickname == string.Empty ? "black" : nickname);
-            player2.onTurnStarted += Player2_onTurnStarted;
-            */
-            ChessGame.Bots.SimpletronBot bot = new ChessGame.Bots.SimpletronBot();
 
             while (true)
             {
                 Gamemode gamemode = new PawnTestChess(player1, player2);
+                gamemode.onTurnChanged += AskForMove;
 
-                Chessboard chessboard = gamemode.GenerateBoard();
+                chessboard = gamemode.GenerateBoard();
                 chessboard.StartGame();
 
-                while (chessboard.isGameInProgress)
+                while (!chessboard.isGameFinished)
                 { // (event-based)
                 }
 
@@ -55,14 +47,14 @@ namespace ChessCommandline
             }
         }
 
-        static void AskForMove(Chessboard board)
+        static void AskForMove()
         {
-            DrawBoard(board);
+            DrawBoard(chessboard);
 
             while (true)
             {
-                Console.Title = $"Material: {board.MaterialSum}";
-                Console.WriteLine($"{board.CurrentPlayerTurn.Nickname}'s turn to move: ");
+                Console.Title = $"Material: {chessboard.MaterialSum}";
+                Console.WriteLine($"{chessboard.CurrentPlayerTurn.Nickname}'s turn to move: ");
                 string move = Console.ReadLine();
 
                 if (move == "c")
@@ -76,26 +68,26 @@ namespace ChessCommandline
 
                     currentColor = (ConsoleColor)consoleColors.GetValue((i + 1) % consoleColors.Length);
 
-                    DrawBoard(board);
+                    DrawBoard(chessboard);
                     continue;
                 }
 
                 if (move == "r")
                 {
-                    board.UpdateDangerzones();
+                    chessboard.UpdateDangerzones();
 
-                    DrawBoard(board);
+                    DrawBoard(chessboard);
                     continue;
                 }
 
                 if (move == "dangerzone")
                 {
                     showDangersquares = !showDangersquares;
-                    DrawBoard(board);
+                    DrawBoard(chessboard);
                     continue;
                 }
 
-                if (board.PerformMove(move, MoveNotation.UCI))
+                if (chessboard.PerformMove(move, MoveNotation.UCI))
                 {
                     return;
                 }

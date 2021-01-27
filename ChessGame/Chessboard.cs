@@ -49,6 +49,14 @@ namespace ChessGame
                 return Pieces.Values.Sum(p => p.Color == TeamColor.Black ? -p.MaterialValue : p.MaterialValue);
             }
         }
+        public bool isGameFinished
+        {
+            get
+            {
+                return CurrentState == GameState.Checkmate || 
+                    CurrentState == GameState.Stalemate;
+            }
+        }
 
         /// <summary>
         /// Makes a copy of <c>board</c>, player references stay the same.
