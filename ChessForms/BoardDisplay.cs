@@ -64,7 +64,7 @@ namespace ChessForms
                 return;
             }
 
-            this.Invoke((MethodInvoker)delegate
+            Invoke((MethodInvoker)delegate
             {
                 Text = outputMsg;
             });
@@ -429,7 +429,19 @@ namespace ChessForms
             return null;
         }
 
-        private void pictureBox1_Click(object sender, System.EventArgs e)
+        private void BoardDisplay_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Left)
+            {
+
+            }
+            else if (e.KeyCode == Keys.Right)
+            {
+
+            }
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
         {
 
         }

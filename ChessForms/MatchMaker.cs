@@ -2,11 +2,10 @@
 using ChessGame.Gamemodes;
 using ChessGame.Players;
 using System;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Reflection;
 using System.Windows.Forms;
+using ChessBots;
 
 namespace ChessForms
 {

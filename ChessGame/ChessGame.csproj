@@ -63,7 +63,6 @@
   <ItemGroup>
     <Compile Include="Gamemodes\CheckMateTest.cs" />
     <Compile Include="Players\LichessBotPlayer.cs" />
-    <Compile Include="Players\SimpletronBot.cs" />
     <Compile Include="Chessboard.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="Gamemode.cs" />
@@ -94,7 +93,6 @@
     <Compile Include="Pieces\Queen.cs" />
     <Compile Include="Pieces\Rook.cs" />
     <Compile Include="Player.cs" />
-    <Compile Include="Players\Skakinator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Timer.cs" />
   </ItemGroup>

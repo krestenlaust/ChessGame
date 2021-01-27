@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ChessGame;
 
-namespace ChessGame.Players
+namespace ChessBots
 {
     public class SimpletronBot : Player
     {

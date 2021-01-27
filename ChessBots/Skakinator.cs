@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ChessGame;
+using ChessGame.Pieces;
 
-namespace ChessGame.Players
+namespace ChessBots
 {
     public class Skakinator : Player
     {
@@ -29,7 +30,7 @@ namespace ChessGame.Players
             }
 
             float centipawns = 0;
-            foreach (Pieces.Pawn item in board.GetPieces<Pieces.Pawn>())
+            foreach (Pawn item in board.GetPieces<Pawn>())
             {
                 if (!board.TryGetCoordinate(item, out Coordinate position))
                 {
@@ -80,7 +81,7 @@ namespace ChessGame.Players
 
             foreach (var item in board.Pieces)
             {
-                if (item.Value is Pieces.King || item.Value is Pieces.Pawn || item.Value is Pieces.Rook)
+                if (item.Value is King || item.Value is Pawn || item.Value is Rook)
                 {
                     continue;
                 }

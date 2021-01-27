@@ -53,9 +53,11 @@ namespace ChessForms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(782, 753);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.KeyPreview = true;
             this.Name = "BoardDisplay";
             this.Text = "Super Skak!";
             this.Load += new System.EventHandler(this.BoardDisplay_Load);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.BoardDisplay_KeyUp);
             this.ResumeLayout(false);
 
         }
