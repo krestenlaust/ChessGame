@@ -189,6 +189,8 @@ namespace ChessGame
         public void StartNextTurn()
         {
             // change turn
+            gamemode.UpdateGameState(this);
+
             if (gamemode.StartTurn(this))
             {
                 CurrentPlayerTurn.TurnStarted(this);
@@ -515,17 +517,20 @@ namespace ChessGame
         /// Removes old references of piece, and adds new.
         /// </summary>
         /// <param name="piece"></param>
-        private void UpdateDangerzones(Piece piece)
+        private void UpdateDangerzones(Piece piece, bool removeOld = false)
         {
             // remove all instances
-            foreach (var item in Dangerzone)
+            if (removeOld)
             {
-                if (item.Value is null)
+                foreach (var item in Dangerzone)
                 {
-                    continue;
-                }
+                    if (item.Value is null)
+                    {
+                        continue;
+                    }
 
-                item.Value.Remove(piece);
+                    item.Value.Remove(piece);
+                }
             }
 
             // update dangersquares.

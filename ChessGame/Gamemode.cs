@@ -75,10 +75,19 @@ namespace ChessGame
         {
             GameState previousState = board.CurrentState;
 
+            if (previousState == GameState.NotStarted)
+            {
+                return false;
+            }
+
             // check for whether king is in check.
             if (board.IsKingInCheck(board.CurrentTeamTurn))
             {
                 board.CurrentState = GameState.Check;
+            }
+            else
+            {
+                board.CurrentState = GameState.Started;
             }
 
             // no more legal moves, game is over either by stalemate or checkmate.
@@ -94,6 +103,10 @@ namespace ChessGame
                 {
                     board.CurrentState = GameState.Stalemate;
                 }
+            }
+            else if(board.CurrentState != GameState.Check)
+            {
+                board.CurrentState = GameState.Started;
             }
 
             return previousState != board.CurrentState;
