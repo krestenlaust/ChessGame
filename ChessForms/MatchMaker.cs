@@ -26,6 +26,7 @@ namespace ChessForms
 
     public partial class MatchMaker : Form
     {
+        public static bool PlaySoundOnMove;
         private PlayerType white = PlayerType.Local;
         private PlayerType black = PlayerType.Local;
         private GamemodeType gamemodeType = GamemodeType.Classic;
@@ -173,6 +174,11 @@ namespace ChessForms
         private void listBoxGamemode_SelectedIndexChanged(object sender, EventArgs e)
         {
             gamemodeType = (GamemodeType)Enum.Parse(typeof(GamemodeType), (string)listBoxGamemode.SelectedItem);
+        }
+
+        private void checkBoxSoundOnMove_CheckedChanged(object sender, EventArgs e)
+        {
+            PlaySoundOnMove = (sender as CheckBox).Checked;
         }
     }
 }

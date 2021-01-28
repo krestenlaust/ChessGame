@@ -53,6 +53,7 @@ namespace ChessForms
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.buttonStartMatch = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.checkBoxSoundOnMove = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.listBoxGamemode = new System.Windows.Forms.ListBox();
             this.groupBox3.SuspendLayout();
@@ -288,6 +289,7 @@ namespace ChessForms
             // 
             // flowLayoutPanel1
             // 
+            this.flowLayoutPanel1.AutoScroll = true;
             this.flowLayoutPanel1.Controls.Add(this.groupBox3);
             this.flowLayoutPanel1.Controls.Add(this.groupBox4);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(12, 12);
@@ -298,7 +300,7 @@ namespace ChessForms
             // buttonStartMatch
             // 
             this.buttonStartMatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonStartMatch.Location = new System.Drawing.Point(12, 445);
+            this.buttonStartMatch.Location = new System.Drawing.Point(12, 447);
             this.buttonStartMatch.Name = "buttonStartMatch";
             this.buttonStartMatch.Size = new System.Drawing.Size(215, 30);
             this.buttonStartMatch.TabIndex = 4;
@@ -308,19 +310,33 @@ namespace ChessForms
             // 
             // groupBox2
             // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.checkBoxSoundOnMove);
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.listBoxGamemode);
             this.groupBox2.Location = new System.Drawing.Point(534, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(164, 427);
+            this.groupBox2.Size = new System.Drawing.Size(182, 427);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Game settings";
             // 
+            // checkBoxSoundOnMove
+            // 
+            this.checkBoxSoundOnMove.AutoSize = true;
+            this.checkBoxSoundOnMove.Location = new System.Drawing.Point(7, 33);
+            this.checkBoxSoundOnMove.Name = "checkBoxSoundOnMove";
+            this.checkBoxSoundOnMove.Size = new System.Drawing.Size(158, 21);
+            this.checkBoxSoundOnMove.TabIndex = 13;
+            this.checkBoxSoundOnMove.Text = "Play sound on move";
+            this.checkBoxSoundOnMove.UseVisualStyleBackColor = true;
+            this.checkBoxSoundOnMove.CheckedChanged += new System.EventHandler(this.checkBoxSoundOnMove_CheckedChanged);
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 53);
+            this.label6.Location = new System.Drawing.Point(7, 99);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(121, 17);
             this.label6.TabIndex = 7;
@@ -330,7 +346,7 @@ namespace ChessForms
             // 
             this.listBoxGamemode.FormattingEnabled = true;
             this.listBoxGamemode.ItemHeight = 16;
-            this.listBoxGamemode.Location = new System.Drawing.Point(6, 73);
+            this.listBoxGamemode.Location = new System.Drawing.Point(7, 119);
             this.listBoxGamemode.Name = "listBoxGamemode";
             this.listBoxGamemode.Size = new System.Drawing.Size(120, 84);
             this.listBoxGamemode.TabIndex = 12;
@@ -340,10 +356,13 @@ namespace ChessForms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(714, 481);
+            this.ClientSize = new System.Drawing.Size(732, 483);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.buttonStartMatch);
             this.Controls.Add(this.flowLayoutPanel1);
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(750, 530);
+            this.MinimumSize = new System.Drawing.Size(750, 350);
             this.Name = "MatchMaker";
             this.Text = "MatchMaker";
             this.Load += new System.EventHandler(this.MatchMaker_Load);
@@ -389,5 +408,6 @@ namespace ChessForms
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ListBox listBoxGamemode;
+        private System.Windows.Forms.CheckBox checkBoxSoundOnMove;
     }
 }

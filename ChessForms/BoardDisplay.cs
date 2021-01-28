@@ -77,7 +77,10 @@ namespace ChessForms
                Text = $"{chessboard.CurrentPlayerTurn}'s turn";
            });
 
-            //Console.Beep();
+            if (MatchMaker.PlaySoundOnMove)
+            {
+                Console.Beep();
+            }
             UpdateBoard();
         }
 
