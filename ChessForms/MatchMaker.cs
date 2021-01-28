@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
 using ChessBots;
+using ChessForms.Properties;
 
 namespace ChessForms
 {

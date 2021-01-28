@@ -57,7 +57,7 @@ namespace ChessForms
                 case GameState.Check:
                     outputMsg = $"{chessboard.CurrentPlayerTurn} is in check!";
                     break;
-            }
+            } 
 
             if (outputMsg == string.Empty)
             {
@@ -205,6 +205,19 @@ namespace ChessForms
             }
 
             ResetTableStyling();
+        }
+
+        private void DrawDangerzone()
+        {
+            foreach (var item in chessboard.Dangerzone)
+            {
+                if (!chessboard.InsideBoard(item.Key))
+                {
+                    continue;
+                }
+
+                ColorSquare(item.Key.File, item.Key.Rank, Color.Red);
+            }
         }
 
         private void MakeMove(Coordinate from, Coordinate to)
@@ -389,6 +402,20 @@ namespace ChessForms
             boardcells[x, y].Image = GetPieceImage(piece);
         }
 
+        public void ColorSquare(int x, int y, Color color)
+        {
+            if (unFlipped)
+            {
+                y = (chessboard.Height - 1) - y;
+            }
+            else
+            {
+                //x = (chessboard.Width - 1) - x;
+            }
+
+            boardcells[x, y].BackColor = color;
+        }
+
         private Image GetPieceImage(Piece piece)
         {
             if (piece.Color == TeamColor.White)
@@ -434,13 +461,20 @@ namespace ChessForms
 
         private void BoardDisplay_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Left)
+            switch (e.KeyCode)
             {
-
-            }
-            else if (e.KeyCode == Keys.Right)
-            {
-
+                case Keys.Left:
+                    break;
+                case Keys.Right:
+                    break;
+                case Keys.R:
+                    chessboard.UpdateDangerzones();
+                    break;
+                case Keys.Space:
+                    DrawDangerzone();
+                    break;
+                default:
+                    break;
             }
         }
 
