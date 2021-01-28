@@ -34,7 +34,7 @@ namespace ChessGame
         private readonly Gamemode gamemode;
 
         public GameState CurrentState { get; internal set; }
-        public TeamColor CurrentTeamTurn { get; private set; }
+        public TeamColor CurrentTeamTurn { get; set; }
         public Player CurrentPlayerTurn
         {
             get
