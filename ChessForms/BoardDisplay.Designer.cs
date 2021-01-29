@@ -30,6 +30,7 @@ namespace ChessForms
         private void InitializeComponent()
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.backgroundWorkerMove = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -65,6 +66,7 @@ namespace ChessForms
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerMove;
     }
 }
 

@@ -8,13 +8,15 @@ using ChessGame.Pieces;
 
 namespace ChessBots
 {
-    public class Skakinator : Player
+    /// <summary>
+    /// The logic of the Skakinator.
+    /// </summary>
+    public class SkakinatorLogic
     {
-        public Skakinator(string name) : base(name)
-        {
-        }
+        public event Action<int, int> onSingleMoveCalculated;
 
         private Dictionary<Chessboard, float> transpositionTable = new Dictionary<Chessboard, float>();
+        private int totalMoveCount;
 
         private static float StaticEvaluation(Chessboard board, int depth)
         {
@@ -45,38 +47,6 @@ namespace ChessBots
                 {
                     centipawns -= 0.05f * (7 - position.Rank);
                 }
-
-                /*
-                foreach (var dangersquarePawn in board.Dangerzone[position])
-                {
-                    if (!(dangersquarePawn is Pieces.Pawn))
-                    {
-                        continue;
-                    }
-
-                    if (item.Color != dangersquarePawn.Color)
-                    {
-                        if (item.Color == TeamColor.White)
-                        {
-                            centipawns -= 0.05f;
-                        }
-                        else
-                        {
-                            centipawns += 0.05f;
-                        }
-                    }
-                    else
-                    {
-                        if (item.Color == TeamColor.White)
-                        {
-                            centipawns += 0.05f;
-                        }
-                        else
-                        {
-                            centipawns -= 0.05f;
-                        }
-                    }
-                }*/
             }
 
             foreach (var item in board.Pieces)
@@ -95,7 +65,7 @@ namespace ChessBots
                     centipawns += 0.2f;
                 }
             }
-            
+
             return board.MaterialSum + centipawns;
         }
 
@@ -161,13 +131,15 @@ namespace ChessBots
             return bestEvaluation;
         }
 
-        public override void TurnStarted(Chessboard board)
+        public Move GenerateMove(Chessboard board)
         {
-            SemaphoreSlim ss = new SemaphoreSlim(3);
+            SemaphoreSlim ss = new SemaphoreSlim(5, 5);
             List<Task> moveTasks = new List<Task>();
-            
+
             List<(float, Move)> moves = new List<(float, Move)>();
-            foreach (var move in board.GetMoves())
+            List<Move> availableMoves = board.GetMoves().ToList();
+
+            foreach (var move in availableMoves)
             {
                 Chessboard rootNode = new Chessboard(board, move);
 
@@ -177,6 +149,7 @@ namespace ChessBots
                     Task.Run(() =>
                     {
                         moves.Add((MinimaxSearch(rootNode, 2, float.MinValue, float.MaxValue), move));
+                        onSingleMoveCalculated?.Invoke(moves.Count, availableMoves.Count);
                         ss.Release();
                     }
                     ));
@@ -195,7 +168,7 @@ namespace ChessBots
                 bestEvaluation = moves.Min(m => m.Item1);
             }
 
-            List <Move> sortedMoves;
+            List<Move> sortedMoves;
             if (board.CurrentTeamTurn == TeamColor.White)
             {
                 sortedMoves = (from moveEvaluation in moves
@@ -211,11 +184,11 @@ namespace ChessBots
                                select moveEvaluation.Item2).ToList();
             }
 
-            board.PerformMove(sortedMoves[0]);
-
             // Clean-up
             transpositionTable.Clear();
             GC.Collect();
+
+            return sortedMoves[0];
         }
     }
 }

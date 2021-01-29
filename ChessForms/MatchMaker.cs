@@ -65,7 +65,7 @@ namespace ChessForms
                 case PlayerType.Local:
                     return new Player(name);
                 case PlayerType.Bot:
-                    return new Skakinator(name);
+                    return new SkakinatorPlayer(name);
                 case PlayerType.Network:
                     if (color == TeamColor.White)
                     {

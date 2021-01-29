@@ -224,8 +224,9 @@ namespace ChessForms
         {
             string move = from.ToString() + to.ToString();
 
-            Thread moveThread = new Thread(() => chessboard.PerformMove(move, MoveNotation.UCI));
-            moveThread.Start();
+            chessboard.PerformMove(move, MoveNotation.UCI);
+            //Thread moveThread = new Thread(() => chessboard.PerformMove(move, MoveNotation.UCI));
+            //moveThread.Start();
         }
 
         private void CellClicked(object sender, EventArgs e)
