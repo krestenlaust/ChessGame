@@ -9,7 +9,8 @@ namespace ChessGame
         Checkmate,
         Check,
         NotStarted,
-        Started
+        Started,
+        DeadPosition
     }
 
     public abstract class Gamemode
@@ -88,6 +89,24 @@ namespace ChessGame
             else
             {
                 board.CurrentState = GameState.Started;
+            }
+
+            if (board.Pieces.Count <= 3)
+            {
+                bool draw = true;
+                foreach (var item in board.Pieces)
+                {
+                    if (item.Value is Pieces.Queen || item.Value is Pieces.Rook || item.Value is Pieces.Pawn)
+                    {
+                        draw = false;
+                    }
+                }
+
+                if (draw)
+                {
+                    board.CurrentState = GameState.DeadPosition;
+                    return true;
+                }
             }
 
             // no more legal moves, game is over either by stalemate or checkmate.

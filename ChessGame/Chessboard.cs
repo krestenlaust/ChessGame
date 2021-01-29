@@ -54,7 +54,8 @@ namespace ChessGame
             get
             {
                 return CurrentState == GameState.Checkmate || 
-                    CurrentState == GameState.Stalemate;
+                    CurrentState == GameState.Stalemate ||
+                    CurrentState == GameState.DeadPosition;
             }
         }
 
@@ -122,7 +123,16 @@ namespace ChessGame
         public Piece this[Coordinate position]
         {
             get { return GetPiece(position); }
-            set { Pieces[position] = value; }
+            set {
+                if (value is null)
+                {
+                    Pieces.Remove(position);
+                }
+                else
+                {
+                    Pieces[position] = value;
+                }
+            }
         }
 
         /// <summary>
@@ -323,23 +333,23 @@ namespace ChessGame
         public bool IsKingInCheck(TeamColor color)
         {
             Piece king = null;
+            Coordinate position = new Coordinate();
 
             foreach (var item in GetPieces<King>())
             {
-                if (item.Color != color)
+                if (item.Item1.Color != color)
                 {
                     continue;
                 }
 
-                king = item;
+                king = item.Item1;
+                position = item.Item2;
             }
 
             if (king is null)
             {
                 return false;
             }
-
-            Coordinate position = GetCoordinate(king);
 
             if (Dangerzone.TryGetValue(position, out List<Piece> pieces))
             {
@@ -507,10 +517,29 @@ namespace ChessGame
             {
                 return pieces is null ? 0 : pieces.Count(p => p.Color == color);
             }
-            else
+            
+            return 0;
+        }
+
+        public int GetDangerSquareSum(Coordinate position)
+        {
+            int sum = 0;
+            if (Dangerzone.TryGetValue(position, out List<Piece> pieces))
             {
-                return 0;
+                foreach (var item in pieces)
+                {
+                    if (item.Color == TeamColor.White)
+                    {
+                        sum += 1;
+                    }
+                    else
+                    {
+                        sum -= 1;
+                    }
+                }
             }
+
+            return sum;
         }
 
         /// <summary>
@@ -607,9 +636,9 @@ namespace ChessGame
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public List<Piece> GetPieces<T>() where T : Piece => (from piece in Pieces.Values
-                                                              where piece is T
-                                                              select piece).ToList();
+        public List<(Piece, Coordinate)> GetPieces<T>() where T : Piece => (from piece in Pieces
+                                                              where piece.Value is T
+                                                              select (piece.Value, piece.Key)).ToList();
 
         public override bool Equals(object obj)
         {

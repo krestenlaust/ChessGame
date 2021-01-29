@@ -15,8 +15,7 @@ namespace ChessBots
     {
         public event Action<int, int> onSingleMoveCalculated;
 
-        private Dictionary<Chessboard, float> transpositionTable = new Dictionary<Chessboard, float>();
-        private int totalMoveCount;
+        private static Dictionary<Chessboard, float> transpositionTable = new Dictionary<Chessboard, float>();
 
         private static float StaticEvaluation(Chessboard board, int depth)
         {
@@ -32,23 +31,60 @@ namespace ChessBots
             }
 
             float centipawns = 0;
-            foreach (Pawn item in board.GetPieces<Pawn>())
+            foreach ((Pawn, Coordinate) item in board.GetPieces<Pawn>())
             {
-                if (!board.TryGetCoordinate(item, out Coordinate position))
+                int dangerzoneSum = board.GetDangerSquareSum(item.Item2);
+
+                if (item.Item1.Color == TeamColor.White)
+                {
+                    if (dangerzoneSum <= 0)
+                    {
+                        continue;
+                    }
+
+                    centipawns += 0.05f * (item.Item2.Rank - 1);
+                }
+                else
+                {
+                    if (dangerzoneSum >= 0)
+                    {
+                        continue;
+                    }
+
+                    centipawns -= 0.05f * (7 - item.Item2.Rank);
+                }
+            }
+
+            foreach (var item in board.Dangerzone)
+            {
+                if (item.Key.Rank < 3 || item.Key.Rank > 4)
                 {
                     continue;
                 }
 
-                if (item.Color == TeamColor.White)
+                if (item.Key.File < 2 || item.Key.File > 5)
                 {
-                    centipawns += 0.05f * (position.Rank - 1);
+                    continue;
                 }
-                else
+
+                if (item.Value is null)
                 {
-                    centipawns -= 0.05f * (7 - position.Rank);
+                    continue;
+                }
+
+                foreach (var piece in item.Value)
+                {
+                    if (piece.Color == TeamColor.White)
+                    {
+                        centipawns += 0.1f;
+                    }else
+                    {
+                        centipawns -= 0.1f;
+                    }
                 }
             }
 
+            /*
             foreach (var item in board.Pieces)
             {
                 if (item.Value is King || item.Value is Pawn || item.Value is Rook)
@@ -56,20 +92,20 @@ namespace ChessBots
                     continue;
                 }
 
-                if (item.Key.Rank == 0 && item.Value.Color == TeamColor.White)
+                if (item.Value.Color == TeamColor.White && item.Key.Rank == 0)
                 {
                     centipawns -= 0.2f;
                 }
-                else if (item.Key.Rank == 7 && item.Value.Color == TeamColor.Black)
+                else if (item.Value.Color == TeamColor.Black && item.Key.Rank == 7)
                 {
                     centipawns += 0.2f;
                 }
-            }
+            }*/
 
             return board.MaterialSum + centipawns;
         }
 
-        private float MinimaxSearch(Chessboard board, int depth, float alpha, float beta)
+        private static float MinimaxSearch(Chessboard board, int depth, float alpha, float beta)
         {
             if (depth == 0 || board.CurrentState == GameState.Checkmate || board.CurrentState == GameState.Stalemate)
             {
@@ -131,7 +167,7 @@ namespace ChessBots
             return bestEvaluation;
         }
 
-        public Move GenerateMove(Chessboard board)
+        public Move GenerateMove(Chessboard board, int targetDepth)
         {
             SemaphoreSlim ss = new SemaphoreSlim(5, 5);
             List<Task> moveTasks = new List<Task>();
@@ -148,7 +184,7 @@ namespace ChessBots
                 moveTasks.Add(
                     Task.Run(() =>
                     {
-                        moves.Add((MinimaxSearch(rootNode, 2, float.MinValue, float.MaxValue), move));
+                        moves.Add((MinimaxSearch(rootNode, targetDepth, float.MinValue, float.MaxValue), move));
                         onSingleMoveCalculated?.Invoke(moves.Count, availableMoves.Count);
                         ss.Release();
                     }

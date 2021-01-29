@@ -16,13 +16,15 @@ namespace ChessBots
         private readonly SkakinatorLogic logic;
         private readonly BotUI UI;
 
-        public SkakinatorPlayer(string name) : base(name)
+        public SkakinatorPlayer(string name, bool enableUI) : base(name)
         {
             logic = new SkakinatorLogic();
-            UI = new BotUI();
-            UI.Show();
-            UI.SetProgress(1, 10);
-            logic.onSingleMoveCalculated += Logic_onSingleMoveCalculated;
+            if (enableUI)
+            {
+                UI = new BotUI();
+                UI.Show();
+                logic.onSingleMoveCalculated += Logic_onSingleMoveCalculated;
+            }
         }
 
         private void Logic_onSingleMoveCalculated(int arg1, int arg2)
@@ -35,7 +37,7 @@ namespace ChessBots
 
         public override void TurnStarted(Chessboard board)
         {
-            board.PerformMove(logic.GenerateMove(board));
+            board.PerformMove(logic.GenerateMove(board, 2));
         }
     }
 }
