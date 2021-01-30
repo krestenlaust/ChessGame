@@ -161,6 +161,7 @@ namespace ChessForms
         {
             listBoxGamemode.Items.AddRange(Enum.GetNames(typeof(GamemodeType)));
             listBoxGamemode.SelectedIndex = 0;
+            PlaySoundOnMove = checkBoxSoundOnMove.Checked;
         }
 
         private void radioButtonBlackLichessPlayer_CheckedChanged(object sender, EventArgs e)

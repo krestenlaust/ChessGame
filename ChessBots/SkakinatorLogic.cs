@@ -13,7 +13,7 @@ namespace ChessBots
     /// </summary>
     public class SkakinatorLogic
     {
-        public event Action<int, int> onSingleMoveCalculated;
+        public event Action<int, int, Move, float> onSingleMoveCalculated;
 
         private static Dictionary<Chessboard, float> transpositionTable = new Dictionary<Chessboard, float>();
 
@@ -184,8 +184,9 @@ namespace ChessBots
                 moveTasks.Add(
                     Task.Run(() =>
                     {
-                        moves.Add((MinimaxSearch(rootNode, targetDepth, float.MinValue, float.MaxValue), move));
-                        onSingleMoveCalculated?.Invoke(moves.Count, availableMoves.Count);
+                        float evaluation = MinimaxSearch(rootNode, targetDepth, float.MinValue, float.MaxValue);
+                        moves.Add((evaluation, move));
+                        onSingleMoveCalculated?.Invoke(moves.Count, availableMoves.Count, move, evaluation);
                         ss.Release();
                     }
                     ));

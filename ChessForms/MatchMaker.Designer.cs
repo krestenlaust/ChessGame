@@ -325,6 +325,8 @@ namespace ChessForms
             // checkBoxSoundOnMove
             // 
             this.checkBoxSoundOnMove.AutoSize = true;
+            this.checkBoxSoundOnMove.Checked = true;
+            this.checkBoxSoundOnMove.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxSoundOnMove.Location = new System.Drawing.Point(7, 33);
             this.checkBoxSoundOnMove.Name = "checkBoxSoundOnMove";
             this.checkBoxSoundOnMove.Size = new System.Drawing.Size(158, 21);
@@ -336,7 +338,7 @@ namespace ChessForms
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(7, 99);
+            this.label6.Location = new System.Drawing.Point(4, 89);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(121, 17);
             this.label6.TabIndex = 7;
@@ -346,7 +348,7 @@ namespace ChessForms
             // 
             this.listBoxGamemode.FormattingEnabled = true;
             this.listBoxGamemode.ItemHeight = 16;
-            this.listBoxGamemode.Location = new System.Drawing.Point(7, 119);
+            this.listBoxGamemode.Location = new System.Drawing.Point(4, 109);
             this.listBoxGamemode.Name = "listBoxGamemode";
             this.listBoxGamemode.Size = new System.Drawing.Size(120, 84);
             this.listBoxGamemode.TabIndex = 12;

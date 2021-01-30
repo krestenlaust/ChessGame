@@ -12,6 +12,15 @@ namespace ChessBots
 {
     public partial class BotUI : Form
     {
+        // TODO: Auto-scroll
+        public int DepthSetting
+        {
+            get
+            {
+                return (int)numericUpDownDepth.Value;
+            }
+        }
+
         public BotUI()
         {
             InitializeComponent();
@@ -19,7 +28,17 @@ namespace ChessBots
 
         private void BotUI_Load(object sender, EventArgs e)
         {
+            numericUpDownDepth.Value = SkakinatorPlayer.DEFAULT_DEPTH;
+        }
 
+        public void ClearLog()
+        {
+            richTextBoxLog.Text = "";
+        }
+
+        public void PrintLog(string line)
+        {
+            richTextBoxLog.Text += $"{line}\n";
         }
 
         public void SetProgress(int current, int max)

@@ -13,8 +13,21 @@ namespace ChessBots
     /// </summary>
     public class SkakinatorPlayer : Player
     {
+        public const int DEFAULT_DEPTH = 2;
         private readonly SkakinatorLogic logic;
         private readonly BotUI UI;
+        private int Depth
+        {
+            get
+            {
+                if (UI is null)
+                {
+                    return DEFAULT_DEPTH;
+                }
+
+                return UI.DepthSetting;
+            }
+        }
 
         public SkakinatorPlayer(string name, bool enableUI) : base(name)
         {
@@ -22,22 +35,35 @@ namespace ChessBots
             if (enableUI)
             {
                 UI = new BotUI();
+                UI.Text = $"Bot info: {name}";
                 UI.Show();
                 logic.onSingleMoveCalculated += Logic_onSingleMoveCalculated;
             }
         }
 
-        private void Logic_onSingleMoveCalculated(int arg1, int arg2)
+        private void Logic_onSingleMoveCalculated(int current, int max, Move move, float evaluation)
         {
             UI.Invoke((MethodInvoker)delegate
             {
-                UI.SetProgress(arg1, arg2);
+                UI.SetProgress(current, max);
+
+                if (current == 0)
+                {
+                    UI.PrintLog("\n===========\n");
+                }
+
+                UI.PrintLog($"[{current}] {move} = {evaluation}");
+
+                if (current == max)
+                {
+
+                }
             });
         }
 
         public override void TurnStarted(Chessboard board)
         {
-            board.PerformMove(logic.GenerateMove(board, 2));
+            board.PerformMove(logic.GenerateMove(board, Depth));
         }
     }
 }
