@@ -84,28 +84,10 @@ namespace ChessBots
                 }
             }
 
-            /*
-            foreach (var item in board.Pieces)
-            {
-                if (item.Value is King || item.Value is Pawn || item.Value is Rook)
-                {
-                    continue;
-                }
-
-                if (item.Value.Color == TeamColor.White && item.Key.Rank == 0)
-                {
-                    centipawns -= 0.2f;
-                }
-                else if (item.Value.Color == TeamColor.Black && item.Key.Rank == 7)
-                {
-                    centipawns += 0.2f;
-                }
-            }*/
-
             return board.MaterialSum + centipawns;
         }
 
-        private static float MinimaxSearch(Chessboard board, int depth, float alpha, float beta)
+        public static float MinimaxSearch(Chessboard board, int depth, float alpha, float beta)
         {
             if (depth == 0 || board.CurrentState == GameState.Checkmate || board.CurrentState == GameState.Stalemate)
             {
