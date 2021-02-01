@@ -29,19 +29,22 @@ namespace ChessBots
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea7 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.progressBarCalculation = new System.Windows.Forms.ProgressBar();
             this.labelCalculation = new System.Windows.Forms.Label();
             this.richTextBoxLog = new System.Windows.Forms.RichTextBox();
             this.numericUpDownDepth = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.chartBoardEvaluation = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.checkBoxShowGraph = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownDepth)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartBoardEvaluation)).BeginInit();
             this.SuspendLayout();
             // 
             // progressBarCalculation
             // 
-            this.progressBarCalculation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBarCalculation.Location = new System.Drawing.Point(12, 29);
             this.progressBarCalculation.Name = "progressBarCalculation";
             this.progressBarCalculation.Size = new System.Drawing.Size(293, 23);
@@ -58,15 +61,16 @@ namespace ChessBots
             // 
             // richTextBoxLog
             // 
-            this.richTextBoxLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBoxLog.Location = new System.Drawing.Point(12, 133);
+            this.richTextBoxLog.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.richTextBoxLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextBoxLog.Location = new System.Drawing.Point(12, 142);
             this.richTextBoxLog.Name = "richTextBoxLog";
             this.richTextBoxLog.ReadOnly = true;
-            this.richTextBoxLog.Size = new System.Drawing.Size(293, 95);
+            this.richTextBoxLog.Size = new System.Drawing.Size(293, 165);
             this.richTextBoxLog.TabIndex = 3;
             this.richTextBoxLog.Text = "";
+            this.richTextBoxLog.TextChanged += new System.EventHandler(this.richTextBoxLog_TextChanged);
             // 
             // numericUpDownDepth
             // 
@@ -82,7 +86,7 @@ namespace ChessBots
             0,
             0});
             this.numericUpDownDepth.Name = "numericUpDownDepth";
-            this.numericUpDownDepth.Size = new System.Drawing.Size(120, 22);
+            this.numericUpDownDepth.Size = new System.Drawing.Size(128, 22);
             this.numericUpDownDepth.TabIndex = 2;
             this.numericUpDownDepth.Value = new decimal(new int[] {
             2,
@@ -102,17 +106,45 @@ namespace ChessBots
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 109);
+            this.label2.Location = new System.Drawing.Point(9, 122);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(122, 17);
             this.label2.TabIndex = 6;
             this.label2.Text = "Move evaluations:";
             // 
+            // chartBoardEvaluation
+            // 
+            chartArea7.AxisX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea7.Name = "ChartArea1";
+            this.chartBoardEvaluation.ChartAreas.Add(chartArea7);
+            this.chartBoardEvaluation.Location = new System.Drawing.Point(342, 9);
+            this.chartBoardEvaluation.Name = "chartBoardEvaluation";
+            series7.ChartArea = "ChartArea1";
+            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series7.Name = "Series1";
+            series7.YValuesPerPoint = 2;
+            this.chartBoardEvaluation.Series.Add(series7);
+            this.chartBoardEvaluation.Size = new System.Drawing.Size(325, 300);
+            this.chartBoardEvaluation.TabIndex = 7;
+            // 
+            // checkBoxShowGraph
+            // 
+            this.checkBoxShowGraph.AutoSize = true;
+            this.checkBoxShowGraph.Location = new System.Drawing.Point(161, 85);
+            this.checkBoxShowGraph.Name = "checkBoxShowGraph";
+            this.checkBoxShowGraph.Size = new System.Drawing.Size(144, 21);
+            this.checkBoxShowGraph.TabIndex = 8;
+            this.checkBoxShowGraph.Text = "Show game graph";
+            this.checkBoxShowGraph.UseVisualStyleBackColor = true;
+            this.checkBoxShowGraph.CheckedChanged += new System.EventHandler(this.checkBoxShowGraph_CheckedChanged);
+            // 
             // BotUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(317, 240);
+            this.ClientSize = new System.Drawing.Size(322, 319);
+            this.Controls.Add(this.checkBoxShowGraph);
+            this.Controls.Add(this.chartBoardEvaluation);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.numericUpDownDepth);
@@ -126,6 +158,7 @@ namespace ChessBots
             this.TopMost = true;
             this.Load += new System.EventHandler(this.BotUI_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownDepth)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartBoardEvaluation)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -139,5 +172,7 @@ namespace ChessBots
         private System.Windows.Forms.NumericUpDown numericUpDownDepth;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartBoardEvaluation;
+        private System.Windows.Forms.CheckBox checkBoxShowGraph;
     }
 }

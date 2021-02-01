@@ -147,7 +147,10 @@
     <None Include="Resources\TårnSort.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\MuligtTrkBrik.png" />
+    <None Include="Resources\MuligtTrkBrikTilgængelig.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MuligtTrkBrikUtilgængelig.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

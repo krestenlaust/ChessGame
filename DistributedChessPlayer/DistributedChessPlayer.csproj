@@ -4,15 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{40B29C7C-8E24-496C-BA44-4330949F1D38}</ProjectGuid>
+    <ProjectGuid>{77FF7809-27DD-4F90-8F51-4E73BB948704}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ChessBots</RootNamespace>
-    <AssemblyName>ChessBots</AssemblyName>
+    <RootNamespace>DistributedChessPlayer</RootNamespace>
+    <AssemblyName>DistributedChessPlayer</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,9 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,27 +42,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BotUI.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="BotUI.Designer.cs">
-      <DependentUpon>BotUI.cs</DependentUpon>
-    </Compile>
+    <Compile Include="DistributedChessPlayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimpletronBot.cs" />
-    <Compile Include="SkakinatorLogic.cs" />
-    <Compile Include="SkakinatorPlayer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ChessBots\ChessBots.csproj">
+      <Project>{40b29c7c-8e24-496c-ba44-4330949f1d38}</Project>
+      <Name>ChessBots</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ChessGame\ChessGame.csproj">
       <Project>{63c22b99-d079-4c8e-9f60-a27bcd082fa3}</Project>
       <Name>ChessGame</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="BotUI.resx">
-      <DependentUpon>BotUI.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

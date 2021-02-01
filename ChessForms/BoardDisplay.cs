@@ -285,25 +285,44 @@ namespace ChessForms
                         SelectPiece(cellX, cellY);
                         selectedPiece = piece;
 
-                        foreach (var item in piece.GetMoves(chessboard))
+                        foreach (var move in piece.GetMoves(chessboard))
                         {
-                            if (item.Moves[0].Destination is null)
+                            if (move.Moves[0].Destination is null)
                             {
                                 continue;
                             }
 
-                            Coordinate guardedSquare = item.Moves[0].Destination.Value;
+                            Coordinate guardedSquare = move.Moves[0].Destination.Value;
 
                             // TODO: Patrick fixer brættet, cirka her omkring
                             Image cellImage = boardcells[guardedSquare.File, guardedSquare.Rank].Image;
 
                             if (cellImage is null)
                             {
-                                boardcells[guardedSquare.File, guardedSquare.Rank].Image = Properties.Resources.MuligtTrækBrik;
+                                Bitmap dotTexture;
+                                if (gamemode.ValidateMove(move, chessboard))
+                                {
+                                    dotTexture = Properties.Resources.MuligtTrkBrikTilgængelig;
+                                }
+                                else
+                                {
+                                    dotTexture = Properties.Resources.MuligtTrkBrikUtilgængelig;
+                                }
+
+                                boardcells[guardedSquare.File, guardedSquare.Rank].Image = dotTexture;
                             }
                             else
                             {
-                                boardcells[guardedSquare.File, guardedSquare.Rank].BackColor = Color.Red;
+                                Color backgroundColor;
+                                if (gamemode.ValidateMove(move, chessboard))
+                                {
+                                    backgroundColor = Color.Red;
+                                }
+                                else
+                                {
+                                    backgroundColor = Color.Gray;
+                                }
+                                boardcells[guardedSquare.File, guardedSquare.Rank].BackColor = backgroundColor;
                             }
                         }
                     }

@@ -14,6 +14,8 @@ namespace ChessBots
     public class SkakinatorLogic
     {
         public event Action<int, int, Move, float> onSingleMoveCalculated;
+        private const float centerSquareModifier = 0.2f;
+        private const float centerSquareRawValue = 0.5f;
 
         private Dictionary<Chessboard, float> transpositionTable = new Dictionary<Chessboard, float>();
 
@@ -72,14 +74,15 @@ namespace ChessBots
                     continue;
                 }
 
+                int round = board.Moves.Count + 1;
                 foreach (var piece in item.Value)
                 {
                     if (piece.Color == TeamColor.White)
                     {
-                        centipawns += 0.1f;
+                        centipawns += centerSquareRawValue / (round * centerSquareModifier);
                     }else
                     {
-                        centipawns -= 0.1f;
+                        centipawns -= centerSquareRawValue / (round * centerSquareModifier);
                     }
                 }
             }
@@ -156,6 +159,7 @@ namespace ChessBots
 
             List<(float, Move)> moves = new List<(float, Move)>();
             List<Move> availableMoves = board.GetMoves().ToList();
+            onSingleMoveCalculated?.Invoke(0, availableMoves.Count, null, StaticEvaluation(board, 1));
 
             foreach (var move in availableMoves)
             {
@@ -166,7 +170,7 @@ namespace ChessBots
                 moveTasks.Add(
                     Task.Run(() =>
                     {
-                        float evaluation = MinimaxSearch(rootNode, targetDepth, float.MinValue, float.MaxValue);
+                        float evaluation = MinimaxSearch(rootNode, targetDepth - 1, float.MinValue, float.MaxValue);
                         moves.Add((evaluation, move));
                         onSingleMoveCalculated?.Invoke(moves.Count, availableMoves.Count, move, evaluation);
                         ss.Release();
@@ -177,7 +181,7 @@ namespace ChessBots
             Task.WaitAll(moveTasks.ToArray());
 
 
-            float bestEvaluation;
+            double bestEvaluation;
             if (board.CurrentTeamTurn == TeamColor.White)
             {
                 bestEvaluation = moves.Max(m => m.Item1);
@@ -186,26 +190,41 @@ namespace ChessBots
             {
                 bestEvaluation = moves.Min(m => m.Item1);
             }
+            bestEvaluation = Math.Round(bestEvaluation, 2);
 
             List<Move> sortedMoves;
             if (board.CurrentTeamTurn == TeamColor.White)
             {
                 sortedMoves = (from moveEvaluation in moves
                                orderby moveEvaluation.Item1 descending
-                               where moveEvaluation.Item1 == bestEvaluation
+                               where Math.Round(moveEvaluation.Item1, 2) == bestEvaluation
                                select moveEvaluation.Item2).ToList();
             }
             else
             {
                 sortedMoves = (from moveEvaluation in moves
                                orderby moveEvaluation.Item1 ascending
-                               where moveEvaluation.Item1 == bestEvaluation
+                               where Math.Round(moveEvaluation.Item1, 2) == bestEvaluation
                                select moveEvaluation.Item2).ToList();
+            }
+
+            Move chosenMove = sortedMoves[0];
+
+            foreach (var move in sortedMoves)
+            {
+                string moveNotation = move.ToString();
+                if (moveNotation == "O-O-O" || moveNotation == "O-O")
+                {
+                    chosenMove = move;
+                    break;
+                }
+
+
             }
 
             // Clean-up
             transpositionTable.Clear();
-            GC.Collect();
+            //GC.Collect();
 
             return sortedMoves[0];
         }

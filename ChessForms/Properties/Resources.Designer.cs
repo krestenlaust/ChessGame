@@ -163,9 +163,19 @@ namespace ChessForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap MuligtTrækBrik {
+        internal static System.Drawing.Bitmap MuligtTrkBrikTilgængelig {
             get {
-                object obj = ResourceManager.GetObject("MuligtTrækBrik", resourceCulture);
+                object obj = ResourceManager.GetObject("MuligtTrkBrikTilgængelig", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap MuligtTrkBrikUtilgængelig {
+            get {
+                object obj = ResourceManager.GetObject("MuligtTrkBrikUtilgængelig", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

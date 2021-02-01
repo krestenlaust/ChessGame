@@ -141,7 +141,7 @@ namespace ChessGame.Players
                 else
                 {
                     // wait before checking again.
-                    Thread.Sleep(250);
+                    Thread.Sleep(100);
                 }
             }
         }

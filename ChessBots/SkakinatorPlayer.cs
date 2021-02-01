@@ -9,7 +9,7 @@ namespace ChessBots
     /// </summary>
     public class SkakinatorPlayer : Player
     {
-        public const int DEFAULT_DEPTH = 2;
+        public const int DEFAULT_DEPTH = 3;
         private readonly SkakinatorLogic logic;
         private readonly BotUI UI;
         private int Depth
@@ -39,17 +39,17 @@ namespace ChessBots
 
         private void Logic_onSingleMoveCalculated(int current, int max, Move move, float evaluation)
         {
-            UI.Invoke((MethodInvoker)delegate
+            UI.SetProgress(current, max);
+
+            if (current == 0)
             {
-                UI.SetProgress(current, max);
-
-                if (current == 0)
-                {
-                    UI.ClearLog();
-                }
-
-                UI.PrintLog($"[{current}] {move} = {evaluation}");
-            });
+                UI.AddPoint(evaluation);
+                UI.PrintLog("\n Board: " + evaluation);
+            }
+            else
+            {
+                UI.PrintLog($"[{current}] {move.ToString(MoveNotation.UCI)} = {Math.Round(evaluation, 2)}");
+            }
         }
 
         public override void TurnStarted(Chessboard board)
