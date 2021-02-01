@@ -15,7 +15,7 @@ namespace ChessBots
     {
         public event Action<int, int, Move, float> onSingleMoveCalculated;
 
-        private static Dictionary<Chessboard, float> transpositionTable = new Dictionary<Chessboard, float>();
+        private Dictionary<Chessboard, float> transpositionTable = new Dictionary<Chessboard, float>();
 
         private static float StaticEvaluation(Chessboard board, int depth)
         {
@@ -87,7 +87,7 @@ namespace ChessBots
             return board.MaterialSum + centipawns;
         }
 
-        public static float MinimaxSearch(Chessboard board, int depth, float alpha, float beta)
+        public float MinimaxSearch(Chessboard board, int depth, float alpha, float beta)
         {
             if (depth == 0 || board.CurrentState == GameState.Checkmate || board.CurrentState == GameState.Stalemate)
             {

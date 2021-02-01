@@ -6,7 +6,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
 using ChessBots;
-using ChessForms.Properties;
 
 namespace ChessForms
 {
@@ -14,8 +13,10 @@ namespace ChessForms
     {
         Local,
         LichessPlayer,
+        LichessPlayerSeek,
         Bot,
-        Network
+        Network,
+        DistributedComputing,
     }
     public enum GamemodeType
     {
@@ -96,7 +97,11 @@ namespace ChessForms
                         return new NetworkedPlayer(name, tcpClient.GetStream());
                     }
                 case PlayerType.LichessPlayer:
-                    return new LichessBotPlayer("lichess-player", "dH8TtzcSduH5qyJv", textBoxBlackLichessMatchID.Text);
+                    return new LichessBotPlayer("lichess-player", "Token here", textBoxBlackLichessMatchID.Text);
+                case PlayerType.LichessPlayerSeek:
+                    return new LichessBotPlayer("lichess-player", "Token here", TeamColor.White);
+                //case PlayerType.DistributedComputing:
+                //    return new DistributedChessPlayer.DistributedChessPlayer(name);
                 default:
                     return null;
             }
@@ -181,6 +186,21 @@ namespace ChessForms
         private void checkBoxSoundOnMove_CheckedChanged(object sender, EventArgs e)
         {
             PlaySoundOnMove = (sender as CheckBox).Checked;
+        }
+
+        private void radioButtonWhiteLichessPlayer_CheckedChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void radioButtonWhiteDistributedComputing_CheckedChanged(object sender, EventArgs e)
+        {
+            white = PlayerType.DistributedComputing;
+        }
+
+        private void radioButtonBlackLichessPlayerSeek_CheckedChanged(object sender, EventArgs e)
+        {
+            black = PlayerType.LichessPlayerSeek;
         }
     }
 }

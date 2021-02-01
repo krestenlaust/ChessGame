@@ -93,7 +93,7 @@ namespace ChessGame
 
             Pieces = new Dictionary<Coordinate, Piece>(board.Pieces);
             MovedPieces = new HashSet<Piece>(board.MovedPieces);
-            Moves = new Stack<Move>(board.Moves);
+            Moves = new Stack<Move>(board.Moves.Reverse());
 
             // is refreshed in simulatemove
             Dangerzone = new Dictionary<Coordinate, List<Piece>>();
@@ -205,7 +205,7 @@ namespace ChessGame
             {
                 if (gamemode.StartTurn(this))
                 {
-                    CurrentPlayerTurn.TurnStarted(this);
+                    CurrentPlayerTurn?.TurnStarted(this);
                 }
             }
         }

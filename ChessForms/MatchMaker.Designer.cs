@@ -31,6 +31,8 @@ namespace ChessForms
         {
             this.radioButtonWhiteLocal = new System.Windows.Forms.RadioButton();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.radioButtonWhiteDistributedComputing = new System.Windows.Forms.RadioButton();
+            this.radioButtonWhiteLichessPlayer = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -39,6 +41,7 @@ namespace ChessForms
             this.radioButtonWhiteNetworked = new System.Windows.Forms.RadioButton();
             this.radioButtonWhiteBot = new System.Windows.Forms.RadioButton();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.radioButtonBlackLichessPlayerSeek = new System.Windows.Forms.RadioButton();
             this.radioButtonBlackLichessPlayer = new System.Windows.Forms.RadioButton();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -81,6 +84,8 @@ namespace ChessForms
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.radioButtonWhiteDistributedComputing);
+            this.groupBox3.Controls.Add(this.radioButtonWhiteLichessPlayer);
             this.groupBox3.Controls.Add(this.groupBox1);
             this.groupBox3.Controls.Add(this.radioButtonWhiteNetworked);
             this.groupBox3.Controls.Add(this.radioButtonWhiteBot);
@@ -91,6 +96,29 @@ namespace ChessForms
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "White player type";
+            // 
+            // radioButtonWhiteDistributedComputing
+            // 
+            this.radioButtonWhiteDistributedComputing.AutoSize = true;
+            this.radioButtonWhiteDistributedComputing.Location = new System.Drawing.Point(21, 140);
+            this.radioButtonWhiteDistributedComputing.Name = "radioButtonWhiteDistributedComputing";
+            this.radioButtonWhiteDistributedComputing.Size = new System.Drawing.Size(200, 21);
+            this.radioButtonWhiteDistributedComputing.TabIndex = 10;
+            this.radioButtonWhiteDistributedComputing.Text = "Distributed computing (bot)";
+            this.radioButtonWhiteDistributedComputing.UseVisualStyleBackColor = true;
+            this.radioButtonWhiteDistributedComputing.CheckedChanged += new System.EventHandler(this.radioButtonWhiteDistributedComputing_CheckedChanged);
+            // 
+            // radioButtonWhiteLichessPlayer
+            // 
+            this.radioButtonWhiteLichessPlayer.AutoSize = true;
+            this.radioButtonWhiteLichessPlayer.Enabled = false;
+            this.radioButtonWhiteLichessPlayer.Location = new System.Drawing.Point(21, 113);
+            this.radioButtonWhiteLichessPlayer.Name = "radioButtonWhiteLichessPlayer";
+            this.radioButtonWhiteLichessPlayer.Size = new System.Drawing.Size(121, 21);
+            this.radioButtonWhiteLichessPlayer.TabIndex = 9;
+            this.radioButtonWhiteLichessPlayer.Text = "Lichess Player";
+            this.radioButtonWhiteLichessPlayer.UseVisualStyleBackColor = true;
+            this.radioButtonWhiteLichessPlayer.CheckedChanged += new System.EventHandler(this.radioButtonWhiteLichessPlayer_CheckedChanged);
             // 
             // groupBox1
             // 
@@ -164,6 +192,7 @@ namespace ChessForms
             // 
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox4.Controls.Add(this.radioButtonBlackLichessPlayerSeek);
             this.groupBox4.Controls.Add(this.radioButtonBlackLichessPlayer);
             this.groupBox4.Controls.Add(this.groupBox6);
             this.groupBox4.Controls.Add(this.radioButtonBlackNetworked);
@@ -175,6 +204,17 @@ namespace ChessForms
             this.groupBox4.TabIndex = 2;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Black player type";
+            // 
+            // radioButtonBlackLichessPlayerSeek
+            // 
+            this.radioButtonBlackLichessPlayerSeek.AutoSize = true;
+            this.radioButtonBlackLichessPlayerSeek.Location = new System.Drawing.Point(21, 140);
+            this.radioButtonBlackLichessPlayerSeek.Name = "radioButtonBlackLichessPlayerSeek";
+            this.radioButtonBlackLichessPlayerSeek.Size = new System.Drawing.Size(177, 21);
+            this.radioButtonBlackLichessPlayerSeek.TabIndex = 9;
+            this.radioButtonBlackLichessPlayerSeek.Text = "Seek Lichess opponent";
+            this.radioButtonBlackLichessPlayerSeek.UseVisualStyleBackColor = true;
+            this.radioButtonBlackLichessPlayerSeek.CheckedChanged += new System.EventHandler(this.radioButtonBlackLichessPlayerSeek_CheckedChanged);
             // 
             // radioButtonBlackLichessPlayer
             // 
@@ -411,5 +451,8 @@ namespace ChessForms
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ListBox listBoxGamemode;
         private System.Windows.Forms.CheckBox checkBoxSoundOnMove;
+        private System.Windows.Forms.RadioButton radioButtonWhiteLichessPlayer;
+        private System.Windows.Forms.RadioButton radioButtonWhiteDistributedComputing;
+        private System.Windows.Forms.RadioButton radioButtonBlackLichessPlayerSeek;
     }
 }

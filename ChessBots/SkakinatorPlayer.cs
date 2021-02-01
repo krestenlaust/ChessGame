@@ -45,15 +45,10 @@ namespace ChessBots
 
                 if (current == 0)
                 {
-                    UI.PrintLog("\n===========\n");
+                    UI.ClearLog();
                 }
 
                 UI.PrintLog($"[{current}] {move} = {evaluation}");
-
-                if (current == max)
-                {
-
-                }
             });
         }
 
