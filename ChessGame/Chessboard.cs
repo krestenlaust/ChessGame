@@ -136,27 +136,18 @@ namespace ChessGame
         }
 
         /// <summary>
-        /// Starts a game by calling <c>StartNextTurn</c>.
-        /// </summary>
-        public void StartGame()
-        {
-            CurrentState = GameState.Started;
-            StartNextTurn();
-        }
-
-        /// <summary>
         /// Makes a move based on move notation. Calls <c>MakeMove(Move)</c> once move is translated.
         /// </summary>
         /// <param name="move"></param>
         /// <returns></returns>
-        public bool PerformMove(string move, MoveNotation notationType)
+        public bool PerformMove(string move, MoveNotation notationType, bool startNextTurn = true)
         {
             Move pieceMove = GetMoveByNotation(move, CurrentTeamTurn, notationType);
 
             if (pieceMove is null)
                 return false;
 
-            return PerformMove(pieceMove);
+            return PerformMove(pieceMove, startNextTurn);
         }
 
         /// <summary>
@@ -164,14 +155,17 @@ namespace ChessGame
         /// </summary>
         /// <param name="move"></param>
         /// <returns></returns>
-        public bool PerformMove(Move move)
+        public bool PerformMove(Move move, bool startNextTurn = true)
         {
             ExecuteMove(move);
             Moves.Push(move);
 
             CurrentTeamTurn = (TeamColor)(((int)CurrentTeamTurn + 1) % 2);
 
-            StartNextTurn();
+            if (startNextTurn)
+            {
+                StartNextTurn();
+            }
 
             return true;
         }
@@ -194,10 +188,15 @@ namespace ChessGame
         }
 
         /// <summary>
-        /// Refreshes dangerzone, updates turn, checks for check.
+        /// Starts game if it hasn't started yet. Refreshes dangerzone, updates turn, checks for check.
         /// </summary>
         public void StartNextTurn()
         {
+            if (CurrentState == GameState.NotStarted)
+            {
+                CurrentState = GameState.Started;
+            }
+
             // change turn
             gamemode.UpdateGameState(this);
 

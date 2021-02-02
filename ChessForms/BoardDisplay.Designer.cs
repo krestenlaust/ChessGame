@@ -48,6 +48,11 @@ namespace ChessForms
             this.tableLayoutPanel1.Size = new System.Drawing.Size(782, 753);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
+            // backgroundWorkerMove
+            // 
+            this.backgroundWorkerMove.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerMove_DoWork);
+            this.backgroundWorkerMove.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerMove_RunWorkerCompleted);
+            // 
             // BoardDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);

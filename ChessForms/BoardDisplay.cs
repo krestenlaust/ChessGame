@@ -1,6 +1,7 @@
 ﻿using ChessGame;
 using ChessGame.Pieces;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,22 +11,24 @@ namespace ChessForms
 {
     public partial class BoardDisplay : Form
     {
-        private readonly Color AlternateTileColor = Color.CornflowerBlue;
-        private readonly Color CaptureTileAvailableColor = Color.Red;
-        private readonly Color CaptureTileUnavailableColor = Color.Gray;
-        private readonly Color RecentMoveColor = Color.Green;
-        private readonly Color MarkedSquareColor = Color.Green;
-        private readonly Color DangersquareColor = Color.Red;
+        private const int CoordinateSystemPixelSize = 25;
 
+        private static readonly Color AlternateTileColor = Color.CornflowerBlue;
+        private static readonly Color CaptureTileAvailableColor = Color.Red;
+        private static readonly Color CaptureTileUnavailableColor = Color.Gray;
+        private static readonly Color RecentMoveColor = Color.Green;
+        private static readonly Color MarkedSquareColor = Color.Green;
+        private static readonly Color DangersquareColor = Color.Red;
+
+        private readonly Gamemode gamemode;
         private TilePictureControl[,] boardcells;
         private Coordinate? fromPosition = null;
         private Piece selectedPiece;
-        private readonly Gamemode gamemode;
         private Chessboard chessboard;
         private readonly bool whiteLocal, blackLocal;
         private bool unFlipped = false;
-        private Coordinate? recentFrom = null;
-        private Coordinate? recentTo = null;
+        private Coordinate? recentMoveFrom = null;
+        private Coordinate? recentMoveTo = null;
 
         public BoardDisplay(Gamemode gamemode, bool whiteLocal, bool blackLocal)
         {
@@ -49,7 +52,8 @@ namespace ChessForms
 
             UpdateBoard();
 
-            Task.Run(() => chessboard.StartGame());
+            // Starts game.
+            backgroundWorkerMove.RunWorkerAsync();
         }
 
         public static Image GetPieceImage(Piece piece)
@@ -148,14 +152,14 @@ namespace ChessForms
                     ResetTileColor(x, y);
                     boardcells[x, y].BorderStyle = BorderStyle.None;
 
-                    if (recentFrom is not null)
+                    if (recentMoveFrom is not null)
                     {
-                        ColorSquare(recentFrom.Value.File, recentFrom.Value.Rank, RecentMoveColor);
+                        ColorSquare(recentMoveFrom.Value.File, recentMoveFrom.Value.Rank, RecentMoveColor);
                     }
                     
-                    if (recentTo is not null)
+                    if (recentMoveTo is not null)
                     {
-                        ColorSquare(recentTo.Value.File, recentTo.Value.Rank, RecentMoveColor);
+                        ColorSquare(recentMoveTo.Value.File, recentMoveTo.Value.Rank, RecentMoveColor);
                     }
                 }
             }
@@ -227,8 +231,8 @@ namespace ChessForms
             }
 
             // Coordinate row and column
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 25));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 25));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, CoordinateSystemPixelSize));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, CoordinateSystemPixelSize));
 
             boardcells = new TilePictureControl[chessboard.Width, chessboard.Height];
 
@@ -308,15 +312,17 @@ namespace ChessForms
         {
             string move = from.ToString() + to.ToString();
 
-            if (chessboard.PerformMove(move, MoveNotation.UCI))
+            if (chessboard.PerformMove(move, MoveNotation.UCI, false))
             {
-                // TODO: Draw color green to show what piece moved and where.
-                recentFrom = from;
-                recentTo = to;
+                recentMoveFrom = from;
+                recentMoveTo = to;
 
                 ResetAllTableStyling();
             }
-            
+
+            // Calls next worker.
+            backgroundWorkerMove.RunWorkerAsync();
+
             // TODO: Use backgroundworker instead.
             //Thread moveThread = new Thread(() => chessboard.PerformMove(move, MoveNotation.UCI));
             //moveThread.Start();
@@ -332,8 +338,8 @@ namespace ChessForms
             int windowY = click.Y;
 
             // TODO: Make grid accurate by making up for the difference the coordinate system makes.
-            int cellX = windowX / (tableLayoutPanel1.Width / chessboard.Width);
-            int cellY = windowY / (tableLayoutPanel1.Height / chessboard.Height);
+            int cellX = windowX / ((tableLayoutPanel1.Width - CoordinateSystemPixelSize) / chessboard.Width);
+            int cellY = windowY / ((tableLayoutPanel1.Height - CoordinateSystemPixelSize) / chessboard.Height);
 
             if (unFlipped)
             {
@@ -445,8 +451,8 @@ namespace ChessForms
                     // Mark square.
                 case MouseButtons.Right:
                     // do not change color if square is already colored.
-                    if (recentFrom?.File == cellX && recentFrom?.Rank == cellY || 
-                        recentTo?.File == cellX && recentTo?.Rank == cellY)
+                    if (recentMoveFrom?.File == cellX && recentMoveFrom?.Rank == cellY || 
+                        recentMoveTo?.File == cellX && recentMoveTo?.Rank == cellY)
                     {
                         break;
                     }
@@ -563,6 +569,27 @@ namespace ChessForms
             }
 
             boardcells[x, y].BackColor = color;
+        }
+
+        private void backgroundWorkerMove_DoWork(object sender, DoWorkEventArgs e)
+        {
+            chessboard.StartNextTurn();
+        }
+
+        private void backgroundWorkerMove_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            UpdateBoard();
+
+            if (chessboard.Moves.Count == 0)
+            {
+                return;
+            }
+
+            PieceMove recentMove = chessboard.Moves.Peek().Moves[0];
+            recentMoveFrom = recentMove.Source;
+            recentMoveTo = recentMove.Destination;
+
+            ResetAllTableStyling();
         }
 
         private void BoardDisplay_KeyUp(object sender, KeyEventArgs e)
