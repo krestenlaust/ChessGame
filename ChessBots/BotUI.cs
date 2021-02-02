@@ -73,7 +73,6 @@ namespace ChessBots
 
             progressBarCalculation.Maximum = max;
             progressBarCalculation.Value = current;
-            //Update();
         }
 
         private void richTextBoxLog_TextChanged(object sender, EventArgs e)
@@ -88,11 +87,11 @@ namespace ChessBots
 
             if (isChecked)
             {
-                this.Width += chartBoardEvaluation.Width + 20;
+                Width += chartBoardEvaluation.Width + 20;
             }
             else
             {
-                this.Width -= chartBoardEvaluation.Width + 20;
+                Width -= chartBoardEvaluation.Width + 20;
             }
         }
     }

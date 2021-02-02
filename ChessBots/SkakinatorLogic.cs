@@ -152,6 +152,12 @@ namespace ChessBots
             return bestEvaluation;
         }
 
+        /// <summary>
+        /// Generates the supposedly best move given a position on the board and a <c>targetDepth</c>.
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="targetDepth"></param>
+        /// <returns></returns>
         public Move GenerateMove(Chessboard board, int targetDepth)
         {
             SemaphoreSlim ss = new SemaphoreSlim(5, 5);
@@ -190,21 +196,21 @@ namespace ChessBots
             {
                 bestEvaluation = moves.Min(m => m.Item1);
             }
-            bestEvaluation = Math.Round(bestEvaluation, 2);
+            bestEvaluation = Math.Round(bestEvaluation, 1);
 
             List<Move> sortedMoves;
             if (board.CurrentTeamTurn == TeamColor.White)
             {
                 sortedMoves = (from moveEvaluation in moves
                                orderby moveEvaluation.Item1 descending
-                               where Math.Round(moveEvaluation.Item1, 2) == bestEvaluation
+                               where Math.Round(moveEvaluation.Item1, 1) == bestEvaluation
                                select moveEvaluation.Item2).ToList();
             }
             else
             {
                 sortedMoves = (from moveEvaluation in moves
                                orderby moveEvaluation.Item1 ascending
-                               where Math.Round(moveEvaluation.Item1, 2) == bestEvaluation
+                               where Math.Round(moveEvaluation.Item1, 1) == bestEvaluation
                                select moveEvaluation.Item2).ToList();
             }
 
@@ -218,8 +224,6 @@ namespace ChessBots
                     chosenMove = move;
                     break;
                 }
-
-
             }
 
             // Clean-up
@@ -230,3 +234,4 @@ namespace ChessBots
         }
     }
 }
+    
