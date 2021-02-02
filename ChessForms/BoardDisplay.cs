@@ -10,6 +10,13 @@ namespace ChessForms
 {
     public partial class BoardDisplay : Form
     {
+        private readonly Color AlternateTileColor = Color.CornflowerBlue;
+        private readonly Color CaptureTileAvailableColor = Color.Red;
+        private readonly Color CaptureTileUnavailableColor = Color.Gray;
+        private readonly Color RecentMoveColor = Color.Green;
+        private readonly Color MarkedSquareColor = Color.Green;
+        private readonly Color DangersquareColor = Color.Red;
+
         private TilePictureControl[,] boardcells;
         private Coordinate? fromPosition = null;
         private Piece selectedPiece;
@@ -17,6 +24,8 @@ namespace ChessForms
         private Chessboard chessboard;
         private readonly bool whiteLocal, blackLocal;
         private bool unFlipped = false;
+        private Coordinate? recentFrom = null;
+        private Coordinate? recentTo = null;
 
         public BoardDisplay(Gamemode gamemode, bool whiteLocal, bool blackLocal)
         {
@@ -49,17 +58,17 @@ namespace ChessForms
             {
                 switch (piece)
                 {
-                    case Bishop _:
+                    case Bishop:
                         return Properties.Resources.LøberHvid;
-                    case King _:
+                    case King:
                         return Properties.Resources.KongeHvid;
-                    case Pawn _:
+                    case Pawn:
                         return Properties.Resources.BondeHvid;
-                    case Rook _:
+                    case Rook:
                         return Properties.Resources.TårnHvid;
-                    case Queen _:
+                    case Queen:
                         return Properties.Resources.DronningHvid;
-                    case Knight _:
+                    case Knight:
                         return Properties.Resources.HestHvid;
                 }
             }
@@ -67,17 +76,17 @@ namespace ChessForms
             {
                 switch (piece)
                 {
-                    case Bishop _:
+                    case Bishop:
                         return Properties.Resources.LøberSort;
-                    case King _:
+                    case King:
                         return Properties.Resources.KongeSort;
-                    case Pawn _:
+                    case Pawn:
                         return Properties.Resources.BondeSort;
-                    case Rook _:
+                    case Rook:
                         return Properties.Resources.TårnSort;
-                    case Queen _:
+                    case Queen:
                         return Properties.Resources.DronningSort;
-                    case Knight _:
+                    case Knight:
                         return Properties.Resources.HestSort;
                 }
             }
@@ -138,6 +147,15 @@ namespace ChessForms
                 {
                     ResetTileColor(x, y);
                     boardcells[x, y].BorderStyle = BorderStyle.None;
+
+                    if (recentFrom is not null)
+                    {
+                        ColorSquare(recentFrom.Value.File, recentFrom.Value.Rank, RecentMoveColor);
+                    }
+                    else if (recentTo is not null)
+                    {
+                        ColorSquare(recentTo.Value.File, recentTo.Value.Rank, RecentMoveColor);
+                    }
                 }
             }
         }
@@ -149,7 +167,7 @@ namespace ChessForms
         /// <param name="y"></param>
         public void ResetTileColor(int x, int y)
         {
-            boardcells[x, y].BackColor = (x % 2) == (y % 2) ? Color.White : Color.CornflowerBlue;
+            boardcells[x, y].BackColor = (x % 2) == (y % 2) ? Color.White : AlternateTileColor;
         }
 
         /// <summary>
@@ -276,7 +294,7 @@ namespace ChessForms
                     continue;
                 }
 
-                ColorSquare(item.Key.File, item.Key.Rank, Color.Red);
+                ColorSquare(item.Key.File, item.Key.Rank, DangersquareColor);
             }
         }
 
@@ -292,6 +310,10 @@ namespace ChessForms
             if (chessboard.PerformMove(move, MoveNotation.UCI))
             {
                 // TODO: Draw color green to show what piece moved and where.
+                recentFrom = from;
+                recentTo = to;
+
+                ResetAllTableStyling();
             }
             
             // TODO: Use backgroundworker instead.
@@ -342,8 +364,8 @@ namespace ChessForms
 
                     if (fromPosition is null)
                     {
-                        // wrong color piece selected
-                        if (piece is null || piece.Color != chessboard.CurrentTeamTurn)
+                        // return if piece is null or has wrong color.
+                        if (piece?.Color != chessboard.CurrentTeamTurn)
                         {
                             return;
                         }
@@ -358,7 +380,7 @@ namespace ChessForms
                         fromPosition = clickTarget;
                         SelectPiece(cellX, cellY);
                         selectedPiece = piece;
-
+                        
                         foreach (var move in piece.GetMoves(chessboard))
                         {
                             if (move.Moves[0].Destination is null)
@@ -390,12 +412,13 @@ namespace ChessForms
                                 Color backgroundColor;
                                 if (gamemode.ValidateMove(move, chessboard))
                                 {
-                                    backgroundColor = Color.Red;
+                                    backgroundColor = CaptureTileAvailableColor;
                                 }
                                 else
                                 {
-                                    backgroundColor = Color.Gray;
+                                    backgroundColor = CaptureTileUnavailableColor;
                                 }
+
                                 boardcells[guardedSquare.File, guardedSquare.Rank].BackColor = backgroundColor;
                             }
                         }
@@ -420,13 +443,20 @@ namespace ChessForms
                     break;
                     // Mark square.
                 case MouseButtons.Right:
-                    if (boardcells[cellX, cellY].BackColor == Color.Green)
+                    // do not change color if square is already colored.
+                    if (recentFrom?.File == cellX && recentFrom?.Rank == cellY || 
+                        recentTo?.File == cellX && recentTo?.Rank == cellY)
+                    {
+                        break;
+                    }
+
+                    if (boardcells[cellX, cellY].BackColor == MarkedSquareColor)
                     {
                         ResetTileColor(cellX, cellY);
                     }
                     else
                     {
-                        boardcells[cellX, cellY].BackColor = Color.Green;
+                        boardcells[cellX, cellY].BackColor = MarkedSquareColor;
                     }
                     break;
                 case MouseButtons.Middle:
