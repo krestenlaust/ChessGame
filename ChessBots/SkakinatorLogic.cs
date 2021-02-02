@@ -196,6 +196,7 @@ namespace ChessBots
             {
                 bestEvaluation = moves.Min(m => m.Item1);
             }
+
             bestEvaluation = Math.Round(bestEvaluation, 1);
 
             List<Move> sortedMoves;

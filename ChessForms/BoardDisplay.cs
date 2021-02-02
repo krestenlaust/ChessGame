@@ -152,7 +152,8 @@ namespace ChessForms
                     {
                         ColorSquare(recentFrom.Value.File, recentFrom.Value.Rank, RecentMoveColor);
                     }
-                    else if (recentTo is not null)
+                    
+                    if (recentTo is not null)
                     {
                         ColorSquare(recentTo.Value.File, recentTo.Value.Rank, RecentMoveColor);
                     }
