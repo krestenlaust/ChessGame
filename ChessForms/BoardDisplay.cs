@@ -1,8 +1,10 @@
 ﻿using ChessGame;
 using ChessGame.Pieces;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -308,24 +310,75 @@ namespace ChessForms
         /// </summary>
         /// <param name="from"></param>
         /// <param name="to"></param>
-        private void MakeMove(Coordinate from, Coordinate to)
+        private void MakeLocalMove(Coordinate from, Coordinate to)
         {
-            string move = from.ToString() + to.ToString();
+            IEnumerable<Move> moves = chessboard.GetMovesByNotation(from.ToString() + to.ToString(), chessboard.CurrentTeamTurn, MoveNotation.UCI);
 
-            if (chessboard.PerformMove(move, MoveNotation.UCI, false))
+            ChessGame.Move move = ChooseMove(moves);
+            if (move is null)
+            {
+                return;
+            }
+
+            if (chessboard.PerformMove(move, false))
             {
                 recentMoveFrom = from;
                 recentMoveTo = to;
 
                 ResetAllTableStyling();
+
+                // Calls next worker.
+                backgroundWorkerMove.RunWorkerAsync();
+            }
+        }
+
+        private Move ChooseMove(IEnumerable<Move> moves)
+        {
+            switch (gamemode)
+            {
+                case ChessGame.Gamemodes.ClassicChess:
+                    List<Piece> pieces = new List<Piece>();
+
+                    foreach (var move in moves)
+                    {
+                        foreach (var singleMove in move.Moves)
+                        {
+                            if (singleMove.PromotePiece is null)
+                            {
+                                continue;
+                            }
+
+                            pieces.Add(singleMove.PromotePiece);
+                        }
+                    }
+
+                    if (pieces.Count == 0)
+                    {
+                        return moves.FirstOrDefault();
+                    }
+
+                    PromotionPrompt prompt = new PromotionPrompt(pieces);
+                    DialogResult res = prompt.ShowDialog();
+                    
+                    if (res == DialogResult.OK)
+                    {
+                        foreach (var move in moves)
+                        {
+                            foreach (var singleMove in move.Moves)
+                            {
+                                if (singleMove.PromotePiece.Notation == prompt.SelectedPiece.Notation)
+                                {
+                                    return move;
+                                }
+                            }
+                        }
+                    }
+                    return null;
+                default:
+                    break;
             }
 
-            // Calls next worker.
-            backgroundWorkerMove.RunWorkerAsync();
-
-            // TODO: Use backgroundworker instead.
-            //Thread moveThread = new Thread(() => chessboard.PerformMove(move, MoveNotation.UCI));
-            //moveThread.Start();
+            return moves.First();
         }
 
         private void CellClicked(object sender, EventArgs e)
@@ -435,8 +488,7 @@ namespace ChessForms
                         // select target
                         if (clickTarget != fromPosition)
                         {
-                            DeselectPiece(cellX, cellY);
-                            MakeMove(fromPosition.Value, clickTarget);
+                            MakeLocalMove(fromPosition.Value, clickTarget);
                         }
 
                         UpdateBoard();

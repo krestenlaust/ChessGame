@@ -361,13 +361,7 @@ namespace ChessGame
             }
         }
 
-        /// <summary>
-        /// Translates move notation into a move instance.
-        /// </summary>
-        /// <param name="notation"></param>
-        /// <param name="player"></param>
-        /// <returns></returns>
-        public Move GetMoveByNotation(string notation, TeamColor player, MoveNotation notationType)
+        public IEnumerable<Move> GetMovesByNotation(string notation, TeamColor player, MoveNotation notationType)
         {
             Coordinate? source = null;
             Coordinate? destination = null;
@@ -460,7 +454,7 @@ namespace ChessGame
                 {
                     if (gamemode.ValidateMove(move, this))
                     {
-                        return move;
+                        yield return move;
                     }
 
                     continue;
@@ -498,11 +492,20 @@ namespace ChessGame
                         continue;
                     }
 
-                    return move;
+                    yield return move;
                 }
             }
+        }
 
-            return null;
+        /// <summary>
+        /// Translates move notation into a move instance.
+        /// </summary>
+        /// <param name="notation"></param>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public Move GetMoveByNotation(string notation, TeamColor player, MoveNotation notationType)
+        {
+            return GetMovesByNotation(notation, player, notationType).FirstOrDefault();
         }
 
         /// <summary>
