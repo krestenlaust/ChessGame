@@ -43,6 +43,48 @@ namespace ChessForms
             Task.Run(() => chessboard.StartGame());
         }
 
+        public static Image GetPieceImage(Piece piece)
+        {
+            if (piece.Color == TeamColor.White)
+            {
+                switch (piece)
+                {
+                    case Bishop _:
+                        return Properties.Resources.LøberHvid;
+                    case King _:
+                        return Properties.Resources.KongeHvid;
+                    case Pawn _:
+                        return Properties.Resources.BondeHvid;
+                    case Rook _:
+                        return Properties.Resources.TårnHvid;
+                    case Queen _:
+                        return Properties.Resources.DronningHvid;
+                    case Knight _:
+                        return Properties.Resources.HestHvid;
+                }
+            }
+            else
+            {
+                switch (piece)
+                {
+                    case Bishop _:
+                        return Properties.Resources.LøberSort;
+                    case King _:
+                        return Properties.Resources.KongeSort;
+                    case Pawn _:
+                        return Properties.Resources.BondeSort;
+                    case Rook _:
+                        return Properties.Resources.TårnSort;
+                    case Queen _:
+                        return Properties.Resources.DronningSort;
+                    case Knight _:
+                        return Properties.Resources.HestSort;
+                }
+            }
+
+            return null;
+        }
+
         private void onGameStateUpdated(GameState e)
         {
             string outputMsg = string.Empty;
@@ -81,10 +123,14 @@ namespace ChessForms
             {
                 Console.Beep();
             }
+
             UpdateBoard();
         }
 
-        private void ResetTableStyling()
+        /// <summary>
+        /// Resets all borderstyles and tilecolors.
+        /// </summary>
+        private void ResetAllTableStyling()
         {
             for (int y = 0; y < chessboard.Height; y++)
             {
@@ -96,11 +142,19 @@ namespace ChessForms
             }
         }
 
+        /// <summary>
+        /// Resets the tilecolor of a single square.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public void ResetTileColor(int x, int y)
         {
             boardcells[x, y].BackColor = (x % 2) == (y % 2) ? Color.White : Color.CornflowerBlue;
         }
 
+        /// <summary>
+        /// Updates the board to represent the position portrayed by <c>chessboard</c>.
+        /// </summary>
         public void UpdateBoard()
         {
             for (int y = 0; y < chessboard.Height; y++)
@@ -132,6 +186,9 @@ namespace ChessForms
             }
         }
 
+        /// <summary>
+        /// Instantiates UI controls, creates the visual representation of the chessboard.
+        /// </summary>
         public void InstantiateUIBoard()
         {
             tableLayoutPanel1.ColumnCount = chessboard.Width + 1;
@@ -204,9 +261,12 @@ namespace ChessForms
                 tableLayoutPanel1.Controls.Add(label, tableLayoutPanel1.ColumnCount - 1, y);
             }
 
-            ResetTableStyling();
+            ResetAllTableStyling();
         }
 
+        /// <summary>
+        /// Used for debugging, draws all squares, that are considered dangerzones, red.
+        /// </summary>
         private void DrawDangerzone()
         {
             foreach (var item in chessboard.Dangerzone)
@@ -220,12 +280,23 @@ namespace ChessForms
             }
         }
 
+        /// <summary>
+        /// Makes a move.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
         private void MakeMove(Coordinate from, Coordinate to)
         {
             string move = from.ToString() + to.ToString();
 
-            Thread moveThread = new Thread(() => chessboard.PerformMove(move, MoveNotation.UCI));
-            moveThread.Start();
+            if (chessboard.PerformMove(move, MoveNotation.UCI))
+            {
+                // TODO: Draw color green to show what piece moved and where.
+            }
+            
+            // TODO: Use backgroundworker instead.
+            //Thread moveThread = new Thread(() => chessboard.PerformMove(move, MoveNotation.UCI));
+            //moveThread.Start();
         }
 
         private void CellClicked(object sender, EventArgs e)
@@ -237,6 +308,7 @@ namespace ChessForms
             int windowX = click.X;
             int windowY = click.Y;
 
+            // TODO: Make grid accurate by making up for the difference the coordinate system makes.
             int cellX = windowX / (tableLayoutPanel1.Width / chessboard.Width);
             int cellY = windowY / (tableLayoutPanel1.Height / chessboard.Height);
 
@@ -254,12 +326,14 @@ namespace ChessForms
             // handle click
             switch (button)
             {
+                // Deselects all squares marked, (de)selects a piece, or makes a move with a selected piece.
                 case MouseButtons.Left:
-                    ResetTableStyling();
+                    ResetAllTableStyling();
 
                     Piece piece = chessboard[clickTarget];
 
-                    if (!(fromPosition is null) && piece?.Color == chessboard.CurrentTeamTurn && piece != selectedPiece)
+                    // deselect piece selected
+                    if (fromPosition is not null && piece?.Color == chessboard.CurrentTeamTurn && piece != selectedPiece)
                     {
                         DeselectPiece(fromPosition.Value.File, fromPosition.Value.Rank);
                         UpdateBoard();
@@ -344,6 +418,7 @@ namespace ChessForms
                     break;
                 case MouseButtons.None:
                     break;
+                    // Mark square.
                 case MouseButtons.Right:
                     if (boardcells[cellX, cellY].BackColor == Color.Green)
                     {
@@ -365,8 +440,14 @@ namespace ChessForms
             }
         }
 
+        /// <summary>
+        /// Clears bordersrtle on a particular position.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         private void DeselectPiece(int x, int y)
         {
+            // TODO: Clean up the mess in these methods.
             if (unFlipped)
             {
                 y = (chessboard.Height - 1) - y;
@@ -378,7 +459,12 @@ namespace ChessForms
 
             boardcells[x, y].BorderStyle = BorderStyle.None;
         }
-
+        
+        /// <summary>
+        /// Changes borderstyle on a particular position.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         private void SelectPiece(int x, int y)
         {
             /*if (flipped) //flip fiks
@@ -393,6 +479,7 @@ namespace ChessForms
             boardcells[x, y].BorderStyle = BorderStyle.FixedSingle;
         }
 
+        // Clear the image on a position.
         public void ClearPiece(int x, int y)
         {
             if (unFlipped)
@@ -407,6 +494,12 @@ namespace ChessForms
             boardcells[x, y].Image = null;
         }
 
+        /// <summary>
+        /// Place a piece at a position.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="piece"></param>
         public void PlacePiece(int x, int y, Piece piece)
         {
             if (unFlipped)
@@ -421,6 +514,12 @@ namespace ChessForms
             boardcells[x, y].Image = GetPieceImage(piece);
         }
 
+        /// <summary>
+        /// Color a particular square.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="color"></param>
         public void ColorSquare(int x, int y, Color color)
         {
             if (unFlipped)
@@ -435,49 +534,6 @@ namespace ChessForms
             boardcells[x, y].BackColor = color;
         }
 
-        private Image GetPieceImage(Piece piece)
-        {
-            if (piece.Color == TeamColor.White)
-            {
-                switch (piece)
-                {
-                    case Bishop _:
-                        return Properties.Resources.LøberHvid;
-                    case King _:
-                        return Properties.Resources.KongeHvid;
-                    case Pawn _:
-                        return Properties.Resources.BondeHvid;
-                    case Rook _:
-                        return Properties.Resources.TårnHvid;
-                    case Queen _:
-                        return Properties.Resources.DronningHvid;
-                    case Knight _:
-                        return Properties.Resources.HestHvid;
-                }
-            }
-            else
-            {
-                switch (piece)
-                {
-                    case Bishop _:
-                        return Properties.Resources.LøberSort;
-                    case King _:
-                        return Properties.Resources.KongeSort;
-                    case Pawn _:
-                        return Properties.Resources.BondeSort;
-                    case Rook _:
-                        return Properties.Resources.TårnSort;
-                    case Queen _:
-                        return Properties.Resources.DronningSort;
-                    case Knight _:
-                        return Properties.Resources.HestSort;
-                }
-            }
-
-
-            return null;
-        }
-
         private void BoardDisplay_KeyUp(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
@@ -486,20 +542,17 @@ namespace ChessForms
                     break;
                 case Keys.Right:
                     break;
+                    // Refresh dangerzone
                 case Keys.R:
                     chessboard.UpdateDangerzones();
                     break;
+                    // Display dangerzone
                 case Keys.Space:
                     DrawDangerzone();
                     break;
                 default:
                     break;
             }
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
