@@ -18,7 +18,7 @@ namespace ChessForms
         private static readonly Color AlternateTileColor = Color.CornflowerBlue;
         private static readonly Color CaptureTileAvailableColor = Color.Red;
         private static readonly Color CaptureTileUnavailableColor = Color.Gray;
-        private static readonly Color RecentMoveColor = Color.Green;
+        private static readonly Color RecentMoveColor = Color.Teal;
         private static readonly Color MarkedSquareColor = Color.Green;
         private static readonly Color DangersquareColor = Color.Red;
 
@@ -314,7 +314,7 @@ namespace ChessForms
         {
             IEnumerable<Move> moves = chessboard.GetMovesByNotation(from.ToString() + to.ToString(), chessboard.CurrentTeamTurn, MoveNotation.UCI);
 
-            ChessGame.Move move = ChooseMove(moves);
+            Move move = ChooseMove(moves);
             if (move is null)
             {
                 return;
@@ -336,7 +336,7 @@ namespace ChessForms
         {
             switch (gamemode)
             {
-                case ChessGame.Gamemodes.ClassicChess:
+                default:
                     List<Piece> pieces = new List<Piece>();
 
                     foreach (var move in moves)
@@ -374,8 +374,6 @@ namespace ChessForms
                         }
                     }
                     return null;
-                default:
-                    break;
             }
 
             return moves.First();
@@ -451,36 +449,27 @@ namespace ChessForms
                             Coordinate guardedSquare = move.Moves[0].Destination.Value;
 
                             // TODO: Patrick fixer brættet, cirka her omkring
-                            Image cellImage = boardcells[guardedSquare.File, guardedSquare.Rank].Image;
+                            TilePictureControl cellImageControl = boardcells[guardedSquare.File, guardedSquare.Rank];
+                            Image cellImage = cellImageControl.Image;
+                            Color backgroundColor = cellImageControl.BackColor;
 
-                            if (cellImage is null)
+                            bool isMoveValid = gamemode.ValidateMove(move, chessboard);
+
+                            if (move.Captures)
                             {
-                                Bitmap dotTexture;
-                                if (gamemode.ValidateMove(move, chessboard))
-                                {
-                                    dotTexture = Properties.Resources.MuligtTrkBrikTilgængelig;
-                                }
-                                else
-                                {
-                                    dotTexture = Properties.Resources.MuligtTrkBrikUtilgængelig;
-                                }
-
-                                boardcells[guardedSquare.File, guardedSquare.Rank].Image = dotTexture;
+                                backgroundColor = isMoveValid ? 
+                                    CaptureTileAvailableColor : 
+                                    CaptureTileUnavailableColor;
                             }
                             else
                             {
-                                Color backgroundColor;
-                                if (gamemode.ValidateMove(move, chessboard))
-                                {
-                                    backgroundColor = CaptureTileAvailableColor;
-                                }
-                                else
-                                {
-                                    backgroundColor = CaptureTileUnavailableColor;
-                                }
-
-                                boardcells[guardedSquare.File, guardedSquare.Rank].BackColor = backgroundColor;
+                                cellImage = isMoveValid ? 
+                                    Properties.Resources.MuligtTrkBrikTilgængelig :
+                                    Properties.Resources.MuligtTrkBrikUtilgængelig;
                             }
+
+                            cellImageControl.Image = cellImage;
+                            cellImageControl.BackColor = backgroundColor;
                         }
                     }
                     else

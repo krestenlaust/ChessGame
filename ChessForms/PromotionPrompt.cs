@@ -25,14 +25,29 @@ namespace ChessForms
 
         private void InstantiatePieceButtons(List<Piece> pieces)
         {
+            tableLayoutPanel.ColumnCount = pieces.Count;
+            tableLayoutPanel.ColumnStyles.Clear();
+            int i;
+            for (i = 0; i < pieces.Count; i++)
+            {
+                // set size to any percent, doesnt matter
+                tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 1));
+            }
+
             foreach (var piece in pieces)
             {
-                PictureBox control = new PictureBox();
-                control.Image = BoardDisplay.GetPieceImage(piece);
-                control.SizeMode = PictureBoxSizeMode.StretchImage;
+                PictureBox control = new PictureBox
+                {
+                    Image = BoardDisplay.GetPieceImage(piece),
+                    SizeMode = PictureBoxSizeMode.Zoom,
+                    BorderStyle = BorderStyle.FixedSingle,
+                    Width = 200,
+                    Height = 200
+                };
                 control.Click += Control_Click;
+
                 PieceButtons[control.Image] = piece;
-                flowLayoutPanel.Controls.Add(control);
+                tableLayoutPanel.Controls.Add(control);
             }
         }
 
