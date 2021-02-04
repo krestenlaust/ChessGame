@@ -368,3 +368,5 @@ ChessCommandline/App.config
 ChessCommandline/ChessCommandline.csproj
 ChessCommandline/App.config
 .vs/ChessGame/v15/.suo
+*.cache
+.vs/ChessGame/v15/.suo

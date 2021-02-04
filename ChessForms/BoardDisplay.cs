@@ -32,6 +32,9 @@ namespace ChessForms
         private Coordinate? recentMoveFrom = null;
         private Coordinate? recentMoveTo = null;
 
+        //Sound
+        System.Media.SoundPlayer soundPlayer = new System.Media.SoundPlayer(Properties.Resources.SkakLydfil);
+
         public BoardDisplay(Gamemode gamemode, bool whiteLocal, bool blackLocal)
         {
             InitializeComponent();
@@ -136,10 +139,23 @@ namespace ChessForms
 
             if (MatchMaker.PlaySoundOnMove)
             {
-                Console.Beep();
+                soundPlayer.Play();
+                //Console.Beep();
             }
 
             UpdateBoard();
+        }
+
+        private TilePictureControl GetCell(int x, int y)
+        {
+            if (unFlipped)
+            {
+                return boardcells[chessboard.Width - 1 - x, chessboard.Height - 1 - y];
+            }
+            else
+            {
+                return boardcells[x, y];
+            }
         }
 
         /// <summary>
@@ -152,7 +168,8 @@ namespace ChessForms
                 for (int x = 0; x < chessboard.Width; x++)
                 {
                     ResetTileColor(x, y);
-                    boardcells[x, y].BorderStyle = BorderStyle.None;
+                    GetCell(x,y).BorderStyle = BorderStyle.None;
+                    
 
                     if (recentMoveFrom is not null)
                     {
@@ -174,7 +191,7 @@ namespace ChessForms
         /// <param name="y"></param>
         public void ResetTileColor(int x, int y)
         {
-            boardcells[x, y].BackColor = (x % 2) == (y % 2) ? Color.White : AlternateTileColor;
+            GetCell(x, y).BackColor = (x % 2) == (y % 2) ? Color.White : AlternateTileColor;
         }
 
         /// <summary>
@@ -188,14 +205,16 @@ namespace ChessForms
                 {
                     Coordinate pieceCoordinate;
 
-                    if (unFlipped)
+                    /*if (unFlipped)
                     {
                         pieceCoordinate = new Coordinate(chessboard.Width - 1 - x, chessboard.Height - 1 - y); //Det her burde også fikse noget
-                    } //#442
+                    } 
                     else
                     {
                         pieceCoordinate = new Coordinate(x, y);
-                    }
+                    }*/
+
+                    pieceCoordinate = new Coordinate(x, y);
 
                     Piece cellPiece = chessboard.GetPiece(pieceCoordinate);
 
@@ -246,14 +265,7 @@ namespace ChessForms
 
                     box.Click += CellClicked;
 
-                    if (unFlipped)
-                    {
-                        boardcells[chessboard.Width - 1 - x, (chessboard.Height - 1) - y] = box;
-                    } //#442
-                    else
-                    {
-                        boardcells[x, y] = box;
-                    }
+                    boardcells[x, y] = box;
 
                     tableLayoutPanel1.Controls.Add(box, x, y);
                 }
@@ -373,7 +385,7 @@ namespace ChessForms
                             }
                         }
                     }
-                    return null;
+                    break;
             }
 
             return moves.First();
@@ -395,10 +407,7 @@ namespace ChessForms
             if (unFlipped)
             {
                 cellY = (chessboard.Height - 1) - cellY;
-            }
-            else
-            {
-                //cellX = (chessboard.Width - 1) - cellX; //Det her fikser lidt et problem
+                cellX = (chessboard.Width - 1) - cellX; 
             }
 
             Coordinate clickTarget = new Coordinate(cellX, cellY);
@@ -449,7 +458,7 @@ namespace ChessForms
                             Coordinate guardedSquare = move.Moves[0].Destination.Value;
 
                             // TODO: Patrick fixer brættet, cirka her omkring
-                            TilePictureControl cellImageControl = boardcells[guardedSquare.File, guardedSquare.Rank];
+                            TilePictureControl cellImageControl = GetCell(guardedSquare.File, guardedSquare.Rank);
                             Image cellImage = cellImageControl.Image;
                             Color backgroundColor = cellImageControl.BackColor;
 
@@ -498,13 +507,13 @@ namespace ChessForms
                         break;
                     }
 
-                    if (boardcells[cellX, cellY].BackColor == MarkedSquareColor)
+                    if (GetCell(cellX, cellY).BackColor == MarkedSquareColor)
                     {
                         ResetTileColor(cellX, cellY);
                     }
                     else
                     {
-                        boardcells[cellX, cellY].BackColor = MarkedSquareColor;
+                        GetCell(cellX, cellY).BackColor = MarkedSquareColor;
                     }
                     break;
                 case MouseButtons.Middle:
@@ -525,17 +534,7 @@ namespace ChessForms
         /// <param name="y"></param>
         private void DeselectPiece(int x, int y)
         {
-            // TODO: Clean up the mess in these methods.
-            if (unFlipped)
-            {
-                y = (chessboard.Height - 1) - y;
-            }
-            else
-            {
-                //x = (chessboard.Width - 1) - x;
-            }
-
-            boardcells[x, y].BorderStyle = BorderStyle.None;
+            GetCell(x, y).BorderStyle = BorderStyle.None;
         }
         
         /// <summary>
@@ -545,31 +544,13 @@ namespace ChessForms
         /// <param name="y"></param>
         private void SelectPiece(int x, int y)
         {
-            /*if (flipped) //flip fiks
-            {
-                y = (chessboard.Height - 1) - y;
-            }
-            else
-            {
-                x = (chessboard.Width - 1) - x;
-            }*/
-
-            boardcells[x, y].BorderStyle = BorderStyle.FixedSingle;
+            GetCell(x, y).BorderStyle = BorderStyle.FixedSingle;
         }
 
         // Clear the image on a position.
         public void ClearPiece(int x, int y)
         {
-            if (unFlipped)
-            {
-                y = (chessboard.Height - 1) - y;
-            }
-            else
-            {
-                //x = (chessboard.Width - 1) - x;
-            }
-
-            boardcells[x, y].Image = null;
+            GetCell(x, y).Image = null;
         }
 
         /// <summary>
@@ -580,16 +561,7 @@ namespace ChessForms
         /// <param name="piece"></param>
         public void PlacePiece(int x, int y, Piece piece)
         {
-            if (unFlipped)
-            {
-                y = (chessboard.Height - 1) - y;
-            }
-            else
-            {
-                //x = (chessboard.Width - 1) - x;
-            }
-
-            boardcells[x, y].Image = GetPieceImage(piece);
+            GetCell(x, y).Image = GetPieceImage(piece);
         }
 
         /// <summary>
@@ -600,16 +572,7 @@ namespace ChessForms
         /// <param name="color"></param>
         public void ColorSquare(int x, int y, Color color)
         {
-            if (unFlipped)
-            {
-                y = (chessboard.Height - 1) - y;
-            }
-            else
-            {
-                //x = (chessboard.Width - 1) - x;
-            }
-
-            boardcells[x, y].BackColor = color;
+            GetCell(x, y).BackColor = color;
         }
 
         private void backgroundWorkerMove_DoWork(object sender, DoWorkEventArgs e)
