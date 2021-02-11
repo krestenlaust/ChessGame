@@ -198,14 +198,9 @@ namespace ChessGame
             }
 
             // change turn
-            gamemode.UpdateGameState(this);
-
-            if (!isGameFinished)
+            if (gamemode.StartTurn(this))
             {
-                if (gamemode.StartTurn(this))
-                {
-                    CurrentPlayerTurn?.TurnStarted(this);
-                }
+                CurrentPlayerTurn?.TurnStarted(this);
             }
         }
 
