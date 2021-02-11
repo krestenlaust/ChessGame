@@ -19,6 +19,7 @@ namespace ChessForms
         private static readonly Color RecentMoveColor = Color.Teal;
         private static readonly Color MarkedSquareColor = Color.Green;
         private static readonly Color DangersquareColor = Color.Red;
+        private static readonly Color CheckedSquareColor = Color.DarkRed;
 
         private readonly Gamemode gamemode;
         private TilePictureControl[,] boardcells;
@@ -142,6 +143,17 @@ namespace ChessForms
             }
 
             UpdateBoard();
+
+            if (chessboard.Moves.Count == 0)
+            {
+                return;
+            }
+
+            PieceMove recentMove = chessboard.Moves.Peek().Moves[0];
+            recentMoveFrom = recentMove.Source;
+            recentMoveTo = recentMove.Destination;
+
+            ResetAllTableStyling();
         }
 
         private TilePictureControl GetCell(int x, int y)
@@ -157,7 +169,7 @@ namespace ChessForms
         }
 
         /// <summary>
-        /// Resets all borderstyles and tilecolors.
+        /// Resets all borderstyles and tilecolors to their correct color setting according to gamestate.
         /// </summary>
         private void ResetAllTableStyling()
         {
@@ -167,18 +179,31 @@ namespace ChessForms
                 {
                     ResetTileColor(x, y);
                     GetCell(x,y).BorderStyle = BorderStyle.None;
-                    
-
-                    if (recentMoveFrom is not null)
-                    {
-                        ColorSquare(recentMoveFrom.Value.File, recentMoveFrom.Value.Rank, RecentMoveColor);
-                    }
-                    
-                    if (recentMoveTo is not null)
-                    {
-                        ColorSquare(recentMoveTo.Value.File, recentMoveTo.Value.Rank, RecentMoveColor);
-                    }
                 }
+            }
+
+            if (recentMoveFrom is not null)
+            {
+                ColorSquare(recentMoveFrom.Value.File, recentMoveFrom.Value.Rank, RecentMoveColor);
+            }
+
+            if (recentMoveTo is not null)
+            {
+                ColorSquare(recentMoveTo.Value.File, recentMoveTo.Value.Rank, RecentMoveColor);
+            }
+
+            if (chessboard.IsKingInCheck(chessboard.CurrentTeamTurn))
+            {
+                foreach (var item in chessboard.GetPieces<King>())
+                {
+                    if (item.Item1.Color != chessboard.CurrentTeamTurn)
+                    {
+                        continue;
+                    }
+
+                    ColorSquare(item.Item2.File, item.Item2.Rank, CheckedSquareColor);
+                }
+                
             }
         }
 
@@ -580,18 +605,7 @@ namespace ChessForms
 
         private void backgroundWorkerMove_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            UpdateBoard();
-
-            if (chessboard.Moves.Count == 0)
-            {
-                return;
-            }
-
-            PieceMove recentMove = chessboard.Moves.Peek().Moves[0];
-            recentMoveFrom = recentMove.Source;
-            recentMoveTo = recentMove.Destination;
-
-            ResetAllTableStyling();
+            
         }
 
         private void BoardDisplay_KeyUp(object sender, KeyEventArgs e)
