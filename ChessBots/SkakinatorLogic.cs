@@ -77,6 +77,11 @@ namespace ChessBots
                 int round = board.Moves.Count + 1;
                 foreach (var piece in item.Value)
                 {
+                    if (piece is Queen)
+                    {
+                        continue;
+                    }
+
                     if (piece.Color == TeamColor.White)
                     {
                         centipawns += centerSquareRawValue / (round * centerSquareModifier);

@@ -43,7 +43,7 @@ namespace ChessForms
             this.blackLocal = blackLocal;
 
             // flip board if black is only local player
-            //unFlipped = !(blackLocal && !whiteLocal);
+            unFlipped = !(blackLocal && !whiteLocal);
         }
 
         private void BoardDisplay_Load(object sender, EventArgs e)
