@@ -94,7 +94,6 @@ namespace ChessCommandline
                 else
                 {
                     Console.WriteLine("Incorrect notation/move");
-                    continue;
                 }
             }
         }
