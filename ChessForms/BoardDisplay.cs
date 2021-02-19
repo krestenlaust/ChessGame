@@ -32,7 +32,7 @@ namespace ChessForms
         private Coordinate? recentMoveTo = null;
 
         //Sound
-        System.Media.SoundPlayer soundPlayer = new System.Media.SoundPlayer(Properties.Resources.SkakLydfil);
+        private System.Media.SoundPlayer soundPlayer = new System.Media.SoundPlayer(Properties.Resources.SkakLydfil);
 
         public BoardDisplay(Gamemode gamemode, bool whiteLocal, bool blackLocal)
         {

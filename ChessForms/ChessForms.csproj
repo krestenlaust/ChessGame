@@ -116,10 +116,6 @@
       <Project>{63c22b99-d079-4c8e-9f60-a27bcd082fa3}</Project>
       <Name>ChessGame</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DistributedChessPlayer\DistributedChessPlayer.csproj">
-      <Project>{77ff7809-27dd-4f90-8f51-4e73bb948704}</Project>
-      <Name>DistributedChessPlayer</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\BondeHvid.png" />

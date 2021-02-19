@@ -16,7 +16,6 @@ namespace ChessForms
         LichessPlayerSeek,
         Bot,
         Network,
-        DistributedComputing,
     }
     public enum GamemodeType
     {
@@ -101,8 +100,6 @@ namespace ChessForms
                     return new LichessBotPlayer("lichess-player", "", textBoxBlackLichessMatchID.Text);
                 case PlayerType.LichessPlayerSeek:
                     return new LichessBotPlayer("lichess-player", "", TeamColor.White);
-                //case PlayerType.DistributedComputing:
-                //    return new DistributedChessPlayer.DistributedChessPlayer(name);
                 default:
                     return null;
             }
@@ -198,7 +195,6 @@ namespace ChessForms
 
         private void radioButtonWhiteDistributedComputing_CheckedChanged(object sender, EventArgs e)
         {
-            white = PlayerType.DistributedComputing;
         }
 
         private void radioButtonBlackLichessPlayerSeek_CheckedChanged(object sender, EventArgs e)
