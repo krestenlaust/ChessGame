@@ -63,11 +63,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gamemodes\CheckMateTest.cs" />
+    <Compile Include="Gamemodes\Horde.cs" />
     <Compile Include="Players\LichessBotPlayer.cs" />
     <Compile Include="Chessboard.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="Gamemode.cs" />
-    <Compile Include="Gamemodes\OpenWorldChess.cs" />
     <Compile Include="Gamemodes\ClassicChess.cs" />
     <Compile Include="Gamemodes\PawnTestChess.cs" />
     <Compile Include="Gamemodes\TinyChess.cs" />

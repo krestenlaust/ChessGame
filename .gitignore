@@ -370,3 +370,5 @@ ChessCommandline/App.config
 .vs/ChessGame/v15/.suo
 *.cache
 .vs/ChessGame/v15/.suo
+
+.idea/

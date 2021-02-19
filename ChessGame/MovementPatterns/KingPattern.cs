@@ -30,15 +30,16 @@ namespace ChessGame.MovementPatterns
 
                     TeamColor oppositeColor = piece.Color == TeamColor.Black ? TeamColor.White : TeamColor.Black;
 
-                    // The king would put itself in check.
-                    if (board.IsDangerSquare(newPosition, oppositeColor) > 0)
-                    {
-                        continue;
-                    }
-                    
+                    // moved to before check dangersquare to possibly prevent weird king movement.
                     if (guardedSquaresOnly) // return all protected squares
                     {
                         yield return new Move(newPosition, position, piece, false, piece.Color);
+                        continue;
+                    }
+
+                    // The king would put itself in check.
+                    if (board.IsDangerSquare(newPosition, oppositeColor) > 0)
+                    {
                         continue;
                     }
 

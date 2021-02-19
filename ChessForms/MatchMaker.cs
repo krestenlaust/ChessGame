@@ -16,14 +16,14 @@ namespace ChessForms
         LichessPlayerSeek,
         Bot,
         Network,
-        DistributedComputing,
     }
     public enum GamemodeType
     {
         Classic = 0,
-        CheckMateTest = 1,
-        PawnTest = 2,
-        Tiny = 3,
+        Horde = 1,
+        CheckMateTest = 2,
+        PawnTest = 3,
+        Tiny = 4,
     }
 
     public partial class MatchMaker : Form
@@ -100,8 +100,6 @@ namespace ChessForms
                     return new LichessBotPlayer("lichess-player", "", textBoxBlackLichessMatchID.Text);
                 case PlayerType.LichessPlayerSeek:
                     return new LichessBotPlayer("lichess-player", "", TeamColor.White);
-                //case PlayerType.DistributedComputing:
-                //    return new DistributedChessPlayer.DistributedChessPlayer(name);
                 default:
                     return null;
             }
@@ -113,6 +111,8 @@ namespace ChessForms
             {
                 case GamemodeType.Classic:
                     return new ClassicChess(playerWhite, playerBlack);
+                case GamemodeType.Horde:
+                    return new Horde(playerWhite, playerBlack);
                 case GamemodeType.CheckMateTest:
                     return new CheckMateTest(playerWhite, playerBlack);
                 case GamemodeType.PawnTest:
@@ -195,7 +195,6 @@ namespace ChessForms
 
         private void radioButtonWhiteDistributedComputing_CheckedChanged(object sender, EventArgs e)
         {
-            white = PlayerType.DistributedComputing;
         }
 
         private void radioButtonBlackLichessPlayerSeek_CheckedChanged(object sender, EventArgs e)

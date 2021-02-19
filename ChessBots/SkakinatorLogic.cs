@@ -77,6 +77,11 @@ namespace ChessBots
                 int round = board.Moves.Count + 1;
                 foreach (var piece in item.Value)
                 {
+                    if (piece is Queen)
+                    {
+                        continue;
+                    }
+
                     if (piece.Color == TeamColor.White)
                     {
                         centipawns += centerSquareRawValue / (round * centerSquareModifier);
@@ -153,12 +158,78 @@ namespace ChessBots
         }
 
         /// <summary>
+        /// For timing and analyzing
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="targetDepth"></param>
+        /// <returns></returns>
+        public Move GenerateMoveTimed(Chessboard board, int targetDepth)
+        {
+            List<(float, Move)> moves = new List<(float, Move)>();
+            List<Move> availableMoves = board.GetMoves().ToList();
+
+            foreach (var move in availableMoves)
+            {
+                Chessboard rootNode = new Chessboard(board, move);
+
+                float evaluation = MinimaxSearch(rootNode, targetDepth - 1, float.MinValue, float.MaxValue);
+                moves.Add((evaluation, move));
+            }
+
+
+            double bestEvaluation;
+            if (board.CurrentTeamTurn == TeamColor.White)
+            {
+                bestEvaluation = moves.Max(m => m.Item1);
+            }
+            else
+            {
+                bestEvaluation = moves.Min(m => m.Item1);
+            }
+
+            bestEvaluation = Math.Round(bestEvaluation, 1);
+
+            List<Move> sortedMoves;
+            if (board.CurrentTeamTurn == TeamColor.White)
+            {
+                sortedMoves = (from moveEvaluation in moves
+                               orderby moveEvaluation.Item1 descending
+                               where Math.Round(moveEvaluation.Item1, 1) == bestEvaluation
+                               select moveEvaluation.Item2).ToList();
+            }
+            else
+            {
+                sortedMoves = (from moveEvaluation in moves
+                               orderby moveEvaluation.Item1 ascending
+                               where Math.Round(moveEvaluation.Item1, 1) == bestEvaluation
+                               select moveEvaluation.Item2).ToList();
+            }
+
+            Move chosenMove = sortedMoves[0];
+
+            foreach (var move in sortedMoves)
+            {
+                string moveNotation = move.ToString();
+                if (moveNotation == "O-O-O" || moveNotation == "O-O")
+                {
+                    chosenMove = move;
+                    break;
+                }
+            }
+
+            // Clean-up
+            transpositionTable.Clear();
+
+            return sortedMoves[0];
+        }
+
+        /// <summary>
         /// Generates the supposedly best move given a position on the board and a <c>targetDepth</c>.
         /// </summary>
         /// <param name="board"></param>
         /// <param name="targetDepth"></param>
         /// <returns></returns>
-        public Move GenerateMove(Chessboard board, int targetDepth)
+        public Move GenerateMoveParrallel(Chessboard board, int targetDepth)
         {
             SemaphoreSlim ss = new SemaphoreSlim(5, 5);
             List<Task> moveTasks = new List<Task>();
