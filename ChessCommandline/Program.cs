@@ -28,7 +28,7 @@ namespace ChessCommandline
                 gamemode.onTurnChanged += AskForMove;
 
                 chessboard = gamemode.GenerateBoard();
-                chessboard.StartGame();
+                chessboard.StartNextTurn();
 
                 while (!chessboard.isGameFinished)
                 { // (event-based)

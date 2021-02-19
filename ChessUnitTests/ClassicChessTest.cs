@@ -25,7 +25,7 @@ namespace ChessUnitTests
             chessboard[new Coordinate(2, 2)] = new Pawn { Color = TeamColor.Black };
             chessboard[new Coordinate(3, 2)] = new Pawn { Color = TeamColor.Black };
 
-            chessboard.StartGame();
+            chessboard.StartNextTurn();
             chessboard.CurrentTeamTurn = TeamColor.Black;
             chessboard.PerformMove("d3d2", MoveNotation.UCI);
 
@@ -117,7 +117,7 @@ namespace ChessUnitTests
             chessboard[new Coordinate("d3")] = new King { Color = TeamColor.White };
             chessboard[new Coordinate("c2")] = new Pawn { Color = TeamColor.Black };
 
-            chessboard.StartGame();
+            chessboard.StartNextTurn();
 
             chessboard.PerformMove("d3c2", MoveNotation.UCI);
 
