@@ -14,7 +14,7 @@ namespace ChessGame
     /// <summary>
     /// A class that describes a game of chess.
     /// </summary>
-    public class Chessboard : IEquatable<Chessboard>
+    public class Chessboard : IEquatable<Chessboard> 
     {
         public readonly byte Height;
         public readonly byte Width;
@@ -35,20 +35,29 @@ namespace ChessGame
 
         public GameState CurrentState { get; internal set; }
         public TeamColor CurrentTeamTurn { get; set; }
-        public Player CurrentPlayerTurn
+        /// <summary>
+        /// A Player object that is equal to the player whose turn it is
+        /// </summary>
+        public Player CurrentPlayerTurn 
         {
             get
             {
                 return CurrentTeamTurn == TeamColor.White ? gamemode.PlayerWhite : gamemode.PlayerBlack;
             }
         }
-        public int MaterialSum
+        /// <summary>
+        /// A integearena to determine the material sum of the game
+        /// </summary>
+        public int MaterialSum 
         {
             get
             {
                 return Pieces.Values.Sum(p => p.Color == TeamColor.Black ? -p.MaterialValue : p.MaterialValue);
             }
         }
+        /// <summary>
+        /// A boolean to tell whether or not the game has finished
+        /// </summary>
         public bool isGameFinished
         {
             get
@@ -351,7 +360,13 @@ namespace ChessGame
                 return false;
             }
         }
-
+        /// <summary>
+        /// This method gets a collection of moves by the notation you put in as parameters.
+        /// </summary>
+        /// <param name="notation"></param>
+        /// <param name="player"></param>
+        /// <param name="notationType"></param>
+        /// <returns></returns>
         public IEnumerable<Move> GetMovesByNotation(string notation, TeamColor player, MoveNotation notationType)
         {
             Coordinate? source = null;
@@ -438,7 +453,7 @@ namespace ChessGame
             {
                 if (player != move.Color)
                 {
-                    continue;
+                    continue; //Det her er vidst ikke brugbart mere
                 }
 
                 if (customNotation && move.CustomNotation == notation)
