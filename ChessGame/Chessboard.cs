@@ -212,9 +212,9 @@ namespace ChessGame
 
         public IEnumerable<Move> GetMovesSorted()
         {
-            return (from move in GetMoves()
-                    orderby move.Captures
-                    select move);
+            return from move in GetMoves()
+                   orderby move.Captures
+                   select move;
         }
 
         /// <summary>
@@ -313,7 +313,6 @@ namespace ChessGame
                     MovedPieces.Remove(singleMove.Piece);
                     MovedPieces.Add(singleMove.PromotePiece);
                 }
-
             }
 
             UpdateDangerzones();
@@ -329,29 +328,26 @@ namespace ChessGame
             Piece king = null;
             Coordinate position = new Coordinate();
 
-            foreach (var item in GetPieces<King>())
-            {
-                if (item.Item1.Color != color)
-                {
-                    continue;
-                }
+            // Get first king, with this color, and it's position.
+            (king, position) = (from piece in GetPieces<King>()
+                                where piece.Item1.Color == color
+                                select piece).FirstOrDefault();
 
-                king = item.Item1;
-                position = item.Item2;
-            }
-
+            // No king of this color was found, thus the king can't be in check.
             if (king is null)
             {
                 return false;
             }
 
+            // Get list of pieces aiming on the square the king sits on.
             if (Dangerzone.TryGetValue(position, out List<Piece> pieces))
             {
-                // returns true if any of the pieces are of a different color.
+                // Returns true if any of the pieces are of opposite color.
                 return pieces.Any(p => p.Color != color);
             }
             else
             {
+                // No pieces of opposite color aiming on this square, king not in check.
                 return false;
             }
         }
@@ -545,9 +541,9 @@ namespace ChessGame
         /// <param name="piece"></param>
         private void UpdateDangerzones(Piece piece, bool removeOld = false)
         {
-            // remove all instances
+            // Remove all instances of this piece.
             if (removeOld)
-            {
+            { 
                 foreach (var item in Dangerzone)
                 {
                     if (item.Value is null)
@@ -559,22 +555,27 @@ namespace ChessGame
                 }
             }
 
-            // update dangersquares.
+            // Updates dangerzone
             foreach (var move in piece.GetMoves(this, true))
             {
                 foreach (var singleMove in move.Moves)
                 {
+                    // If the move has no destination then it doesn't threaten any square.
                     if (singleMove.Destination is null)
                     {
                         continue;
                     }
 
-                    if (!Dangerzone.ContainsKey(singleMove.Destination.Value))
+                    Coordinate destination = singleMove.Destination.Value;
+
+                    // Make new list of pieces aiming on this square if there isn't one already.
+                    if (!Dangerzone.ContainsKey(destination))
                     {
-                        Dangerzone[singleMove.Destination.Value] = new List<Piece>();
+                        Dangerzone[destination] = new List<Piece>();
                     }
 
-                    Dangerzone[singleMove.Destination.Value].Add(singleMove.Piece);
+                    // Add this move to dangerzone.
+                    Dangerzone[destination].Add(singleMove.Piece);
                 }
             }
         }

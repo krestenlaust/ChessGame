@@ -107,6 +107,7 @@
     </None>
     <None Include="App.config" />
     <None Include="ChessGame.ruleset" />
+    <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
