@@ -36,13 +36,13 @@ namespace ChessGame.MovementPatterns
                         break;
                 }
 
-                for (int i = 1; i < board.Width; i++) //Checker
+                for (int i = 1; i < board.Height * board.Width; i++) //Checker
                 {
                     Coordinate checkPosition = new Coordinate((i * Xdir) + position.File, (i * Ydir) + position.Rank); //Position update
 
                     if (checkPosition.Rank >= board.Height || checkPosition.Rank < 0 ||
                         checkPosition.File >= board.Width || checkPosition.File < 0) //If the checking position is outside of the board
-                        continue;
+                        break;
 
                     // whether the position is occupied.
                     Piece occupyingPiece = board.GetPiece(checkPosition);
