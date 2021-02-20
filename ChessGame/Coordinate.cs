@@ -46,41 +46,6 @@ namespace ChessGame
             Rank = (byte)(notation[1] - 49);
         }
 
-        /* // proposed null functionality
-        [DebuggerStepThrough]
-        public static bool operator ==(Coordinate coordinate1, Coordinate coordinate2)
-        {
-            // this is way more complicated than I imagined,
-            // it's supposed to return true if all non-null equals withn their property group
-            // E.g.
-            // (null, 5) == (null, 5) == true
-            // (null, 5) == (3, 5) == true
-            // (null, null) == (3, 5) == false
-            // (null, 5) == (5, null) == false
-            // logic:
-            // (null, n) == (null, n) == true
-            // (n1, n2) == (n1, n2) == true
-            // (n1, null) == (n1, n2) == true
-
-            // all are ambigous, no number is the same.
-            if (coordinate1.File is null && coordinate1.Rank is null || coordinate2.File is null && coordinate2.Rank is null)
-            {
-                return false;
-            }
-
-            // file is null, compare rank.
-            if (coordinate1.File is null)
-            {
-                return coordinate1.Rank == coordinate2.Rank;
-            }
-            else if (coordinate1.Rank is null) // rank is null, compare file.
-            {
-                return coordinate1.File == coordinate1.Rank;
-            }
-
-            return coordinate1.File == coordinate2.File && coordinate1.Rank == coordinate2.Rank;
-        }*/
-
         [DebuggerStepThrough]
         public static bool operator !=(Coordinate coordinate1, Coordinate coordinate2) => coordinate1.Rank != coordinate2.Rank || coordinate1.File != coordinate2.File;
 

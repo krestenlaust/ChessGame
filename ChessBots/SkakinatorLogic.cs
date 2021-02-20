@@ -300,7 +300,6 @@ namespace ChessBots
 
             // Clean-up
             transpositionTable.Clear();
-            //GC.Collect();
 
             return sortedMoves[0];
         }

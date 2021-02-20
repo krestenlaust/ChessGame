@@ -22,16 +22,13 @@ namespace ChessForms
         private static readonly Color CheckedSquareColor = Color.DarkRed;
 
         private readonly Gamemode gamemode;
+        private readonly bool whiteLocal, blackLocal;
         private TilePictureControl[,] boardcells;
         private Coordinate? fromPosition = null;
         private Piece selectedPiece;
         private Chessboard chessboard;
-        private readonly bool whiteLocal, blackLocal;
-        private bool unFlipped = false;
         private Coordinate? recentMoveFrom = null;
         private Coordinate? recentMoveTo = null;
-
-        //Sound
         private System.Media.SoundPlayer soundPlayer = new System.Media.SoundPlayer(Properties.Resources.SkakLydfil);
 
         public BoardDisplay(Gamemode gamemode, bool whiteLocal, bool blackLocal)
@@ -41,9 +38,6 @@ namespace ChessForms
             this.gamemode = gamemode;
             this.whiteLocal = whiteLocal;
             this.blackLocal = blackLocal;
-
-            // flip board if black is only local player
-            unFlipped = !(blackLocal && !whiteLocal);
         }
 
         private void BoardDisplay_Load(object sender, EventArgs e)
@@ -139,7 +133,6 @@ namespace ChessForms
             if (MatchMaker.PlaySoundOnMove)
             {
                 soundPlayer.Play();
-                //Console.Beep();
             }
 
             UpdateBoard();
@@ -158,14 +151,7 @@ namespace ChessForms
 
         private TilePictureControl GetCell(int x, int y)
         {
-            if (unFlipped)
-            {
-                return boardcells[chessboard.Width - 1 - x, chessboard.Height - 1 - y];
-            }
-            else
-            {
-                return boardcells[x, y];
-            }
+            return boardcells[x, y];
         }
 
         /// <summary>
@@ -227,15 +213,6 @@ namespace ChessForms
                 for (int x = 0; x < chessboard.Width; x++)
                 {
                     Coordinate pieceCoordinate;
-
-                    /*if (unFlipped)
-                    {
-                        pieceCoordinate = new Coordinate(chessboard.Width - 1 - x, chessboard.Height - 1 - y); //Det her burde også fikse noget
-                    } 
-                    else
-                    {
-                        pieceCoordinate = new Coordinate(x, y);
-                    }*/
 
                     pieceCoordinate = new Coordinate(x, y);
 
@@ -312,7 +289,7 @@ namespace ChessForms
             {
                 Label label = new Label
                 {
-                    Text =  (chessboard.Height - y).ToString(),
+                    Text =  (y + 1).ToString(),
                     TextAlign = ContentAlignment.MiddleCenter,
                     Dock = DockStyle.Fill,
                     Font = labelFont
@@ -426,12 +403,6 @@ namespace ChessForms
             // TODO: Make grid accurate by making up for the difference the coordinate system makes.
             int cellX = windowX / ((tableLayoutPanel1.Width - CoordinateSystemPixelSize) / chessboard.Width);
             int cellY = windowY / ((tableLayoutPanel1.Height - CoordinateSystemPixelSize) / chessboard.Height);
-
-            if (unFlipped)
-            {
-                cellY = (chessboard.Height - 1) - cellY;
-                cellX = (chessboard.Width - 1) - cellX; 
-            }
 
             Coordinate clickTarget = new Coordinate(cellX, cellY);
 

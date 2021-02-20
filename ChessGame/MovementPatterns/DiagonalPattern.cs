@@ -10,11 +10,11 @@ namespace ChessGame.MovementPatterns
     {
         public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool guardedSquaresOnly = false)
         {
-            for (int n = 0; n < 4; n++) //The 4 directions from the piece
+            for (int n = 0; n < 4; n++) // The 4 directions from the piece
             {
                 int Xdir = 1;
                 int Ydir = 1;
-                switch (n) //Sets a direction for the checker
+                switch (n) // Sets a direction for the checker
                 {
                     case 0:
                         Xdir = 1;
@@ -36,12 +36,12 @@ namespace ChessGame.MovementPatterns
                         break;
                 }
 
-                for (int i = 1; i < board.Width; i++) //Checker
+                for (int i = 1; i < board.Width; i++) // Checker
                 {
-                    Coordinate checkPosition = new Coordinate((i * Xdir) + position.File, (i * Ydir) + position.Rank); //Position update
+                    Coordinate checkPosition = new Coordinate((i * Xdir) + position.File, (i * Ydir) + position.Rank); // Position update
 
                     if (checkPosition.Rank >= board.Height || checkPosition.Rank < 0 ||
-                        checkPosition.File >= board.Width || checkPosition.File < 0) //If the checking position is outside of the board
+                        checkPosition.File >= board.Width || checkPosition.File < 0) // If the checking position is outside of the board
                         continue;
 
                     // whether the position is occupied.
@@ -60,7 +60,7 @@ namespace ChessGame.MovementPatterns
 
                     if (occupyingPiece.Color != piece.Color) // There is a enemy piece
                     {
-                        yield return new Move(checkPosition, position, piece, true, piece.Color); //Sends the move 
+                        yield return new Move(checkPosition, position, piece, true, piece.Color); // Sends the move 
                     }
 
                     break;

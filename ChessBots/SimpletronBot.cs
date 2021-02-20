@@ -81,41 +81,10 @@ namespace ChessBots
             Task.WaitAll(rootMoves.ToArray());
         }
 
-        /*
-        private void CheckMovesDeep(Chessboard boardReadonly, int depth, ConcurrentBag<(int, Move)> moves, Move baseMove=null)
-        {
-            Chessboard board = new Chessboard(boardReadonly);
-
-            if (depth == 0)
-            {
-                board.SimulateMove(FindBestMoves(board, boardReadonly.CurrentTurn)[0]);
-                moves.Add((board.MaterialSum, baseMove));
-                return;
-            }
-
-            foreach (var move in board.GetMoves(board.CurrentTurn))
-            {
-                Chessboard newBoard = new Chessboard(board);
-                newBoard.SimulateMove(move);
-
-                if (baseMove is null)
-                {
-                    CheckMovesDeep(newBoard, depth - 1, moves, move);
-                }
-                else
-                {
-                    CheckMovesDeep(newBoard, depth - 1, moves, baseMove);
-                }
-            }
-        }*/
-
         private Move GenerateMove(Chessboard board)
         {
             ConcurrentBag<(int, Move)> longerMoves = new ConcurrentBag<(int, Move)>();
 
-            //List<(int, Move)> longerMoves = new List<(int, Move)>();
-
-            //CheckMovesDeep(board, 3, board.CurrentTurn, longerMoves);
             CheckMovesDeep(board, 2, longerMoves);
 
             List<(int, Move)> sortedMoves = longerMoves.OrderByDescending(material => material.Item1).ToList();
