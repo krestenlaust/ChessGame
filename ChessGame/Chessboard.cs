@@ -434,11 +434,6 @@ namespace ChessGame
                         else
                         {
                             pieceNotation = notation[0];
-
-                            if (notation[lastNumberIndex - 2] == 'x')
-                            {
-
-                            }
                         }
                         break;
                 }
@@ -449,13 +444,10 @@ namespace ChessGame
                 customNotation = true;
             }
 
+            // Look for matching moves.
             foreach (var move in GetMoves(player))
             {
-                if (player != move.Color)
-                {
-                    continue; //Det her er vidst ikke brugbart mere
-                }
-
+                // If looking for move by custom notation, return it here.
                 if (customNotation && move.CustomNotation == notation)
                 {
                     if (gamemode.ValidateMove(move, this))
@@ -509,10 +501,8 @@ namespace ChessGame
         /// <param name="notation"></param>
         /// <param name="player"></param>
         /// <returns></returns>
-        public Move GetMoveByNotation(string notation, TeamColor player, MoveNotation notationType)
-        {
-            return GetMovesByNotation(notation, player, notationType).FirstOrDefault();
-        }
+        public Move GetMoveByNotation(string notation, TeamColor player, MoveNotation notationType) => 
+            GetMovesByNotation(notation, player, notationType).FirstOrDefault();
 
         /// <summary>
         /// Returns count of how many pieces with <c>color</c> aiming on square.
@@ -529,6 +519,11 @@ namespace ChessGame
             return 0;
         }
 
+        /// <summary>
+        /// Returns sum of dangersquares.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
         public int GetDangerSquareSum(Coordinate position)
         {
             int sum = 0;
@@ -608,6 +603,11 @@ namespace ChessGame
             }
         }
 
+        /// <summary>
+        /// Gets the coordinate of a piece.
+        /// </summary>
+        /// <param name="piece"></param>
+        /// <returns></returns>
         public Coordinate GetCoordinate(Piece piece) => Pieces.FirstOrDefault(p => p.Value == piece).Key;
 
         /// <summary>

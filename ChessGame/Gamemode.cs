@@ -18,6 +18,9 @@ namespace ChessGame
         public event Action<GameState> onGameStateUpdated;
         public event Action onTurnChanged;
 
+        /// <summary>
+        /// Null if no winner has been selected.
+        /// </summary>
         public Player Winner;
         public readonly Player PlayerWhite;
         public readonly Player PlayerBlack;
@@ -132,7 +135,7 @@ namespace ChessGame
         }
 
         /// <summary>
-        /// 
+        /// Can be overridden to have custom turn logic.
         /// </summary>
         /// <param name="board"></param>
         /// <returns>False if game has ended.</returns>

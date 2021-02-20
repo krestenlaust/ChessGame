@@ -65,7 +65,7 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="ChessGame.MovementPatterns.PawnPushPattern" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="1" Y="9.5" Width="1.5" />
+    <Position X="9.5" Y="7.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>MovementPatterns\PawnPushPattern.cs</FileName>
@@ -73,7 +73,7 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="ChessGame.MovementPatterns.PromotionPattern" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="2.75" Y="9.5" Width="1.5" />
+    <Position X="9.5" Y="8.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>MovementPatterns\PromotionPattern.cs</FileName>
@@ -194,7 +194,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="ChessGame.Move" Collapsed="true">
-    <Position X="14" Y="8.5" Width="1.5" />
+    <Position X="18" Y="9" Width="1.5" />
     <TypeIdentifier>
       <HashCode>EAAAAAAAAAAAAAAEgAAAAAAAAAAAAMAAAAAAgAIAAiA=</HashCode>
       <FileName>Move.cs</FileName>
@@ -224,7 +224,7 @@
     <Lollipop Position="0.2" />
   </Struct>
   <Struct Name="ChessGame.PieceMove" Collapsed="true">
-    <Position X="11.75" Y="8.5" Width="1.5" />
+    <Position X="15.75" Y="9" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAggAAAAAEgAAAAAAAAAAAAAAEAAAAIAIAAgA=</HashCode>
       <FileName>PieceMove.cs</FileName>
@@ -232,7 +232,7 @@
     <Lollipop Position="0.2" />
   </Struct>
   <Interface Name="ChessGame.IMovementPattern">
-    <Position X="10" Y="9.25" Width="1.5" />
+    <Position X="14" Y="10" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IMovementPattern.cs</FileName>
@@ -253,7 +253,7 @@
     </TypeIdentifier>
   </Enum>
   <Enum Name="ChessGame.TeamColor">
-    <Position X="11.75" Y="9.25" Width="1.5" />
+    <Position X="15.75" Y="9.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Piece.cs</FileName>

@@ -3,6 +3,10 @@ using System.Text;
 
 namespace ChessGame
 {
+    /// <summary>
+    /// Describes a complete set of moves, the average move only contains one <c>PieceMove</c>,
+    /// castling e.g. contains two <c>PieceMove</c>s.
+    /// </summary>
     public class Move : IEqualityComparer<Move>
     {
         /// <summary>

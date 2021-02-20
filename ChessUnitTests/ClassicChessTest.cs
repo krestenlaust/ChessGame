@@ -105,26 +105,6 @@ namespace ChessUnitTests
         }
 
         [TestMethod]
-        public void StalematePatterns()
-        {
-            Player player1 = new Player("player1");
-            Player player2 = new Player("player2");
-            Gamemode gamemode = new ClassicChess(player1, player2);
-
-            // https://lichess.org/editor/8/8/8/8/8/2pp4/8/k3K3_w_-_-_0_1
-            Chessboard chessboard = new Chessboard(8, 8, gamemode);
-            chessboard[new Coordinate("a3")] = new King { Color = TeamColor.Black };
-            chessboard[new Coordinate("d3")] = new King { Color = TeamColor.White };
-            chessboard[new Coordinate("c2")] = new Pawn { Color = TeamColor.Black };
-
-            chessboard.StartNextTurn();
-
-            chessboard.PerformMove("d3c2", MoveNotation.UCI);
-
-            Assert.AreEqual(chessboard.CurrentState, GameState.Stalemate);
-        }
-
-        [TestMethod]
         public void CoordinateNotationParsing()
         {
             Coordinate testCoord = new Coordinate("a1");

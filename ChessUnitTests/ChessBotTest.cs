@@ -9,6 +9,9 @@ namespace ChessUnitTests
     [TestClass]
     public class ChessBotTest
     {
+        /// <summary>
+        /// Tests the performance of the Skakinator bot.
+        /// </summary>
         [TestMethod]
         public void SkakinatorPerformanceTest()
         {

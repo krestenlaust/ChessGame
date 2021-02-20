@@ -1,5 +1,8 @@
 ﻿namespace ChessGame.Pieces
 {
+    /// <summary>
+    /// A fairy chess piece we came up with.
+    /// </summary>
     public class Hypnotist : Piece
     {
         public Hypnotist()
