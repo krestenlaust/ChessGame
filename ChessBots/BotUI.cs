@@ -1,97 +1,103 @@
-﻿using System;
-using System.Windows.Forms;
-
-namespace ChessBots
+﻿namespace ChessBots
 {
+    using System;
+    using System.Windows.Forms;
+
+    /// <summary>
+    /// A windows forms window allowing configuration of bot.
+    /// </summary>
     public partial class BotUI : Form
     {
         private int currentX = 0;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BotUI"/> class.
+        /// </summary>
+        public BotUI()
+        {
+            this.InitializeComponent();
+        }
 
         // TODO: Auto-scroll
         public int DepthSetting
         {
             get
             {
-                return (int)numericUpDownDepth.Value;
+                return (int)this.numericUpDownDepth.Value;
             }
-        }
-
-        public BotUI()
-        {
-            InitializeComponent();
-        }
-
-        private void BotUI_Load(object sender, EventArgs e)
-        {
-            numericUpDownDepth.Value = SkakinatorPlayer.DEFAULT_DEPTH;   
         }
 
         public void AddPoint(float evaluation)
         {
-            if (InvokeRequired)
+            if (this.InvokeRequired)
             {
-                this.BeginInvoke(new Action<float>(AddPoint), new object[] { evaluation });
+                this.BeginInvoke(new Action<float>(this.AddPoint), new object[] { evaluation });
                 return;
             }
 
-            currentX++;
-            chartBoardEvaluation.Series[0].Points.AddXY(currentX, evaluation);
+            this.currentX++;
+            this.chartBoardEvaluation.Series[0].Points.AddXY(this.currentX, evaluation);
         }
 
         public void ClearLog()
         {
-            richTextBoxLog.Text = "";
+            this.richTextBoxLog.Text = "";
         }
 
         public void PrintLog(string line)
         {
-            if (InvokeRequired)
+            if (this.InvokeRequired)
             {
-                this.BeginInvoke(new Action<string>(PrintLog), new object[] { line });
+                this.BeginInvoke(new Action<string>(this.PrintLog), new object[] { line });
                 return;
             }
 
-            richTextBoxLog.Text += $"{line}\n";
+            this.richTextBoxLog.Text += $"{line}\n";
         }
 
         public void SetProgress(int current, int max)
         {
-            if (InvokeRequired)
+            if (this.InvokeRequired)
             {
-                this.BeginInvoke(new Action<int, int>(SetProgress), new object[] { current, max });
+                this.BeginInvoke(new Action<int, int>(this.SetProgress), new object[] { current, max });
                 return;
             }
 
             if (current == max)
             {
-                labelCalculation.Text = $"Finished calculating";
+                this.labelCalculation.Text = $"Finished calculating";
             }
             else
             {
-                labelCalculation.Text = $"Calculated moves: {current}/{max}";
+                this.labelCalculation.Text = $"Calculated moves: {current}/{max}";
             }
 
-            progressBarCalculation.Maximum = max;
-            progressBarCalculation.Value = current;
+            this.progressBarCalculation.Maximum = max;
+            this.progressBarCalculation.Value = current;
         }
 
-        private void richTextBoxLog_TextChanged(object sender, EventArgs e)
+        private void BotUI_Load(object sender, EventArgs e)
         {
-            richTextBoxLog.SelectionStart = richTextBoxLog.Text.Length;
-            richTextBoxLog.ScrollToCaret();
+            this.numericUpDownDepth.Value = SkakinatorPlayer.DEFAULT_DEPTH;
         }
 
-        private void checkBoxShowGraph_CheckedChanged(object sender, EventArgs e)
+        private void RichTextBoxLog_TextChanged(object sender, EventArgs e)
+        {
+            this.richTextBoxLog.SelectionStart = this.richTextBoxLog.Text.Length;
+            this.richTextBoxLog.ScrollToCaret();
+        }
+
+        private void CheckBoxShowGraph_CheckedChanged(object sender, EventArgs e)
         {
             bool isChecked = (sender as CheckBox).Checked;
 
             if (isChecked)
             {
-                Width += chartBoardEvaluation.Width + 20;
+                this.Width += this.chartBoardEvaluation.Width + 20;
             }
             else
             {
-                Width -= chartBoardEvaluation.Width + 20;
+                this.Width -= this.chartBoardEvaluation.Width + 20;
             }
         }
     }

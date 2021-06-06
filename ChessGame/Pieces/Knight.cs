@@ -4,9 +4,9 @@
     {
         public Knight()
         {
-            Notation = 'N';
-            MaterialValue = 3;
-            MovementPatternList = new IMovementPattern[] {
+            this.Notation = 'N';
+            this.MaterialValue = 3;
+            this.MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.KnightPattern()
             };
         }

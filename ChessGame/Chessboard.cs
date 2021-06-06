@@ -42,7 +42,7 @@ namespace ChessGame
         {
             get
             {
-                return CurrentTeamTurn == TeamColor.White ? gamemode.PlayerWhite : gamemode.PlayerBlack;
+                return this.CurrentTeamTurn == TeamColor.White ? this.gamemode.PlayerWhite : this.gamemode.PlayerBlack;
             }
         }
         /// <summary>
@@ -52,7 +52,7 @@ namespace ChessGame
         {
             get
             {
-                return Pieces.Values.Sum(p => p.Color == TeamColor.Black ? -p.MaterialValue : p.MaterialValue);
+                return this.Pieces.Values.Sum(p => p.Color == TeamColor.Black ? -p.MaterialValue : p.MaterialValue);
             }
         }
         /// <summary>
@@ -62,9 +62,9 @@ namespace ChessGame
         {
             get
             {
-                return CurrentState == GameState.Checkmate || 
-                    CurrentState == GameState.Stalemate ||
-                    CurrentState == GameState.DeadPosition;
+                return this.CurrentState == GameState.Checkmate || 
+                    this.CurrentState == GameState.Stalemate ||
+                    this.CurrentState == GameState.DeadPosition;
             }
         }
 
@@ -74,17 +74,17 @@ namespace ChessGame
         /// <param name="board"></param>
         public Chessboard(Chessboard board)
         {
-            Height = board.Height;
-            Width = board.Width;
-            CurrentTeamTurn = board.CurrentTeamTurn;
-            gamemode = board.gamemode;
-            CurrentState = board.CurrentState;
+            this.Height = board.Height;
+            this.Width = board.Width;
+            this.CurrentTeamTurn = board.CurrentTeamTurn;
+            this.gamemode = board.gamemode;
+            this.CurrentState = board.CurrentState;
 
-            Pieces = new Dictionary<Coordinate, Piece>(board.Pieces);
-            MovedPieces = new HashSet<Piece>(board.MovedPieces);
-            Moves = new Stack<Move>(board.Moves);
+            this.Pieces = new Dictionary<Coordinate, Piece>(board.Pieces);
+            this.MovedPieces = new HashSet<Piece>(board.MovedPieces);
+            this.Moves = new Stack<Move>(board.Moves);
             // not needed before executing move
-            Dangerzone = new Dictionary<Coordinate, List<Piece>>();
+            this.Dangerzone = new Dictionary<Coordinate, List<Piece>>();
         }
 
         /// <summary>
@@ -94,34 +94,34 @@ namespace ChessGame
         /// <param name="move"></param>
         public Chessboard(Chessboard board, Move move)
         {
-            Height = board.Height;
-            Width = board.Width;
-            CurrentTeamTurn = board.CurrentTeamTurn;
-            gamemode = board.gamemode;
-            CurrentState = board.CurrentState;
+            this.Height = board.Height;
+            this.Width = board.Width;
+            this.CurrentTeamTurn = board.CurrentTeamTurn;
+            this.gamemode = board.gamemode;
+            this.CurrentState = board.CurrentState;
 
-            Pieces = new Dictionary<Coordinate, Piece>(board.Pieces);
-            MovedPieces = new HashSet<Piece>(board.MovedPieces);
-            Moves = new Stack<Move>(board.Moves.Reverse());
+            this.Pieces = new Dictionary<Coordinate, Piece>(board.Pieces);
+            this.MovedPieces = new HashSet<Piece>(board.MovedPieces);
+            this.Moves = new Stack<Move>(board.Moves.Reverse());
 
             // is refreshed in simulatemove
-            Dangerzone = new Dictionary<Coordinate, List<Piece>>();
+            this.Dangerzone = new Dictionary<Coordinate, List<Piece>>();
 
-            SimulateMove(move);
+            this.SimulateMove(move);
         }
 
         public Chessboard(byte width, byte height, Gamemode gamemode)
         {
-            Width = width;
-            Height = height;
+            this.Width = width;
+            this.Height = height;
             this.gamemode = gamemode;
-            CurrentTeamTurn = TeamColor.White;
-            CurrentState = GameState.NotStarted;
+            this.CurrentTeamTurn = TeamColor.White;
+            this.CurrentState = GameState.NotStarted;
 
-            Pieces = new Dictionary<Coordinate, Piece>();
-            Dangerzone = new Dictionary<Coordinate, List<Piece>>();
-            Moves = new Stack<Move>();
-            MovedPieces = new HashSet<Piece>();
+            this.Pieces = new Dictionary<Coordinate, Piece>();
+            this.Dangerzone = new Dictionary<Coordinate, List<Piece>>();
+            this.Moves = new Stack<Move>();
+            this.MovedPieces = new HashSet<Piece>();
         }
 
         /// <summary>
@@ -131,15 +131,15 @@ namespace ChessGame
         /// <returns></returns>
         public Piece this[Coordinate position]
         {
-            get { return GetPiece(position); }
+            get { return this.GetPiece(position); }
             set {
                 if (value is null)
                 {
-                    Pieces.Remove(position);
+                    this.Pieces.Remove(position);
                 }
                 else
                 {
-                    Pieces[position] = value;
+                    this.Pieces[position] = value;
                 }
             }
         }
@@ -151,12 +151,12 @@ namespace ChessGame
         /// <returns></returns>
         public bool PerformMove(string move, MoveNotation notationType, bool startNextTurn = true)
         {
-            Move pieceMove = GetMoveByNotation(move, CurrentTeamTurn, notationType);
+            Move pieceMove = this.GetMoveByNotation(move, this.CurrentTeamTurn, notationType);
 
             if (pieceMove is null)
                 return false;
 
-            return PerformMove(pieceMove, startNextTurn);
+            return this.PerformMove(pieceMove, startNextTurn);
         }
 
         /// <summary>
@@ -166,14 +166,14 @@ namespace ChessGame
         /// <returns></returns>
         public bool PerformMove(Move move, bool startNextTurn = true)
         {
-            ExecuteMove(move);
-            Moves.Push(move);
+            this.ExecuteMove(move);
+            this.Moves.Push(move);
 
-            CurrentTeamTurn = (TeamColor)(((int)CurrentTeamTurn + 1) % 2);
+            this.CurrentTeamTurn = (TeamColor)(((int)this.CurrentTeamTurn + 1) % 2);
 
             if (startNextTurn)
             {
-                StartNextTurn();
+                this.StartNextTurn();
             }
 
             return true;
@@ -186,12 +186,12 @@ namespace ChessGame
         /// <returns></returns>
         public bool SimulateMove(Move move)
         {
-            ExecuteMove(move);
-            Moves.Push(move);
+            this.ExecuteMove(move);
+            this.Moves.Push(move);
 
-            CurrentTeamTurn = (TeamColor)(((int)CurrentTeamTurn + 1) % 2);
+            this.CurrentTeamTurn = (TeamColor)(((int)this.CurrentTeamTurn + 1) % 2);
 
-            gamemode.UpdateGameState(this);
+            this.gamemode.UpdateGameState(this);
 
             return true;
         }
@@ -201,15 +201,15 @@ namespace ChessGame
         /// </summary>
         public void StartNextTurn()
         {
-            if (CurrentState == GameState.NotStarted)
+            if (this.CurrentState == GameState.NotStarted)
             {
-                CurrentState = GameState.Started;
+                this.CurrentState = GameState.Started;
             }
 
             // change turn
-            if (gamemode.StartTurn(this))
+            if (this.gamemode.StartTurn(this))
             {
-                CurrentPlayerTurn?.TurnStarted(this);
+                this.CurrentPlayerTurn?.TurnStarted(this);
             }
         }
 
@@ -217,11 +217,11 @@ namespace ChessGame
         /// Gets all legal moves for current team.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Move> GetMoves() => GetMoves(CurrentTeamTurn);
+        public IEnumerable<Move> GetMoves() => this.GetMoves(this.CurrentTeamTurn);
 
         public IEnumerable<Move> GetMovesSorted()
         {
-            return from move in GetMoves()
+            return from move in this.GetMoves()
                    orderby move.Captures
                    select move;
         }
@@ -233,7 +233,7 @@ namespace ChessGame
         /// <returns></returns>
         public IEnumerable<Move> GetMoves(TeamColor teamColor)
         {
-            foreach (var piece in Pieces.Values.ToList())
+            foreach (var piece in this.Pieces.Values.ToList())
             {
                 if (piece.Color != teamColor)
                 {
@@ -242,7 +242,7 @@ namespace ChessGame
 
                 foreach (var move in piece.GetMoves(this))
                 {
-                    if (!gamemode.ValidateMove(move, this))
+                    if (!this.gamemode.ValidateMove(move, this))
                     {
                         continue;
                     }
@@ -259,12 +259,12 @@ namespace ChessGame
         /// <returns></returns>
         public bool InsideBoard(Coordinate position)
         {
-            if (position.Rank >= Height || position.Rank < 0)
+            if (position.Rank >= this.Height || position.Rank < 0)
             {
                 return false;
             }
 
-            if (position.File >= Width || position.File < 0)
+            if (position.File >= this.Width || position.File < 0)
             {
                 return false;
             }
@@ -288,7 +288,7 @@ namespace ChessGame
                 // remove piece
                 if (singleMove.Destination is null)
                 {
-                    Pieces.Remove(singleMove.Source.Value);
+                    this.Pieces.Remove(singleMove.Source.Value);
                     return;
                 }
 
@@ -297,14 +297,14 @@ namespace ChessGame
                 // remove previous instance
                 if (!(singleMove.Source is null))
                 {
-                    Pieces.Remove(singleMove.Source.Value);
+                    this.Pieces.Remove(singleMove.Source.Value);
                 }
 
                 if (singleMove.Captures)
                 {
                     try
                     {
-                        Pieces.Remove(destination);
+                        this.Pieces.Remove(destination);
                     }
                     catch (ArgumentException)
                     {
@@ -313,18 +313,18 @@ namespace ChessGame
 
                 if (singleMove.PromotePiece is null)
                 {
-                    Pieces[destination] = singleMove.Piece;
-                    MovedPieces.Add(singleMove.Piece);
+                    this.Pieces[destination] = singleMove.Piece;
+                    this.MovedPieces.Add(singleMove.Piece);
                 }
                 else
                 {
-                    Pieces[destination] = singleMove.PromotePiece;
-                    MovedPieces.Remove(singleMove.Piece);
-                    MovedPieces.Add(singleMove.PromotePiece);
+                    this.Pieces[destination] = singleMove.PromotePiece;
+                    this.MovedPieces.Remove(singleMove.Piece);
+                    this.MovedPieces.Add(singleMove.PromotePiece);
                 }
             }
 
-            UpdateDangerzones();
+            this.UpdateDangerzones();
         }
 
         /// <summary>
@@ -338,7 +338,7 @@ namespace ChessGame
             Coordinate position = new Coordinate();
 
             // Get first king, with this color, and it's position.
-            (king, position) = (from piece in GetPieces<King>()
+            (king, position) = (from piece in this.GetPieces<King>()
                                 where piece.Item1.Color == color
                                 select piece).FirstOrDefault();
 
@@ -349,7 +349,7 @@ namespace ChessGame
             }
 
             // Get list of pieces aiming on the square the king sits on.
-            if (Dangerzone.TryGetValue(position, out List<Piece> pieces))
+            if (this.Dangerzone.TryGetValue(position, out List<Piece> pieces))
             {
                 // Returns true if any of the pieces are of opposite color.
                 return pieces.Any(p => p.Color != color);
@@ -445,12 +445,12 @@ namespace ChessGame
             }
 
             // Look for matching moves.
-            foreach (var move in GetMoves(player))
+            foreach (var move in this.GetMoves(player))
             {
                 // If looking for move by custom notation, return it here.
                 if (customNotation && move.CustomNotation == notation)
                 {
-                    if (gamemode.ValidateMove(move, this))
+                    if (this.gamemode.ValidateMove(move, this))
                     {
                         yield return move;
                     }
@@ -485,7 +485,7 @@ namespace ChessGame
                         continue;
                     }
 
-                    if (!gamemode.ValidateMove(move, this))
+                    if (!this.gamemode.ValidateMove(move, this))
                     {
                         continue;
                     }
@@ -502,7 +502,7 @@ namespace ChessGame
         /// <param name="player"></param>
         /// <returns></returns>
         public Move GetMoveByNotation(string notation, TeamColor player, MoveNotation notationType) => 
-            GetMovesByNotation(notation, player, notationType).FirstOrDefault();
+            this.GetMovesByNotation(notation, player, notationType).FirstOrDefault();
 
         /// <summary>
         /// Returns count of how many pieces with <c>color</c> aiming on square.
@@ -511,7 +511,7 @@ namespace ChessGame
         /// <returns></returns>
         public int IsDangerSquare(Coordinate position, TeamColor color)
         {
-            if (Dangerzone.TryGetValue(position, out List<Piece> pieces))
+            if (this.Dangerzone.TryGetValue(position, out List<Piece> pieces))
             {
                 return pieces is null ? 0 : pieces.Count(p => p.Color == color);
             }
@@ -527,7 +527,7 @@ namespace ChessGame
         public int GetDangerSquareSum(Coordinate position)
         {
             int sum = 0;
-            if (Dangerzone.TryGetValue(position, out List<Piece> pieces))
+            if (this.Dangerzone.TryGetValue(position, out List<Piece> pieces))
             {
                 foreach (var item in pieces)
                 {
@@ -554,7 +554,7 @@ namespace ChessGame
             // Remove all instances of this piece.
             if (removeOld)
             { 
-                foreach (var item in Dangerzone)
+                foreach (var item in this.Dangerzone)
                 {
                     if (item.Value is null)
                     {
@@ -579,13 +579,13 @@ namespace ChessGame
                     Coordinate destination = singleMove.Destination.Value;
 
                     // Make new list of pieces aiming on this square if there isn't one already.
-                    if (!Dangerzone.ContainsKey(destination))
+                    if (!this.Dangerzone.ContainsKey(destination))
                     {
-                        Dangerzone[destination] = new List<Piece>();
+                        this.Dangerzone[destination] = new List<Piece>();
                     }
 
                     // Add this move to dangerzone.
-                    Dangerzone[destination].Add(singleMove.Piece);
+                    this.Dangerzone[destination].Add(singleMove.Piece);
                 }
             }
         }
@@ -595,11 +595,11 @@ namespace ChessGame
         /// </summary>
         public void UpdateDangerzones()
         {
-            Dangerzone.Clear();
+            this.Dangerzone.Clear();
 
-            foreach (var piece in Pieces)
+            foreach (var piece in this.Pieces)
             {
-                UpdateDangerzones(piece.Value);
+                this.UpdateDangerzones(piece.Value);
             }
         }
 
@@ -608,7 +608,7 @@ namespace ChessGame
         /// </summary>
         /// <param name="piece"></param>
         /// <returns></returns>
-        public Coordinate GetCoordinate(Piece piece) => Pieces.FirstOrDefault(p => p.Value == piece).Key;
+        public Coordinate GetCoordinate(Piece piece) => this.Pieces.FirstOrDefault(p => p.Value == piece).Key;
 
         /// <summary>
         /// Returns position of a piece.
@@ -620,7 +620,7 @@ namespace ChessGame
         {
             try
             {
-                position = Pieces.FirstOrDefault(x => x.Value == piece).Key;
+                position = this.Pieces.FirstOrDefault(x => x.Value == piece).Key;
                 return true;
 
             }
@@ -638,7 +638,7 @@ namespace ChessGame
         /// <returns></returns>
         public Piece GetPiece(Coordinate position)
         {
-            if (Pieces.TryGetValue(position, out Piece piece))
+            if (this.Pieces.TryGetValue(position, out Piece piece))
                 return piece;
 
             return null;
@@ -649,47 +649,47 @@ namespace ChessGame
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public List<(Piece, Coordinate)> GetPieces<T>() where T : Piece => (from piece in Pieces
+        public List<(Piece, Coordinate)> GetPieces<T>() where T : Piece => (from piece in this.Pieces
                                                               where piece.Value is T
                                                               select (piece.Value, piece.Key)).ToList();
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as Chessboard);
+            return this.Equals(obj as Chessboard);
         }
 
         public bool Equals(Chessboard other)
         {
             return other != null &&
-                   Height == other.Height &&
-                   Width == other.Width &&
-                   EqualityComparer<Dictionary<Coordinate, Piece>>.Default.Equals(Pieces, other.Pieces) &&
-                   EqualityComparer<Stack<Move>>.Default.Equals(Moves, other.Moves) &&
-                   EqualityComparer<HashSet<Piece>>.Default.Equals(MovedPieces, other.MovedPieces) &&
-                   EqualityComparer<Gamemode>.Default.Equals(gamemode, other.gamemode) &&
-                   CurrentState == other.CurrentState &&
-                   CurrentTeamTurn == other.CurrentTeamTurn &&
-                   MaterialSum == other.MaterialSum;
+                   this.Height == other.Height &&
+                   this.Width == other.Width &&
+                   EqualityComparer<Dictionary<Coordinate, Piece>>.Default.Equals(this.Pieces, other.Pieces) &&
+                   EqualityComparer<Stack<Move>>.Default.Equals(this.Moves, other.Moves) &&
+                   EqualityComparer<HashSet<Piece>>.Default.Equals(this.MovedPieces, other.MovedPieces) &&
+                   EqualityComparer<Gamemode>.Default.Equals(this.gamemode, other.gamemode) &&
+                   this.CurrentState == other.CurrentState &&
+                   this.CurrentTeamTurn == other.CurrentTeamTurn &&
+                   this.MaterialSum == other.MaterialSum;
         }
 
         public override int GetHashCode()
         {
             int hashCode = 1077646461;
-            hashCode = hashCode * -1521134295 + Height.GetHashCode();
-            hashCode = hashCode * -1521134295 + Width.GetHashCode();
-            foreach (var item in Pieces)
+            hashCode = hashCode * -1521134295 + this.Height.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.Width.GetHashCode();
+            foreach (var item in this.Pieces)
             {
                 hashCode = hashCode * -1521134295 + item.Key.GetHashCode();
                 hashCode = hashCode * -1521134295 + item.Value.GetHashCode();
             }
-            foreach (var item in MovedPieces)
+            foreach (var item in this.MovedPieces)
             {
                 hashCode = hashCode * -1521134295 + item.GetHashCode();
             }
-            hashCode = hashCode * -1521134295 + EqualityComparer<Gamemode>.Default.GetHashCode(gamemode);
-            hashCode = hashCode * -1521134295 + CurrentState.GetHashCode();
-            hashCode = hashCode * -1521134295 + CurrentTeamTurn.GetHashCode();
-            hashCode = hashCode * -1521134295 + MaterialSum.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<Gamemode>.Default.GetHashCode(this.gamemode);
+            hashCode = hashCode * -1521134295 + this.CurrentState.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.CurrentTeamTurn.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.MaterialSum.GetHashCode();
             return hashCode;
         }
 

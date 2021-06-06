@@ -1,13 +1,23 @@
-﻿using ChessGame.Pieces;
-
-namespace ChessGame.Gamemodes
+﻿namespace ChessGame.Gamemodes
 {
+    using ChessGame.Pieces;
+
+    /// <summary>
+    /// Test implementation of a gamemode. Only pawns and kings.
+    /// </summary>
     public class PawnTestChess : Gamemode
     {
-        public PawnTestChess(Player playerWhite, Player playerBlack) : base(playerWhite, playerBlack)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PawnTestChess"/> class.
+        /// </summary>
+        /// <param name="playerWhite">The player instance of player white.</param>
+        /// <param name="playerBlack">The player instance of player black.</param>
+        public PawnTestChess(Player playerWhite, Player playerBlack)
+            : base(playerWhite, playerBlack)
         {
         }
 
+        /// <inheritdoc/>
         public override Chessboard GenerateBoard()
         {
             Chessboard board = new Chessboard(8, 8, this);

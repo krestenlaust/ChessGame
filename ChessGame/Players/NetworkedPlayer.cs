@@ -17,15 +17,15 @@ namespace ChessGame
         {
             if (board.Moves.Count > 0)
             {
-                SendMove(board.Moves.Peek());
+                this.SendMove(board.Moves.Peek());
             }
 
-            board.PerformMove(RecieveMove(), MoveNotation.UCI);
+            board.PerformMove(this.RecieveMove(), MoveNotation.UCI);
         }
 
         private string RecieveMove()
         {
-            while (!stream.DataAvailable)
+            while (!this.stream.DataAvailable)
             {
                 Thread.Sleep(250);
             }
@@ -33,7 +33,7 @@ namespace ChessGame
             byte[] moveAscii = new byte[5];
             try
             {
-                stream.Read(moveAscii, 0, moveAscii.Length);
+                this.stream.Read(moveAscii, 0, moveAscii.Length);
             }
             catch (System.IO.IOException)
             {
@@ -49,7 +49,7 @@ namespace ChessGame
 
             try
             {
-                stream.Write(moveAscii, 0, moveAscii.Length);
+                this.stream.Write(moveAscii, 0, moveAscii.Length);
             }
             catch (System.IO.IOException)
             {

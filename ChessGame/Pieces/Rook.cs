@@ -4,9 +4,9 @@
     {
         public Rook()
         {
-            Notation = 'R';
-            MaterialValue = 5;
-            MovementPatternList = new IMovementPattern[] {
+            this.Notation = 'R';
+            this.MaterialValue = 5;
+            this.MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.CardinalPattern()
             };
         }

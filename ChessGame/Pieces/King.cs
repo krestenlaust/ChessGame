@@ -4,9 +4,9 @@
     {
         public King()
         {
-            Notation = 'K';
-            MaterialValue = byte.MaxValue;
-            MovementPatternList = new IMovementPattern[] {
+            this.Notation = 'K';
+            this.MaterialValue = byte.MaxValue;
+            this.MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.KingPattern(),
                 new MovementPatterns.CastlePattern()
             };

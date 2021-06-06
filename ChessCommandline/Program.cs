@@ -25,7 +25,7 @@ namespace ChessCommandline
             while (true)
             {
                 Gamemode gamemode = new PawnTestChess(player1, player2);
-                gamemode.onTurnChanged += AskForMove;
+                gamemode.TurnChanged += AskForMove;
 
                 chessboard = gamemode.GenerateBoard();
                 chessboard.StartNextTurn();

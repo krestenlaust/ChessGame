@@ -29,7 +29,7 @@ namespace ChessForms
         private Chessboard chessboard;
         private Coordinate? recentMoveFrom = null;
         private Coordinate? recentMoveTo = null;
-        private System.Media.SoundPlayer soundPlayer = new System.Media.SoundPlayer(Properties.Resources.SkakLydfil);
+        private readonly System.Media.SoundPlayer soundPlayer = new System.Media.SoundPlayer(Properties.Resources.SkakLydfil);
 
         public BoardDisplay(Gamemode gamemode, bool whiteLocal, bool blackLocal)
         {
@@ -42,8 +42,8 @@ namespace ChessForms
 
         private void BoardDisplay_Load(object sender, EventArgs e)
         {
-            gamemode.onTurnChanged += onTurnStarted;
-            gamemode.onGameStateUpdated += onGameStateUpdated;
+            gamemode.TurnChanged += OnTurnStarted;
+            gamemode.GameStateChanged += OnGameStateUpdated;
 
             chessboard = gamemode.GenerateBoard();
             InstantiateUIBoard();
@@ -96,7 +96,7 @@ namespace ChessForms
             return null;
         }
 
-        private void onGameStateUpdated(GameState e)
+        private void OnGameStateUpdated(GameState e)
         {
             string outputMsg = string.Empty;
             switch (e)
@@ -123,7 +123,7 @@ namespace ChessForms
             });
         }
 
-        private void onTurnStarted()
+        private void OnTurnStarted()
         {
             Invoke((MethodInvoker)delegate
            {
@@ -569,12 +569,12 @@ namespace ChessForms
             GetCell(x, y).BackColor = color;
         }
 
-        private void backgroundWorkerMove_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorkerMove_DoWork(object sender, DoWorkEventArgs e)
         {
             chessboard.StartNextTurn();
         }
 
-        private void backgroundWorkerMove_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundWorkerMove_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             
         }

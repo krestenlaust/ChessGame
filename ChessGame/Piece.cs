@@ -34,7 +34,7 @@ namespace ChessGame
         /// <returns></returns>
         public IEnumerable<Move> GetMoves(Chessboard board, bool guardedSquaresOnly = false)
         {
-            if (MovementPatternList is null)
+            if (this.MovementPatternList is null)
             {
                 yield break;
             }
@@ -44,7 +44,7 @@ namespace ChessGame
                 yield break;
             }
 
-            foreach (var item in MovementPatternList)
+            foreach (var item in this.MovementPatternList)
             {
                 foreach (var move in item.GetMoves(this, position, board, guardedSquaresOnly))
                 {
@@ -53,22 +53,22 @@ namespace ChessGame
             }
         }
 
-        public override string ToString() => Notation.ToString();
+        public override string ToString() => this.Notation.ToString();
 
         public override bool Equals(object obj)
         {
             return obj is Piece piece &&
-                   Notation == piece.Notation &&
-                   Color == piece.Color &&
-                   MaterialValue == piece.MaterialValue;
+                   this.Notation == piece.Notation &&
+                   this.Color == piece.Color &&
+                   this.MaterialValue == piece.MaterialValue;
         }
 
         public override int GetHashCode()
         {
             int hashCode = -1866919884;
-            hashCode = hashCode * -1521134295 + Notation.GetHashCode();
-            hashCode = hashCode * -1521134295 + Color.GetHashCode();
-            hashCode = hashCode * -1521134295 + MaterialValue.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.Notation.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.Color.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.MaterialValue.GetHashCode();
             return hashCode;
         }
     }

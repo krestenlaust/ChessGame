@@ -2,3 +2,12 @@
 
 # CS0518: Predefined type 'System.Runtime.CompilerServices.IsExternalInit' is not defined or imported
 dotnet_diagnostic.CS0518.severity = error
+
+# SA1633: File should have header
+dotnet_diagnostic.SA1633.severity = none
+
+# SA1503: Braces should not be omitted
+dotnet_diagnostic.SA1503.severity = none
+
+# IDE0090: Use 'new(...)'
+dotnet_diagnostic.IDE0090.severity = none

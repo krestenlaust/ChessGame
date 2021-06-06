@@ -4,9 +4,9 @@
     {
         public Bishop()
         {
-            Notation = 'B';
-            MaterialValue = 3;
-            MovementPatternList = new IMovementPattern[] {
+            this.Notation = 'B';
+            this.MaterialValue = 3;
+            this.MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.DiagonalPattern()
             };
         }

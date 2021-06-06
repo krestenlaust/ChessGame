@@ -1,23 +1,232 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using ChessGame;
-using ChessGame.Pieces;
-
-namespace ChessBots
+﻿namespace ChessBots
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using ChessGame;
+    using ChessGame.Pieces;
+
     /// <summary>
     /// The logic of the Skakinator.
     /// </summary>
     public class SkakinatorLogic
     {
-        public event Action<int, int, Move, float> onSingleMoveCalculated;
-        private const float centerSquareModifier = 0.2f;
-        private const float centerSquareRawValue = 0.5f;
+        private const float CenterSquareModifier = 0.2f;
+        private const float CenterSquareRawValue = 0.5f;
+        private readonly Dictionary<Chessboard, float> transpositionTable = new Dictionary<Chessboard, float>();
 
-        private Dictionary<Chessboard, float> transpositionTable = new Dictionary<Chessboard, float>();
+        /// <summary>
+        /// Called once a move has been calculated.
+        /// </summary>
+        public event Action<int, int, Move, float> SingleMoveCalculated;
+
+        public float MinimaxSearch(Chessboard board, int depth, float alpha, float beta)
+        {
+            if (depth == 0 || board.CurrentState == GameState.Checkmate || board.CurrentState == GameState.Stalemate)
+            {
+                // note: the turn is updated even after checkmate
+                return StaticEvaluation(board, depth);
+            }
+
+            bool maximize = board.CurrentTeamTurn == TeamColor.White;
+            float bestEvaluation = maximize ? float.MinValue : float.MaxValue;
+            foreach (var move in board.GetMoves())
+            {
+                Chessboard childNode = new Chessboard(board, move);
+
+                int newDepth;
+                if (depth == 1 && (move.Captures || !(move.Moves[0].PromotePiece is null)))
+                {
+                    // check one level deeper because last move was a capture move.
+                    newDepth = depth;
+                }
+                else
+                {
+                    newDepth = depth - 1;
+                }
+
+                if (this.transpositionTable.TryGetValue(childNode, out float precalculatedEvaluation))
+                {
+                    if (maximize)
+                    {
+                        bestEvaluation = precalculatedEvaluation;
+                        alpha = Math.Max(alpha, bestEvaluation);
+                    }
+                    else
+                    {
+                        bestEvaluation = precalculatedEvaluation;
+                        beta = Math.Min(beta, bestEvaluation);
+                    }
+                }
+                else
+                {
+                    if (maximize)
+                    {
+                        bestEvaluation = Math.Max(bestEvaluation, this.MinimaxSearch(childNode, newDepth, alpha, beta));
+                        alpha = Math.Max(alpha, bestEvaluation);
+                    }
+                    else
+                    {
+                        bestEvaluation = Math.Min(bestEvaluation, this.MinimaxSearch(childNode, newDepth, alpha, beta));
+                        beta = Math.Min(beta, bestEvaluation);
+                    }
+                }
+
+                if (beta <= alpha)
+                {
+                    break;
+                }
+            }
+
+            this.transpositionTable[board] = bestEvaluation;
+            return bestEvaluation;
+        }
+
+        /// <summary>
+        /// For timing and analyzing/debugging.
+        /// </summary>
+        /// <param name="board">The state of the board.</param>
+        /// <param name="targetDepth">The depth at which to search for moves. The depth of moves to simulate.</param>
+        /// <returns>The 'best' move.</returns>
+        public Move GenerateMoveTimed(Chessboard board, int targetDepth)
+        {
+            List<(float, Move)> moves = new List<(float, Move)>();
+            List<Move> availableMoves = board.GetMoves().ToList();
+
+            foreach (var move in availableMoves)
+            {
+                Chessboard rootNode = new Chessboard(board, move);
+
+                float evaluation = this.MinimaxSearch(rootNode, targetDepth - 1, float.MinValue, float.MaxValue);
+                moves.Add((evaluation, move));
+            }
+
+            double bestEvaluation;
+            if (board.CurrentTeamTurn == TeamColor.White)
+            {
+                bestEvaluation = moves.Max(m => m.Item1);
+            }
+            else
+            {
+                bestEvaluation = moves.Min(m => m.Item1);
+            }
+
+            bestEvaluation = Math.Round(bestEvaluation, 1);
+
+            List<Move> sortedMoves;
+            if (board.CurrentTeamTurn == TeamColor.White)
+            {
+                sortedMoves = (from moveEvaluation in moves
+                               orderby moveEvaluation.Item1 descending
+                               where Math.Round(moveEvaluation.Item1, 1) == bestEvaluation
+                               select moveEvaluation.Item2).ToList();
+            }
+            else
+            {
+                sortedMoves = (from moveEvaluation in moves
+                               orderby moveEvaluation.Item1 ascending
+                               where Math.Round(moveEvaluation.Item1, 1) == bestEvaluation
+                               select moveEvaluation.Item2).ToList();
+            }
+
+            Move chosenMove = sortedMoves[0];
+
+            foreach (var move in sortedMoves)
+            {
+                string moveNotation = move.ToString();
+                if (moveNotation == "O-O-O" || moveNotation == "O-O")
+                {
+                    chosenMove = move;
+                    break;
+                }
+            }
+
+            // Clean-up
+            this.transpositionTable.Clear();
+
+            return sortedMoves[0];
+        }
+
+        /// <summary>
+        /// Generates the supposedly best move given a position on the board and a <c>targetDepth</c>. Distributes calculations to multiple threads at once.
+        /// </summary>
+        /// <param name="board">The state of the board.</param>
+        /// <param name="targetDepth">The amount of moves, in depth, to simulate.</param>
+        /// <returns>The 'supposedly best' move.</returns>
+        public Move GenerateMoveParrallel(Chessboard board, int targetDepth)
+        {
+            SemaphoreSlim ss = new SemaphoreSlim(5, 5);
+            List<Task> moveTasks = new List<Task>();
+
+            List<(float, Move)> moves = new List<(float, Move)>();
+            List<Move> availableMoves = board.GetMoves().ToList();
+            this.SingleMoveCalculated?.Invoke(0, availableMoves.Count, null, StaticEvaluation(board, 1));
+
+            foreach (var move in availableMoves)
+            {
+                Chessboard rootNode = new Chessboard(board, move);
+
+                ss.Wait();
+
+                moveTasks.Add(
+                    Task.Run(() =>
+                    {
+                        float evaluation = this.MinimaxSearch(rootNode, targetDepth - 1, float.MinValue, float.MaxValue);
+                        moves.Add((evaluation, move));
+                        this.SingleMoveCalculated?.Invoke(moves.Count, availableMoves.Count, move, evaluation);
+                        ss.Release();
+                    }));
+            }
+
+            Task.WaitAll(moveTasks.ToArray());
+
+            double bestEvaluation;
+            if (board.CurrentTeamTurn == TeamColor.White)
+            {
+                bestEvaluation = moves.Max(m => m.Item1);
+            }
+            else
+            {
+                bestEvaluation = moves.Min(m => m.Item1);
+            }
+
+            bestEvaluation = Math.Round(bestEvaluation, 1);
+
+            List<Move> sortedMoves;
+            if (board.CurrentTeamTurn == TeamColor.White)
+            {
+                sortedMoves = (from moveEvaluation in moves
+                               orderby moveEvaluation.Item1 descending
+                               where Math.Round(moveEvaluation.Item1, 1) == bestEvaluation
+                               select moveEvaluation.Item2).ToList();
+            }
+            else
+            {
+                sortedMoves = (from moveEvaluation in moves
+                               orderby moveEvaluation.Item1 ascending
+                               where Math.Round(moveEvaluation.Item1, 1) == bestEvaluation
+                               select moveEvaluation.Item2).ToList();
+            }
+
+            Move chosenMove = sortedMoves[0];
+
+            foreach (var move in sortedMoves)
+            {
+                string moveNotation = move.ToString();
+                if (moveNotation == "O-O-O" || moveNotation == "O-O")
+                {
+                    chosenMove = move;
+                    break;
+                }
+            }
+
+            // Clean-up
+            this.transpositionTable.Clear();
+
+            return sortedMoves[0];
+        }
 
         private static float StaticEvaluation(Chessboard board, int depth)
         {
@@ -84,225 +293,16 @@ namespace ChessBots
 
                     if (piece.Color == TeamColor.White)
                     {
-                        centipawns += centerSquareRawValue / (round * centerSquareModifier);
-                    }else
+                        centipawns += CenterSquareRawValue / (round * CenterSquareModifier);
+                    }
+                    else
                     {
-                        centipawns -= centerSquareRawValue / (round * centerSquareModifier);
+                        centipawns -= CenterSquareRawValue / (round * CenterSquareModifier);
                     }
                 }
             }
 
             return board.MaterialSum + centipawns;
         }
-
-        public float MinimaxSearch(Chessboard board, int depth, float alpha, float beta)
-        {
-            if (depth == 0 || board.CurrentState == GameState.Checkmate || board.CurrentState == GameState.Stalemate)
-            {
-                // note: the turn is updated even after checkmate
-                return StaticEvaluation(board, depth);
-            }
-
-            bool maximize = board.CurrentTeamTurn == TeamColor.White;
-            float bestEvaluation = maximize ? float.MinValue : float.MaxValue;
-            foreach (var move in board.GetMoves())
-            {
-                Chessboard childNode = new Chessboard(board, move);
-
-                int newDepth;
-                if (depth == 1 && (move.Captures || !(move.Moves[0].PromotePiece is null)))
-                {
-                    // check one level deeper because last move was a capture move.
-                    newDepth = depth;
-                }
-                else
-                {
-                    newDepth = depth - 1;
-                }
-
-                if (transpositionTable.TryGetValue(childNode, out float precalculatedEvaluation))
-                {
-                    if (maximize)
-                    {
-                        bestEvaluation = precalculatedEvaluation;
-                        alpha = Math.Max(alpha, bestEvaluation);
-                    }
-                    else
-                    {
-                        bestEvaluation = precalculatedEvaluation;
-                        beta = Math.Min(beta, bestEvaluation);
-                    }
-                }
-                else
-                {
-                    if (maximize)
-                    {
-                        bestEvaluation = Math.Max(bestEvaluation, MinimaxSearch(childNode, newDepth, alpha, beta));
-                        alpha = Math.Max(alpha, bestEvaluation);
-                    }
-                    else
-                    {
-                        bestEvaluation = Math.Min(bestEvaluation, MinimaxSearch(childNode, newDepth, alpha, beta));
-                        beta = Math.Min(beta, bestEvaluation);
-                    }
-                }
-
-                if (beta <= alpha)
-                {
-                    break;
-                }
-            }
-
-            transpositionTable[board] = bestEvaluation;
-            return bestEvaluation;
-        }
-
-        /// <summary>
-        /// For timing and analyzing
-        /// </summary>
-        /// <param name="board"></param>
-        /// <param name="targetDepth"></param>
-        /// <returns></returns>
-        public Move GenerateMoveTimed(Chessboard board, int targetDepth)
-        {
-            List<(float, Move)> moves = new List<(float, Move)>();
-            List<Move> availableMoves = board.GetMoves().ToList();
-
-            foreach (var move in availableMoves)
-            {
-                Chessboard rootNode = new Chessboard(board, move);
-
-                float evaluation = MinimaxSearch(rootNode, targetDepth - 1, float.MinValue, float.MaxValue);
-                moves.Add((evaluation, move));
-            }
-
-
-            double bestEvaluation;
-            if (board.CurrentTeamTurn == TeamColor.White)
-            {
-                bestEvaluation = moves.Max(m => m.Item1);
-            }
-            else
-            {
-                bestEvaluation = moves.Min(m => m.Item1);
-            }
-
-            bestEvaluation = Math.Round(bestEvaluation, 1);
-
-            List<Move> sortedMoves;
-            if (board.CurrentTeamTurn == TeamColor.White)
-            {
-                sortedMoves = (from moveEvaluation in moves
-                               orderby moveEvaluation.Item1 descending
-                               where Math.Round(moveEvaluation.Item1, 1) == bestEvaluation
-                               select moveEvaluation.Item2).ToList();
-            }
-            else
-            {
-                sortedMoves = (from moveEvaluation in moves
-                               orderby moveEvaluation.Item1 ascending
-                               where Math.Round(moveEvaluation.Item1, 1) == bestEvaluation
-                               select moveEvaluation.Item2).ToList();
-            }
-
-            Move chosenMove = sortedMoves[0];
-
-            foreach (var move in sortedMoves)
-            {
-                string moveNotation = move.ToString();
-                if (moveNotation == "O-O-O" || moveNotation == "O-O")
-                {
-                    chosenMove = move;
-                    break;
-                }
-            }
-
-            // Clean-up
-            transpositionTable.Clear();
-
-            return sortedMoves[0];
-        }
-
-        /// <summary>
-        /// Generates the supposedly best move given a position on the board and a <c>targetDepth</c>.
-        /// </summary>
-        /// <param name="board"></param>
-        /// <param name="targetDepth"></param>
-        /// <returns></returns>
-        public Move GenerateMoveParrallel(Chessboard board, int targetDepth)
-        {
-            SemaphoreSlim ss = new SemaphoreSlim(5, 5);
-            List<Task> moveTasks = new List<Task>();
-
-            List<(float, Move)> moves = new List<(float, Move)>();
-            List<Move> availableMoves = board.GetMoves().ToList();
-            onSingleMoveCalculated?.Invoke(0, availableMoves.Count, null, StaticEvaluation(board, 1));
-
-            foreach (var move in availableMoves)
-            {
-                Chessboard rootNode = new Chessboard(board, move);
-
-                ss.Wait();
-
-                moveTasks.Add(
-                    Task.Run(() =>
-                    {
-                        float evaluation = MinimaxSearch(rootNode, targetDepth - 1, float.MinValue, float.MaxValue);
-                        moves.Add((evaluation, move));
-                        onSingleMoveCalculated?.Invoke(moves.Count, availableMoves.Count, move, evaluation);
-                        ss.Release();
-                    }
-                    ));
-            }
-
-            Task.WaitAll(moveTasks.ToArray());
-
-
-            double bestEvaluation;
-            if (board.CurrentTeamTurn == TeamColor.White)
-            {
-                bestEvaluation = moves.Max(m => m.Item1);
-            }
-            else
-            {
-                bestEvaluation = moves.Min(m => m.Item1);
-            }
-
-            bestEvaluation = Math.Round(bestEvaluation, 1);
-
-            List<Move> sortedMoves;
-            if (board.CurrentTeamTurn == TeamColor.White)
-            {
-                sortedMoves = (from moveEvaluation in moves
-                               orderby moveEvaluation.Item1 descending
-                               where Math.Round(moveEvaluation.Item1, 1) == bestEvaluation
-                               select moveEvaluation.Item2).ToList();
-            }
-            else
-            {
-                sortedMoves = (from moveEvaluation in moves
-                               orderby moveEvaluation.Item1 ascending
-                               where Math.Round(moveEvaluation.Item1, 1) == bestEvaluation
-                               select moveEvaluation.Item2).ToList();
-            }
-
-            Move chosenMove = sortedMoves[0];
-
-            foreach (var move in sortedMoves)
-            {
-                string moveNotation = move.ToString();
-                if (moveNotation == "O-O-O" || moveNotation == "O-O")
-                {
-                    chosenMove = move;
-                    break;
-                }
-            }
-
-            // Clean-up
-            transpositionTable.Clear();
-
-            return sortedMoves[0];
-        }
     }
 }
-    

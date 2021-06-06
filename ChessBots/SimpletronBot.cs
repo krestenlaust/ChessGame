@@ -1,37 +1,38 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ChessGame;
-
-namespace ChessBots
+﻿namespace ChessBots
 {
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using ChessGame;
+
+    /// <summary>
+    /// A very simple bot implementation.
+    /// </summary>
     public class SimpletronBot : Player
     {
-        public SimpletronBot(string name) : base(name)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SimpletronBot"/> class with custom player name.
+        /// </summary>
+        /// <param name="name">The name of the player.</param>
+        public SimpletronBot(string name)
+            : base(name)
         {
         }
 
+        /// <inheritdoc/>
         public override void TurnStarted(Chessboard board)
         {
-            Move move = GenerateMove(board);
+            Move move = this.GenerateMove(board);
 
             board.PerformMove(move);
-        }
-
-        private struct NodeState
-        {
-            public Chessboard Board;
-            public int Depth;
-            public ConcurrentBag<(int, Move)> MoveStorage;
-            public Move RootMove;
         }
 
         private void CheckMovesDerp(NodeState node)
         {
             if (node.Depth == 0)
             {
-                node.Board.SimulateMove(FindBestMoves(node.Board, node.Board.CurrentTeamTurn)[0]);
+                node.Board.SimulateMove(this.FindBestMoves(node.Board, node.Board.CurrentTeamTurn)[0]);
                 node.MoveStorage.Add((node.Board.MaterialSum, node.RootMove));
                 return;
             }
@@ -41,23 +42,23 @@ namespace ChessBots
                 Chessboard newBoard = new Chessboard(node.Board);
                 newBoard.SimulateMove(move);
 
-                CheckMovesDerp(new NodeState
+                this.CheckMovesDerp(new NodeState
                 {
                     Board = newBoard,
                     Depth = node.Depth - 1,
                     MoveStorage = node.MoveStorage,
-                    RootMove = node.RootMove
+                    RootMove = node.RootMove,
                 });
             }
         }
 
-        private void CheckMovesDeep(Chessboard boardReadonly, int depth, ConcurrentBag<(int, Move)> moves, Move baseMove = null)
+        private void CheckMovesDeep(Chessboard boardReadonly, int depth, ConcurrentBag<(int Material, Move InitialMove)> moves, Move baseMove = null)
         {
             Chessboard board = new Chessboard(boardReadonly);
 
             if (depth == 0)
             {
-                board.SimulateMove(FindBestMoves(board, boardReadonly.CurrentTeamTurn)[0]);
+                board.SimulateMove(this.FindBestMoves(board, boardReadonly.CurrentTeamTurn)[0]);
                 moves.Add((board.MaterialSum, baseMove));
                 return;
             }
@@ -69,12 +70,12 @@ namespace ChessBots
                 Chessboard newBoard = new Chessboard(board);
                 newBoard.SimulateMove(move);
 
-                rootMoves.Add(Task.Run(() => CheckMovesDerp(new NodeState
+                rootMoves.Add(Task.Run(() => this.CheckMovesDerp(new NodeState
                 {
                     Board = newBoard,
                     Depth = depth - 1,
                     MoveStorage = moves,
-                    RootMove = move
+                    RootMove = move,
                 })));
             }
 
@@ -85,10 +86,9 @@ namespace ChessBots
         {
             ConcurrentBag<(int, Move)> longerMoves = new ConcurrentBag<(int, Move)>();
 
-            CheckMovesDeep(board, 2, longerMoves);
+            this.CheckMovesDeep(board, 2, longerMoves);
 
             List<(int, Move)> sortedMoves = longerMoves.OrderByDescending(material => material.Item1).ToList();
-
 
             int newLuckyNumber;
             if (board.CurrentTeamTurn == TeamColor.Black)
@@ -152,6 +152,14 @@ namespace ChessBots
             }
 
             return (from move in sortedMoves where move.Item1 == luckyNumber select move.Item2).ToList();
+        }
+
+        private struct NodeState
+        {
+            public Chessboard Board;
+            public int Depth;
+            public ConcurrentBag<(int, Move)> MoveStorage;
+            public Move RootMove;
         }
     }
 }

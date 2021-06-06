@@ -70,7 +70,7 @@ namespace ChessBots
             this.richTextBoxLog.Size = new System.Drawing.Size(293, 165);
             this.richTextBoxLog.TabIndex = 3;
             this.richTextBoxLog.Text = "";
-            this.richTextBoxLog.TextChanged += new System.EventHandler(this.richTextBoxLog_TextChanged);
+            this.richTextBoxLog.TextChanged += new System.EventHandler(this.RichTextBoxLog_TextChanged);
             // 
             // numericUpDownDepth
             // 
@@ -136,7 +136,7 @@ namespace ChessBots
             this.checkBoxShowGraph.TabIndex = 8;
             this.checkBoxShowGraph.Text = "Show game graph";
             this.checkBoxShowGraph.UseVisualStyleBackColor = true;
-            this.checkBoxShowGraph.CheckedChanged += new System.EventHandler(this.checkBoxShowGraph_CheckedChanged);
+            this.checkBoxShowGraph.CheckedChanged += new System.EventHandler(this.CheckBoxShowGraph_CheckedChanged);
             // 
             // BotUI
             // 

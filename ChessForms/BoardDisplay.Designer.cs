@@ -50,8 +50,8 @@ namespace ChessForms
             // 
             // backgroundWorkerMove
             // 
-            this.backgroundWorkerMove.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerMove_DoWork);
-            this.backgroundWorkerMove.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerMove_RunWorkerCompleted);
+            this.backgroundWorkerMove.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorkerMove_DoWork);
+            this.backgroundWorkerMove.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorkerMove_RunWorkerCompleted);
             // 
             // BoardDisplay
             // 

@@ -1,23 +1,49 @@
-﻿using System;
-using System.Linq;
-
-namespace ChessGame
+﻿namespace ChessGame
 {
+    using System;
+    using System.Linq;
+
+    /// <summary>
+    /// The states of a game.
+    /// </summary>
     public enum GameState : byte
     {
+        /// <summary>
+        /// The player whose turn it is, doesn't have any available moves.
+        /// </summary>
         Stalemate,
+
+        /// <summary>
+        /// The player whose turn it is, doesn't have any available moves, that unchecks thier king.
+        /// </summary>
         Checkmate,
+
+        /// <summary>
+        /// The player whose turn it is, has their king in check.
+        /// </summary>
         Check,
+
+        /// <summary>
+        /// The game hasn't started yet.
+        /// </summary>
         NotStarted,
+
+        /// <summary>
+        /// The game has just started.
+        /// </summary>
         Started,
-        DeadPosition
+
+        /// <summary>
+        /// The game is in such a position that it isn't possible for any player to check the other.
+        /// </summary>
+        DeadPosition,
     }
 
+    /// <summary>
+    /// The abstract class representing a game. Inherit to implement gamemodes.
+    /// </summary>
     public abstract class Gamemode
     {
-        public event Action<GameState> onGameStateUpdated;
-        public event Action onTurnChanged;
-
         /// <summary>
         /// Null if no winner has been selected.
         /// </summary>
@@ -25,21 +51,39 @@ namespace ChessGame
         public readonly Player PlayerWhite;
         public readonly Player PlayerBlack;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Gamemode"/> class.
+        /// </summary>
+        /// <param name="playerWhite">The player instance of player white.</param>
+        /// <param name="playerBlack">The player instance of player black.</param>
         public Gamemode(Player playerWhite, Player playerBlack)
         {
-            PlayerWhite = playerWhite;
-            PlayerBlack = playerBlack;
+            this.PlayerWhite = playerWhite;
+            this.PlayerBlack = playerBlack;
         }
 
-        // TODO: maybe implement classic chess by standard (make this virtual).
+        /// <summary>
+        /// Called when the internal state of the game is changed, for example on checkmate, or simply check.
+        /// </summary>
+        public event Action<GameState> GameStateChanged;
+
+        /// <summary>
+        /// Called when a player has finished their move and the game hasn't reached an end state.
+        /// </summary>
+        public event Action TurnChanged;
+
+        /// <summary>
+        /// Called to setup the chessboard.
+        /// </summary>
+        /// <returns>Chessboard with pieces.</returns>
         public abstract Chessboard GenerateBoard();
 
         /// <summary>
-        /// Validates a move for a given position. Maybe merge with <c>MakeMove(Move)</c>
+        /// Validates a move for a given position. Maybe merge with <c>MakeMove(Move)</c>.
         /// </summary>
-        /// <param name="move"></param>
-        /// <param name="board"></param>
-        /// <returns></returns>
+        /// <param name="move">The move to verify.</param>
+        /// <param name="board">The state of the board.</param>
+        /// <returns>Returns whether the move is valid.</returns>
         public virtual bool ValidateMove(Move move, Chessboard board)
         {
             // if move is outside board, then it's invalid.
@@ -74,7 +118,7 @@ namespace ChessGame
         /// Updates gamestate, e.g. checks for mate/checkmate or stalemate. Run at end of turn.
         /// </summary>
         /// <returns>Whether the gamestate has updated.</returns>
-        /// <param name="board"></param>
+        /// <param name="board">The board of which to update the gamestate.</param>
         public virtual bool UpdateGameState(Chessboard board)
         {
             GameState previousState = board.CurrentState;
@@ -118,7 +162,7 @@ namespace ChessGame
                 // checkmate
                 if (board.CurrentState == GameState.Check)
                 {
-                    Winner = board.CurrentTeamTurn == TeamColor.White ? PlayerBlack : PlayerWhite;
+                    this.Winner = board.CurrentTeamTurn == TeamColor.White ? this.PlayerBlack : this.PlayerWhite;
                     board.CurrentState = GameState.Checkmate;
                 }
                 else
@@ -126,7 +170,7 @@ namespace ChessGame
                     board.CurrentState = GameState.Stalemate;
                 }
             }
-            else if(board.CurrentState != GameState.Check)
+            else if (board.CurrentState != GameState.Check)
             {
                 board.CurrentState = GameState.Started;
             }
@@ -137,13 +181,13 @@ namespace ChessGame
         /// <summary>
         /// Can be overridden to have custom turn logic.
         /// </summary>
-        /// <param name="board"></param>
+        /// <param name="board">The current state of the board.</param>
         /// <returns>False if game has ended.</returns>
         public virtual bool StartTurn(Chessboard board)
         {
-            if (UpdateGameState(board))
+            if (this.UpdateGameState(board))
             {
-                onGameStateUpdated?.Invoke(board.CurrentState);
+                this.GameStateChanged?.Invoke(board.CurrentState);
 
                 switch (board.CurrentState)
                 {
@@ -153,7 +197,7 @@ namespace ChessGame
                 }
             }
 
-            onTurnChanged?.Invoke();
+            this.TurnChanged?.Invoke();
             return true;
         }
     }

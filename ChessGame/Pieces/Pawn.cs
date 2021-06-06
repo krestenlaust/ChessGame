@@ -4,9 +4,9 @@
     {
         public Pawn()
         {
-            Notation = '\0'; // nothing
-            MaterialValue = 1;
-            MovementPatternList = new IMovementPattern[] {
+            this.Notation = '\0'; // nothing
+            this.MaterialValue = 1;
+            this.MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.PromotionPattern(),
                 new MovementPatterns.PawnCapturePattern(),
                 new MovementPatterns.EnPassentPattern(),

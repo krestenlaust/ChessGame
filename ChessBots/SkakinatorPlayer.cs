@@ -16,45 +16,45 @@ namespace ChessBots
         {
             get
             {
-                if (UI is null)
+                if (this.UI is null)
                 {
                     return DEFAULT_DEPTH;
                 }
 
-                return UI.DepthSetting;
+                return this.UI.DepthSetting;
             }
         }
 
         public SkakinatorPlayer(string name, bool enableUI) : base(name)
         {
-            logic = new SkakinatorLogic();
+            this.logic = new SkakinatorLogic();
             if (enableUI)
             {
-                UI = new BotUI();
-                UI.Text = $"Bot info: {name}";
-                UI.Show();
-                logic.onSingleMoveCalculated += Logic_onSingleMoveCalculated;
+                this.UI = new BotUI();
+                this.UI.Text = $"Bot info: {name}";
+                this.UI.Show();
+                this.logic.SingleMoveCalculated += this.Logic_onSingleMoveCalculated;
             }
         }
 
         private void Logic_onSingleMoveCalculated(int current, int max, Move move, float evaluation)
         {
-            UI.SetProgress(current, max);
+            this.UI.SetProgress(current, max);
 
             if (current == 0)
             {
-                UI.AddPoint(evaluation);
-                UI.PrintLog("\n Board: " + evaluation);
+                this.UI.AddPoint(evaluation);
+                this.UI.PrintLog("\n Board: " + evaluation);
             }
             else
             {
-                UI.PrintLog($"[{current}] {move.ToString(MoveNotation.UCI)} = {Math.Round(evaluation, 2)}");
+                this.UI.PrintLog($"[{current}] {move.ToString(MoveNotation.UCI)} = {Math.Round(evaluation, 2)}");
             }
         }
 
         public override void TurnStarted(Chessboard board)
         {
-            board.PerformMove(logic.GenerateMoveParrallel(board, Depth));
+            board.PerformMove(this.logic.GenerateMoveParrallel(board, this.Depth));
         }
     }
 }

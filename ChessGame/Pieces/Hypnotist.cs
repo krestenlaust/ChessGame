@@ -7,9 +7,9 @@
     {
         public Hypnotist()
         {
-            Notation = 'H';
-            MaterialValue = 5;
-            MovementPatternList = new IMovementPattern[] {
+            this.Notation = 'H';
+            this.MaterialValue = 5;
+            this.MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.HypnoJumpPattern()
             };
         }

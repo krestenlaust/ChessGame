@@ -4,9 +4,9 @@
     {
         public Queen()
         {
-            Notation = 'Q';
-            MaterialValue = 9;
-            MovementPatternList = new IMovementPattern[] {
+            this.Notation = 'Q';
+            this.MaterialValue = 9;
+            this.MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.CardinalPattern(),
                 new MovementPatterns.DiagonalPattern()
             };

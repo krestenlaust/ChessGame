@@ -1,12 +1,15 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Http;
-using System.Threading;
-
-namespace ChessGame.Players
+﻿namespace ChessGame.Players
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Net.Http;
+    using System.Threading;
+    using Newtonsoft.Json.Linq;
+
+    /// <summary>
+    /// Represents an opponent on Lichess. On turn, makes move as Lichess bot and returns the move of the opponent.
+    /// </summary>
     public class LichessBotPlayer : Player
     {
         private readonly HttpClient httpClient = new HttpClient();
@@ -17,80 +20,102 @@ namespace ChessGame.Players
         private bool receivedMove;
 
         /// <summary>
-        /// Tries to join a game by id.
+        /// Initializes a new instance of the <see cref="LichessBotPlayer"/> class, joining a game on Lichess by ID with Lichess bot token.
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="token"></param>
-        /// <param name="gameID"></param>
-        public LichessBotPlayer(string name, string token, string gameID) : base(name)
+        /// <param name="name">Nickname of the player instance.</param>
+        /// <param name="token">Token of Lichess bot.</param>
+        /// <param name="gameID">Lichess match ID.</param>
+        public LichessBotPlayer(string name, string token, string gameID)
+            : base(name)
         {
-            gameId = gameID;
-            httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            localGameStream = new StreamReader(GetGameStream());
+            this.gameId = gameID;
+            this.httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            this.localGameStream = new StreamReader(this.GetGameStream());
         }
 
         /// <summary>
-        /// Seeks a challenge.
+        /// Initializes a new instance of the <see cref="LichessBotPlayer"/> class, and seeks a challenge on Lichess.
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="token"></param>
-        public LichessBotPlayer(string name, string token, TeamColor localPlayerColor) : base(name)
+        /// <param name="name">Nickname of the player instance.</param>
+        /// <param name="token">Token of Lichess bot.</param>
+        /// <param name="localPlayerColor"></param>
+        public LichessBotPlayer(string name, string token, TeamColor localPlayerColor)
+            : base(name)
         {
-            httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            localEventStream = new StreamReader(GetEventStream());
-            CreateSeek(localPlayerColor);
-            gameId = ReceiveGame();
-            localGameStream = new StreamReader(GetGameStream());
+            this.httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            this.localEventStream = new StreamReader(this.GetEventStream());
+            this.CreateSeek(localPlayerColor);
+            this.gameId = this.ReceiveGame();
+            this.localGameStream = new StreamReader(this.GetGameStream());
         }
 
         /// <summary>
         /// Opens a get stream that contains events.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns event stream.</returns>
         public Stream GetEventStream()
         {
-            return httpClient.GetStreamAsync("https://lichess.org/api/stream/event").Result;
+            return this.httpClient.GetStreamAsync("https://lichess.org/api/stream/event").Result;
         }
 
         /// <summary>
         /// Opens a get stream for the game.
         /// </summary>
-        /// <param name="gameId"></param>
-        /// <returns></returns>
+        /// <param name="gameId">The Lichess match ID.</param>
+        /// <returns>Returns game stream.</returns>
         public Stream GetGameStream()
         {
-            return httpClient.GetStreamAsync($"https://lichess.org/api/bot/game/stream/{gameId}").Result;
+            return this.httpClient.GetStreamAsync($"https://lichess.org/api/bot/game/stream/{this.gameId}").Result;
         }
 
-        /// <summary>
-        /// Called by the chessgame when the game is ready to receive lichess player move.
-        /// </summary>
-        /// <param name="board"></param>
+        /// <inheritdoc/>
         public override void TurnStarted(Chessboard board)
         {
             if (board.Moves.Count > 0)
             {
-                SendMove(board.Moves.Peek(), gameId);
+                this.SendMove(board.Moves.Peek());
             }
 
-            board.PerformMove(ReceieveMove(board.CurrentTeamTurn), MoveNotation.UCI);
+            board.PerformMove(this.ReceiveMove(board.CurrentTeamTurn), MoveNotation.UCI);
+        }
+
+        /// <summary>
+        /// Resigns the game.
+        /// </summary>
+        public void ResignGame() => this.httpClient.PostAsync($"https://lichess.org/api/bot/game/{this.gameId}/resign", null);
+
+        /// <summary>
+        /// Sends a move to a game.
+        /// </summary>
+        /// <param name="move">Move instance.</param>
+        public void SendMove(Move move) => this.SendMove(move.ToString(MoveNotation.UCI));
+
+        /// <summary>
+        /// Sends a move in UCI-notation to a game.
+        /// </summary>
+        /// <param name="move">Move in UCI-notation.</param>
+        public void SendMove(string move)
+        {
+            this.httpClient.PostAsync($"https://lichess.org/api/bot/game/{this.gameId}/move/{move}", null);
         }
 
         private void CreateSeek(TeamColor color)
         {
-            Dictionary<string, string> postParameters = new Dictionary<string, string>();
-            postParameters["rated"] = "false";
-            postParameters["color"] = Enum.GetName(typeof(TeamColor), color);
-            postParameters["time"] = "5";
-            postParameters["increment"] = "0";
+            Dictionary<string, string> postParameters = new Dictionary<string, string>
+            {
+                ["rated"] = "false",
+                ["color"] = Enum.GetName(typeof(TeamColor), color),
+                ["time"] = "5",
+                ["increment"] = "0",
+            };
 
-            httpClient.PostAsync("https://lichess.org/api/board/seek", new FormUrlEncodedContent(postParameters));
+            this.httpClient.PostAsync("https://lichess.org/api/board/seek", new FormUrlEncodedContent(postParameters));
         }
 
         /// <summary>
         /// Waits for a challenge to appear in the event stream.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Lichess match ID.</returns>
         private string ReceiveGame()
         {
             // wait for move
@@ -98,16 +123,16 @@ namespace ChessGame.Players
             {
                 // update latest game info.
                 string line;
-                while ((line = localEventStream.ReadLine()) != string.Empty)
+                while ((line = this.localEventStream.ReadLine()) != string.Empty)
                 {
-                    ParseEventStreamObject(line);
+                    this.ParseEventStreamObject(line);
                 }
 
-                if (!(gameId is null))
+                if (!(this.gameId is null))
                 {
-                    return gameId;
+                    return this.gameId;
                 }
-                
+
                 Thread.Sleep(250);
             }
         }
@@ -115,28 +140,28 @@ namespace ChessGame.Players
         /// <summary>
         /// Waits for a move to appear in the game stream.
         /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
-        private string ReceieveMove(TeamColor player)
+        /// <param name="player">The color of the move to wait for.</param>
+        /// <returns>Move in UCI-notation.</returns>
+        private string ReceiveMove(TeamColor player)
         {
             // wait for move
             while (true)
             {
                 // update latest game info.
                 string line;
-                while ((line = localGameStream.ReadLine()) != string.Empty)
+                while ((line = this.localGameStream.ReadLine()) != string.Empty)
                 {
-                    ParseGameStreamObject(line);
+                    this.ParseGameStreamObject(line);
                 }
 
                 // if divisible by 2, then it's white's turn
-                TeamColor waitingFor = lichessMoves.Length % 2 != 0 ? TeamColor.White : TeamColor.Black;
+                TeamColor waitingFor = this.lichessMoves.Length % 2 != 0 ? TeamColor.White : TeamColor.Black;
 
                 // should be waiting for this player
-                if (waitingFor == player && receivedMove)
+                if (waitingFor == player && this.receivedMove)
                 {
-                    receivedMove = false;
-                    return lichessMoves[lichessMoves.Length - 1];
+                    this.receivedMove = false;
+                    return this.lichessMoves[this.lichessMoves.Length - 1];
                 }
                 else
                 {
@@ -168,8 +193,8 @@ namespace ChessGame.Players
                         gameState = obj.Root;
                     }
 
-                    lichessMoves = ((string)gameState["moves"]).Split(' ');
-                    receivedMove = true;
+                    this.lichessMoves = ((string)gameState["moves"]).Split(' ');
+                    this.receivedMove = true;
                     break;
                 default:
                     break;
@@ -190,37 +215,11 @@ namespace ChessGame.Players
             switch (msgType)
             {
                 case "gameStart":
-                    gameId = (string)obj["game"]["id"];
+                    this.gameId = (string)obj["game"]["id"];
                     break;
                 default:
                     break;
             }
-        }
-
-        /// <summary>
-        /// Resigns a game.
-        /// </summary>
-        /// <param name="gameId"></param>
-        public void ResignGame()
-        {
-            httpClient.PostAsync($"https://lichess.org/api/bot/game/{gameId}/resign", null);
-        }
-
-        /// <summary>
-        /// Sends a move to a game.
-        /// </summary>
-        /// <param name="move"></param>
-        /// <param name="gameId"></param>
-        public void SendMove(Move move, string gameId) => SendMove(move.ToString(MoveNotation.UCI));
-
-        /// <summary>
-        /// Sends a move in UCI-notation to a game.
-        /// </summary>
-        /// <param name="move"></param>
-        /// <param name="gameId"></param>
-        public void SendMove(string move)
-        {
-            httpClient.PostAsync($"https://lichess.org/api/bot/game/{gameId}/move/{move}", null);
         }
     }
 }

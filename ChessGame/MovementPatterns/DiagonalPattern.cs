@@ -1,44 +1,48 @@
-﻿using System.Collections.Generic;
-
-namespace ChessGame.MovementPatterns
+﻿namespace ChessGame.MovementPatterns
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// The pattern the bishop uses, targets fields that are diagonal to current position.
-    /// Can't jump over pieces, therefor only
+    /// Can't jump over pieces, therefore only ???.
     /// </summary>
     public class DiagonalPattern : IMovementPattern
     {
+        /// <inheritdoc/>
         public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool guardedSquaresOnly = false)
         {
-            for (int n = 0; n < 4; n++) // The 4 directions from the piece
+            // The 4 directions from the piece.
+            for (int n = 0; n < 4; n++)
             {
-                int Xdir = 1;
-                int Ydir = 1;
-                switch (n) // Sets a direction for the checker
+                // Sets a direction for the checker.
+                int xDir = 1;
+                int yDir = 1;
+                switch (n)
                 {
                     case 0:
-                        Xdir = 1;
-                        Ydir = 1;
+                        xDir = 1;
+                        yDir = 1;
                         break;
                     case 1:
-                        Xdir = 1;
-                        Ydir = -1;
+                        xDir = 1;
+                        yDir = -1;
                         break;
                     case 2:
-                        Xdir = -1;
-                        Ydir = -1;
+                        xDir = -1;
+                        yDir = -1;
                         break;
                     case 3:
-                        Xdir = -1;
-                        Ydir = 1;
+                        xDir = -1;
+                        yDir = 1;
                         break;
                     default:
                         break;
                 }
 
-                for (int i = 1; i < board.Width; i++) // Checker
+                // Checker
+                for (int i = 1; i < board.Width; i++)
                 {
-                    Coordinate checkPosition = new Coordinate((i * Xdir) + position.File, (i * Ydir) + position.Rank); // Position update
+                    Coordinate checkPosition = new Coordinate((i * xDir) + position.File, (i * yDir) + position.Rank); // Position update
 
                     if (checkPosition.Rank >= board.Height || checkPosition.Rank < 0 ||
                         checkPosition.File >= board.Width || checkPosition.File < 0) // If the checking position is outside of the board
@@ -47,7 +51,8 @@ namespace ChessGame.MovementPatterns
                     // whether the position is occupied.
                     Piece occupyingPiece = board.GetPiece(checkPosition);
 
-                    if (occupyingPiece is null) // is position empty?
+                    // is position empty?
+                    if (occupyingPiece is null)
                     {
                         yield return new Move(checkPosition, position, piece, false, piece.Color);
                         continue;
@@ -58,9 +63,11 @@ namespace ChessGame.MovementPatterns
                         break;
                     }
 
-                    if (occupyingPiece.Color != piece.Color) // There is a enemy piece
+                    // There is a enemy piece
+                    if (occupyingPiece.Color != piece.Color)
                     {
-                        yield return new Move(checkPosition, position, piece, true, piece.Color); // Sends the move 
+                        // Sends the move.
+                        yield return new Move(checkPosition, position, piece, true, piece.Color);
                     }
 
                     break;
