@@ -22,7 +22,7 @@ namespace ChessGame.MovementPatterns
             {
                 if (!blockedLeft)
                 {
-                    Coordinate checkPosition = new Coordinate(-i, 0) + position;
+                    var checkPosition = new Coordinate(-i, 0) + position;
                     if (board.GetPiece(checkPosition) is Piece blockingPiece)
                     {
                         if (blockingPiece is Pieces.Rook && !board.MovedPieces.Contains(blockingPiece))
@@ -40,7 +40,7 @@ namespace ChessGame.MovementPatterns
 
                 if (!blockedRight)
                 {
-                    Coordinate checkPosition = new Coordinate(i, 0) + position;
+                    var checkPosition = new Coordinate(i, 0) + position;
                     if (board.GetPiece(checkPosition) is Piece blockingPiece)
                     {
                         if (blockingPiece is Pieces.Rook && !board.MovedPieces.Contains(blockingPiece))

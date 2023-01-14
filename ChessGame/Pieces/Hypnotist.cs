@@ -5,10 +5,8 @@
     /// </summary>
     public class Hypnotist : Piece
     {
-        public Hypnotist()
+        public Hypnotist(TeamColor teamColor) : base('H', 5, teamColor)
         {
-            this.Notation = 'H';
-            this.MaterialValue = 5;
             this.MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.HypnoJumpPattern()
             };

@@ -2,10 +2,8 @@
 {
     public class Bishop : Piece
     {
-        public Bishop()
+        public Bishop(TeamColor teamColor) : base('B', 3, teamColor)
         {
-            this.Notation = 'B';
-            this.MaterialValue = 3;
             this.MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.DiagonalPattern()
             };

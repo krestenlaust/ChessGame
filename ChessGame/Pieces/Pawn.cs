@@ -2,10 +2,8 @@
 {
     public class Pawn : Piece
     {
-        public Pawn()
+        public Pawn(TeamColor teamColor) : base('\0', 1, teamColor)
         {
-            this.Notation = '\0'; // nothing
-            this.MaterialValue = 1;
             this.MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.PromotionPattern(),
                 new MovementPatterns.PawnCapturePattern(),

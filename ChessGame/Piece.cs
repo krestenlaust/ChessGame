@@ -11,21 +11,29 @@ namespace ChessGame
         White = 1
     }
 
-    public class Piece
+    public abstract class Piece
     {
         /// <summary>
         /// The character used to notate the piece in algebraic notation.
         /// </summary>
-        public char Notation { get; protected set; }
+        public readonly char Notation; // { get; protected set; }
         /// <summary>
         /// Whether a piece is White or Black.
         /// </summary>
-        public TeamColor Color;
+        public readonly TeamColor Color;
+
         /// <summary>
         /// The different movement patterns the piece uses.
         /// </summary>
-        public byte MaterialValue { get; protected set; }
+        public readonly byte MaterialValue; // { get; protected set; }
         protected IMovementPattern[] MovementPatternList;
+
+        protected Piece(char notation, byte materialValue, TeamColor color)
+        {
+            this.MaterialValue = materialValue;
+            this.Notation = notation;
+            this.Color = color;
+        }
 
         /// <summary>
         /// Returns enumerable of all available moves of a given piece.

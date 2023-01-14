@@ -2,10 +2,8 @@
 {
     public class Rook : Piece
     {
-        public Rook()
+        public Rook(TeamColor teamColor) : base('R', 5, teamColor)
         {
-            this.Notation = 'R';
-            this.MaterialValue = 5;
             this.MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.CardinalPattern()
             };

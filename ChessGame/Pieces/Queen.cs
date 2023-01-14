@@ -2,10 +2,8 @@
 {
     public class Queen : Piece
     {
-        public Queen()
+        public Queen(TeamColor teamColor) : base('Q', 9, teamColor)
         {
-            this.Notation = 'Q';
-            this.MaterialValue = 9;
             this.MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.CardinalPattern(),
                 new MovementPatterns.DiagonalPattern()

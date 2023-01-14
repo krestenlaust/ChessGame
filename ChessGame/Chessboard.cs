@@ -38,13 +38,8 @@ namespace ChessGame
         /// <summary>
         /// A Player object that is equal to the player whose turn it is
         /// </summary>
-        public Player CurrentPlayerTurn 
-        {
-            get
-            {
-                return this.CurrentTeamTurn == TeamColor.White ? this.gamemode.PlayerWhite : this.gamemode.PlayerBlack;
-            }
-        }
+        public Player CurrentPlayerTurn => this.CurrentTeamTurn == TeamColor.White ? this.gamemode.PlayerWhite : this.gamemode.PlayerBlack;
+
         /// <summary>
         /// A integearena to determine the material sum of the game
         /// </summary>
@@ -58,15 +53,8 @@ namespace ChessGame
         /// <summary>
         /// A boolean to tell whether or not the game has finished
         /// </summary>
-        public bool isGameFinished
-        {
-            get
-            {
-                return this.CurrentState == GameState.Checkmate || 
-                    this.CurrentState == GameState.Stalemate ||
-                    this.CurrentState == GameState.DeadPosition;
-            }
-        }
+        public bool isGameFinished =>
+            this.CurrentState is GameState.Checkmate or GameState.Stalemate or GameState.DeadPosition;
 
         /// <summary>
         /// Makes a copy of <c>board</c>, player references stay the same.
@@ -131,7 +119,7 @@ namespace ChessGame
         /// <returns></returns>
         public Piece this[Coordinate position]
         {
-            get { return this.GetPiece(position); }
+            get => this.GetPiece(position);
             set {
                 if (value is null)
                 {
@@ -335,7 +323,7 @@ namespace ChessGame
         public bool IsKingInCheck(TeamColor color)
         {
             Piece king = null;
-            Coordinate position = new Coordinate();
+            var position = new Coordinate();
 
             // Get first king, with this color, and it's position.
             (king, position) = (from piece in this.GetPieces<King>()

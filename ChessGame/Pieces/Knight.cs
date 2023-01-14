@@ -2,10 +2,8 @@
 {
     public class Knight : Piece
     {
-        public Knight()
+        public Knight(TeamColor teamColor) : base('N', 3, teamColor)
         {
-            this.Notation = 'N';
-            this.MaterialValue = 3;
             this.MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.KnightPattern()
             };
