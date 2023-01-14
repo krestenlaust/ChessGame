@@ -31,7 +31,7 @@ namespace ChessGame
         /// A list of pieces, that have moved.
         /// </summary>
         public readonly HashSet<Piece> MovedPieces;
-        private readonly Gamemode gamemode;
+        readonly Gamemode gamemode;
 
         public GameState CurrentState { get; internal set; }
         public TeamColor CurrentTeamTurn { get; set; }
@@ -537,7 +537,7 @@ namespace ChessGame
         /// Removes old references of piece, and adds new.
         /// </summary>
         /// <param name="piece"></param>
-        private void UpdateDangerzones(Piece piece, bool removeOld = false)
+        void UpdateDangerzones(Piece piece, bool removeOld = false)
         {
             // Remove all instances of this piece.
             if (removeOld)

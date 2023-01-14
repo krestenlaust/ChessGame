@@ -6,7 +6,7 @@
         {
             this.MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.KingPattern(),
-                new MovementPatterns.CastlePattern()
+                new MovementPatterns.CastlePattern(),
             };
         }
     }

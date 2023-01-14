@@ -2,7 +2,7 @@
 
 namespace ChessGame.MovementPatterns
 {
-    class EnPassentPattern : IMovementPattern
+    public class EnPassentPattern : IMovementPattern
     {
         public IEnumerable<Move> GetMoves(Piece piece, Coordinate position, Chessboard board, bool guardedSquaresOnly = false)
         {

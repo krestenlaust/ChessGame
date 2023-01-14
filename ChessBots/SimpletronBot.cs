@@ -28,7 +28,7 @@
             board.PerformMove(move);
         }
 
-        private void CheckMovesDerp(NodeState node)
+        void CheckMovesDerp(NodeState node)
         {
             if (node.Depth == 0)
             {
@@ -52,7 +52,7 @@
             }
         }
 
-        private void CheckMovesDeep(Chessboard boardReadonly, int depth, ConcurrentBag<(int Material, Move InitialMove)> moves, Move baseMove = null)
+        void CheckMovesDeep(Chessboard boardReadonly, int depth, ConcurrentBag<(int Material, Move InitialMove)> moves, Move baseMove = null)
         {
             Chessboard board = new Chessboard(boardReadonly);
 
@@ -82,7 +82,7 @@
             Task.WaitAll(rootMoves.ToArray());
         }
 
-        private Move GenerateMove(Chessboard board)
+        Move GenerateMove(Chessboard board)
         {
             ConcurrentBag<(int, Move)> longerMoves = new ConcurrentBag<(int, Move)>();
 
@@ -122,7 +122,7 @@
             }
         }
 
-        private List<Move> FindBestMoves(Chessboard board, TeamColor teamColor)
+        List<Move> FindBestMoves(Chessboard board, TeamColor teamColor)
         {
             List<(int, Move)> moves = new List<(int, Move)>();
 
@@ -154,7 +154,7 @@
             return (from move in sortedMoves where move.Item1 == luckyNumber select move.Item2).ToList();
         }
 
-        private struct NodeState
+        struct NodeState
         {
             public Chessboard Board;
             public int Depth;

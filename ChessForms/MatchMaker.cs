@@ -29,23 +29,23 @@ namespace ChessForms
     public partial class MatchMaker : Form
     {
         public static bool PlaySoundOnMove;
-        private PlayerType white = PlayerType.Local;
-        private PlayerType black = PlayerType.Local;
-        private GamemodeType gamemodeType = GamemodeType.Classic;
+        PlayerType white = PlayerType.Local;
+        PlayerType black = PlayerType.Local;
+        GamemodeType gamemodeType = GamemodeType.Classic;
 
         public MatchMaker()
         {
             InitializeComponent();
         }
 
-        private void InstantiateMatch(Player playerWhite, Player playerBlack)
+        void InstantiateMatch(Player playerWhite, Player playerBlack)
         {
             Gamemode gamemode = CreateGamemode(gamemodeType, playerWhite, playerBlack);
             BoardDisplay board = new BoardDisplay(gamemode, white == PlayerType.Local, black == PlayerType.Local || black == PlayerType.LichessPlayer);
             board.Show();
         }
 
-        private void buttonStartMatch_Click(object sender, EventArgs e)
+        void buttonStartMatch_Click(object sender, EventArgs e)
         {
             Player playerWhite = CreatePlayer(white, textBoxWhiteName.Text, TeamColor.White);
             Player playerBlack = CreatePlayer(black, textBoxBlackName.Text, TeamColor.Black);
@@ -59,7 +59,7 @@ namespace ChessForms
             InstantiateMatch(playerWhite, playerBlack);
         }
 
-        private Player CreatePlayer(PlayerType type, string name, TeamColor color)
+        Player CreatePlayer(PlayerType type, string name, TeamColor color)
         {
             switch (type)
             {
@@ -105,7 +105,7 @@ namespace ChessForms
             }
         }
 
-        private static Gamemode CreateGamemode(GamemodeType gamemodeType, Player playerWhite, Player playerBlack)
+        static Gamemode CreateGamemode(GamemodeType gamemodeType, Player playerWhite, Player playerBlack)
         {
             switch (gamemodeType)
             {
@@ -124,7 +124,7 @@ namespace ChessForms
             return null;
         }
 
-        private void radioButtonWhiteNetworked_CheckedChanged(object sender, EventArgs e)
+        void radioButtonWhiteNetworked_CheckedChanged(object sender, EventArgs e)
         {
             bool isChecked = (sender as RadioButton).Checked;
 
@@ -133,27 +133,27 @@ namespace ChessForms
             white = PlayerType.Network;
         }
 
-        private void radioButtonWhiteLocal_CheckedChanged(object sender, EventArgs e)
+        void radioButtonWhiteLocal_CheckedChanged(object sender, EventArgs e)
         {
             white = PlayerType.Local;
         }
 
-        private void radioButtonBlackLocal_CheckedChanged(object sender, EventArgs e)
+        void radioButtonBlackLocal_CheckedChanged(object sender, EventArgs e)
         {
             black = PlayerType.Local;
         }
 
-        private void radioButtonWhiteBot_CheckedChanged(object sender, EventArgs e)
+        void radioButtonWhiteBot_CheckedChanged(object sender, EventArgs e)
         {
             white = PlayerType.Bot;
         }
 
-        private void radioButtonBlackBot_CheckedChanged(object sender, EventArgs e)
+        void radioButtonBlackBot_CheckedChanged(object sender, EventArgs e)
         {
             black = PlayerType.Bot;
         }
 
-        private void radioButtonBlackNetworked_CheckedChanged(object sender, EventArgs e)
+        void radioButtonBlackNetworked_CheckedChanged(object sender, EventArgs e)
         {
             bool isChecked = (sender as RadioButton).Checked;
 
@@ -162,14 +162,14 @@ namespace ChessForms
             black = PlayerType.Network;
         }
 
-        private void MatchMaker_Load(object sender, EventArgs e)
+        void MatchMaker_Load(object sender, EventArgs e)
         {
             listBoxGamemode.Items.AddRange(Enum.GetNames(typeof(GamemodeType)));
             listBoxGamemode.SelectedIndex = 0;
             PlaySoundOnMove = checkBoxSoundOnMove.Checked;
         }
 
-        private void radioButtonBlackLichessPlayer_CheckedChanged(object sender, EventArgs e)
+        void radioButtonBlackLichessPlayer_CheckedChanged(object sender, EventArgs e)
         {
             bool isChecked = (sender as RadioButton).Checked;
 
@@ -178,26 +178,26 @@ namespace ChessForms
             black = PlayerType.LichessPlayer;
         }
 
-        private void listBoxGamemode_SelectedIndexChanged(object sender, EventArgs e)
+        void listBoxGamemode_SelectedIndexChanged(object sender, EventArgs e)
         {
             gamemodeType = (GamemodeType)Enum.Parse(typeof(GamemodeType), (string)listBoxGamemode.SelectedItem);
         }
 
-        private void checkBoxSoundOnMove_CheckedChanged(object sender, EventArgs e)
+        void checkBoxSoundOnMove_CheckedChanged(object sender, EventArgs e)
         {
             PlaySoundOnMove = (sender as CheckBox).Checked;
         }
 
-        private void radioButtonWhiteLichessPlayer_CheckedChanged(object sender, EventArgs e)
+        void radioButtonWhiteLichessPlayer_CheckedChanged(object sender, EventArgs e)
         {
             
         }
 
-        private void radioButtonWhiteDistributedComputing_CheckedChanged(object sender, EventArgs e)
+        void radioButtonWhiteDistributedComputing_CheckedChanged(object sender, EventArgs e)
         {
         }
 
-        private void radioButtonBlackLichessPlayerSeek_CheckedChanged(object sender, EventArgs e)
+        void radioButtonBlackLichessPlayerSeek_CheckedChanged(object sender, EventArgs e)
         {
             black = PlayerType.LichessPlayerSeek;
         }

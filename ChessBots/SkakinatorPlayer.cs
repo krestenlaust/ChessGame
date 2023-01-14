@@ -10,9 +10,10 @@ namespace ChessBots
     public class SkakinatorPlayer : Player
     {
         public const int DEFAULT_DEPTH = 3;
-        private readonly SkakinatorLogic logic;
-        private readonly BotUI UI;
-        private int Depth
+        readonly SkakinatorLogic logic;
+        readonly BotUI UI;
+
+        int Depth
         {
             get
             {
@@ -37,7 +38,7 @@ namespace ChessBots
             }
         }
 
-        private void Logic_onSingleMoveCalculated(int current, int max, Move move, float evaluation)
+        void Logic_onSingleMoveCalculated(int current, int max, Move move, float evaluation)
         {
             this.UI.SetProgress(current, max);
 

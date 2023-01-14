@@ -8,7 +8,7 @@
     /// </summary>
     public partial class BotUI : Form
     {
-        private int currentX = 0;
+        int currentX = 0;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BotUI"/> class.
@@ -76,18 +76,18 @@
             this.progressBarCalculation.Value = current;
         }
 
-        private void BotUI_Load(object sender, EventArgs e)
+        void BotUI_Load(object sender, EventArgs e)
         {
             this.numericUpDownDepth.Value = SkakinatorPlayer.DEFAULT_DEPTH;
         }
 
-        private void RichTextBoxLog_TextChanged(object sender, EventArgs e)
+        void RichTextBoxLog_TextChanged(object sender, EventArgs e)
         {
             this.richTextBoxLog.SelectionStart = this.richTextBoxLog.Text.Length;
             this.richTextBoxLog.ScrollToCaret();
         }
 
-        private void CheckBoxShowGraph_CheckedChanged(object sender, EventArgs e)
+        void CheckBoxShowGraph_CheckedChanged(object sender, EventArgs e)
         {
             bool isChecked = (sender as CheckBox).Checked;
 

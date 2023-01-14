@@ -12,12 +12,12 @@
     /// </summary>
     public class LichessBotPlayer : Player
     {
-        private readonly HttpClient httpClient = new HttpClient();
-        private readonly StreamReader localGameStream;
-        private readonly StreamReader localEventStream;
-        private string gameId;
-        private string[] lichessMoves;
-        private bool receivedMove;
+        readonly HttpClient httpClient = new HttpClient();
+        readonly StreamReader localGameStream;
+        readonly StreamReader localEventStream;
+        string gameId;
+        string[] lichessMoves;
+        bool receivedMove;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LichessBotPlayer"/> class, joining a game on Lichess by ID with Lichess bot token.
@@ -99,7 +99,7 @@
             this.httpClient.PostAsync($"https://lichess.org/api/bot/game/{this.gameId}/move/{move}", null);
         }
 
-        private void CreateSeek(TeamColor color)
+        void CreateSeek(TeamColor color)
         {
             Dictionary<string, string> postParameters = new Dictionary<string, string>
             {
@@ -116,7 +116,7 @@
         /// Waits for a challenge to appear in the event stream.
         /// </summary>
         /// <returns>Lichess match ID.</returns>
-        private string ReceiveGame()
+        string ReceiveGame()
         {
             // wait for move
             while (true)
@@ -142,7 +142,7 @@
         /// </summary>
         /// <param name="player">The color of the move to wait for.</param>
         /// <returns>Move in UCI-notation.</returns>
-        private string ReceiveMove(TeamColor player)
+        string ReceiveMove(TeamColor player)
         {
             // wait for move
             while (true)
@@ -175,7 +175,7 @@
         /// Parses game stream object.
         /// </summary>
         /// <param name="stringObject"></param>
-        private void ParseGameStreamObject(string stringObject)
+        void ParseGameStreamObject(string stringObject)
         {
             JObject obj = JObject.Parse(stringObject);
 
@@ -205,7 +205,7 @@
         /// Parses game stream object.
         /// </summary>
         /// <param name="stringObject"></param>
-        private void ParseEventStreamObject(string stringObject)
+        void ParseEventStreamObject(string stringObject)
         {
             // {"type":"gameStart","game":{"id":"1lsvP62l"}}
             JObject obj = JObject.Parse(stringObject);

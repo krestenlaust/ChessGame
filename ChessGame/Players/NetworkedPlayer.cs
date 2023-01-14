@@ -6,7 +6,7 @@ namespace ChessGame
 {
     public class NetworkedPlayer : Player
     {
-        private readonly NetworkStream stream;
+        readonly NetworkStream stream;
 
         public NetworkedPlayer(string name, NetworkStream stream) : base(name)
         {
@@ -23,7 +23,7 @@ namespace ChessGame
             board.PerformMove(this.RecieveMove(), MoveNotation.UCI);
         }
 
-        private string RecieveMove()
+        string RecieveMove()
         {
             while (!this.stream.DataAvailable)
             {
@@ -43,7 +43,7 @@ namespace ChessGame
             return Encoding.ASCII.GetString(moveAscii).Trim();
         }
 
-        private void SendMove(Move move)
+        void SendMove(Move move)
         {
             byte[] moveAscii = Encoding.ASCII.GetBytes(move.ToString(MoveNotation.UCI).PadRight(5));
 

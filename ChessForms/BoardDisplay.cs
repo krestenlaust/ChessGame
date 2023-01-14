@@ -11,25 +11,25 @@ namespace ChessForms
 {
     public partial class BoardDisplay : Form
     {
-        private const int CoordinateSystemPixelSize = 25;
+        const int CoordinateSystemPixelSize = 25;
 
-        private static readonly Color AlternateTileColor = Color.CornflowerBlue;
-        private static readonly Color CaptureTileAvailableColor = Color.Red;
-        private static readonly Color CaptureTileUnavailableColor = Color.Gray;
-        private static readonly Color RecentMoveColor = Color.Teal;
-        private static readonly Color MarkedSquareColor = Color.Green;
-        private static readonly Color DangersquareColor = Color.Red;
-        private static readonly Color CheckedSquareColor = Color.DarkRed;
+        static readonly Color AlternateTileColor = Color.CornflowerBlue;
+        static readonly Color CaptureTileAvailableColor = Color.Red;
+        static readonly Color CaptureTileUnavailableColor = Color.Gray;
+        static readonly Color RecentMoveColor = Color.Teal;
+        static readonly Color MarkedSquareColor = Color.Green;
+        static readonly Color DangersquareColor = Color.Red;
+        static readonly Color CheckedSquareColor = Color.DarkRed;
 
-        private readonly Gamemode gamemode;
-        private readonly bool whiteLocal, blackLocal;
-        private TilePictureControl[,] boardcells;
-        private Coordinate? fromPosition = null;
-        private Piece selectedPiece;
-        private Chessboard chessboard;
-        private Coordinate? recentMoveFrom = null;
-        private Coordinate? recentMoveTo = null;
-        private readonly System.Media.SoundPlayer soundPlayer = new System.Media.SoundPlayer(Properties.Resources.SkakLydfil);
+        readonly Gamemode gamemode;
+        readonly bool whiteLocal, blackLocal;
+        TilePictureControl[,] boardcells;
+        Coordinate? fromPosition = null;
+        Piece selectedPiece;
+        Chessboard chessboard;
+        Coordinate? recentMoveFrom = null;
+        Coordinate? recentMoveTo = null;
+        readonly System.Media.SoundPlayer soundPlayer = new System.Media.SoundPlayer(Properties.Resources.SkakLydfil);
 
         public BoardDisplay(Gamemode gamemode, bool whiteLocal, bool blackLocal)
         {
@@ -40,7 +40,7 @@ namespace ChessForms
             this.blackLocal = blackLocal;
         }
 
-        private void BoardDisplay_Load(object sender, EventArgs e)
+        void BoardDisplay_Load(object sender, EventArgs e)
         {
             gamemode.TurnChanged += OnTurnStarted;
             gamemode.GameStateChanged += OnGameStateUpdated;
@@ -96,7 +96,7 @@ namespace ChessForms
             return null;
         }
 
-        private void OnGameStateUpdated(GameState e)
+        void OnGameStateUpdated(GameState e)
         {
             string outputMsg = string.Empty;
             switch (e)
@@ -123,7 +123,7 @@ namespace ChessForms
             });
         }
 
-        private void OnTurnStarted()
+        void OnTurnStarted()
         {
             Invoke((MethodInvoker)delegate
            {
@@ -149,7 +149,7 @@ namespace ChessForms
             ResetAllTableStyling();
         }
 
-        private TilePictureControl GetCell(int x, int y)
+        TilePictureControl GetCell(int x, int y)
         {
             return boardcells[x, y];
         }
@@ -157,7 +157,7 @@ namespace ChessForms
         /// <summary>
         /// Resets all borderstyles and tilecolors to their correct color setting according to gamestate.
         /// </summary>
-        private void ResetAllTableStyling()
+        void ResetAllTableStyling()
         {
             for (int y = 0; y < chessboard.Height; y++)
             {
@@ -304,7 +304,7 @@ namespace ChessForms
         /// <summary>
         /// Used for debugging, draws all squares, that are considered dangerzones, red.
         /// </summary>
-        private void DrawDangerzone()
+        void DrawDangerzone()
         {
             foreach (var item in chessboard.Dangerzone)
             {
@@ -322,7 +322,7 @@ namespace ChessForms
         /// </summary>
         /// <param name="from"></param>
         /// <param name="to"></param>
-        private void MakeLocalMove(Coordinate from, Coordinate to)
+        void MakeLocalMove(Coordinate from, Coordinate to)
         {
             IEnumerable<Move> moves = chessboard.GetMovesByNotation(from.ToString() + to.ToString(), chessboard.CurrentTeamTurn, MoveNotation.UCI);
 
@@ -344,7 +344,7 @@ namespace ChessForms
             }
         }
 
-        private Move ChooseMove(IEnumerable<Move> moves)
+        Move ChooseMove(IEnumerable<Move> moves)
         {
             switch (gamemode)
             {
@@ -391,7 +391,7 @@ namespace ChessForms
             return moves.First();
         }
 
-        private void CellClicked(object sender, EventArgs e)
+        void CellClicked(object sender, EventArgs e)
         {
             MouseButtons button = ((MouseEventArgs)e).Button;
 
@@ -526,7 +526,7 @@ namespace ChessForms
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        private void DeselectPiece(int x, int y)
+        void DeselectPiece(int x, int y)
         {
             GetCell(x, y).BorderStyle = BorderStyle.None;
         }
@@ -536,7 +536,7 @@ namespace ChessForms
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        private void SelectPiece(int x, int y)
+        void SelectPiece(int x, int y)
         {
             GetCell(x, y).BorderStyle = BorderStyle.FixedSingle;
         }
@@ -569,17 +569,17 @@ namespace ChessForms
             GetCell(x, y).BackColor = color;
         }
 
-        private void BackgroundWorkerMove_DoWork(object sender, DoWorkEventArgs e)
+        void BackgroundWorkerMove_DoWork(object sender, DoWorkEventArgs e)
         {
             chessboard.StartNextTurn();
         }
 
-        private void BackgroundWorkerMove_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        void BackgroundWorkerMove_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             
         }
 
-        private void BoardDisplay_KeyUp(object sender, KeyEventArgs e)
+        void BoardDisplay_KeyUp(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
             {

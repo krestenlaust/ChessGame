@@ -13,9 +13,9 @@
     /// </summary>
     public class SkakinatorLogic
     {
-        private const float CenterSquareModifier = 0.2f;
-        private const float CenterSquareRawValue = 0.5f;
-        private readonly Dictionary<Chessboard, float> transpositionTable = new Dictionary<Chessboard, float>();
+        const float CenterSquareModifier = 0.2f;
+        const float CenterSquareRawValue = 0.5f;
+        readonly Dictionary<Chessboard, float> transpositionTable = new Dictionary<Chessboard, float>();
 
         /// <summary>
         /// Called once a move has been calculated.
@@ -228,7 +228,7 @@
             return sortedMoves[0];
         }
 
-        private static float StaticEvaluation(Chessboard board, int depth)
+        static float StaticEvaluation(Chessboard board, int depth)
         {
             if (board.CurrentState == GameState.Checkmate)
             {
