@@ -15,7 +15,7 @@
         readonly HttpClient httpClient = new HttpClient();
         readonly StreamReader localGameStream;
         readonly StreamReader localEventStream;
-        string gameId;
+        string gameID;
         string[] lichessMoves;
         bool receivedMove;
 
@@ -28,7 +28,7 @@
         public LichessBotPlayer(string name, string token, string gameID)
             : base(name)
         {
-            this.gameId = gameID;
+            this.gameID = gameID;
             this.httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             this.localGameStream = new StreamReader(this.GetGameStream());
         }
@@ -45,7 +45,7 @@
             this.httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             this.localEventStream = new StreamReader(this.GetEventStream());
             this.CreateSeek(localPlayerColor);
-            this.gameId = this.ReceiveGame();
+            this.gameID = this.ReceiveGame();
             this.localGameStream = new StreamReader(this.GetGameStream());
         }
 
@@ -65,7 +65,7 @@
         /// <returns>Returns game stream.</returns>
         public Stream GetGameStream()
         {
-            return this.httpClient.GetStreamAsync($"https://lichess.org/api/bot/game/stream/{this.gameId}").Result;
+            return this.httpClient.GetStreamAsync($"https://lichess.org/api/bot/game/stream/{this.gameID}").Result;
         }
 
         /// <inheritdoc/>
@@ -82,7 +82,7 @@
         /// <summary>
         /// Resigns the game.
         /// </summary>
-        public void ResignGame() => this.httpClient.PostAsync($"https://lichess.org/api/bot/game/{this.gameId}/resign", null);
+        public void ResignGame() => this.httpClient.PostAsync($"https://lichess.org/api/bot/game/{this.gameID}/resign", null);
 
         /// <summary>
         /// Sends a move to a game.
@@ -96,7 +96,7 @@
         /// <param name="move">Move in UCI-notation.</param>
         public void SendMove(string move)
         {
-            this.httpClient.PostAsync($"https://lichess.org/api/bot/game/{this.gameId}/move/{move}", null);
+            this.httpClient.PostAsync($"https://lichess.org/api/bot/game/{this.gameID}/move/{move}", null);
         }
 
         void CreateSeek(TeamColor color)
@@ -128,9 +128,9 @@
                     this.ParseEventStreamObject(line);
                 }
 
-                if (!(this.gameId is null))
+                if (!(this.gameID is null))
                 {
-                    return this.gameId;
+                    return this.gameID;
                 }
 
                 Thread.Sleep(250);
@@ -215,7 +215,7 @@
             switch (msgType)
             {
                 case "gameStart":
-                    this.gameId = (string)obj["game"]["id"];
+                    this.gameID = (string)obj["game"]["id"];
                     break;
                 default:
                     break;

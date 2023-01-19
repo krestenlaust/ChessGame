@@ -41,7 +41,7 @@
 
         public void ClearLog()
         {
-            this.richTextBoxLog.Text = "";
+            this.richTextBoxLog.Text = string.Empty;
         }
 
         public void PrintLog(string line)

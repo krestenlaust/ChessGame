@@ -541,7 +541,7 @@ namespace ChessGame
         {
             // Remove all instances of this piece.
             if (removeOld)
-            { 
+            {
                 foreach (var item in this.Dangerzone)
                 {
                     if (item.Value is null)

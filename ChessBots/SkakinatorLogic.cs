@@ -51,14 +51,14 @@
                 {
                     if (maximize)
                     {
-                        bestEvaluation = precalculatedEvaluation;
                         alpha = Math.Max(alpha, bestEvaluation);
                     }
                     else
                     {
-                        bestEvaluation = precalculatedEvaluation;
                         beta = Math.Min(beta, bestEvaluation);
                     }
+
+                    bestEvaluation = precalculatedEvaluation;
                 }
                 else
                 {
