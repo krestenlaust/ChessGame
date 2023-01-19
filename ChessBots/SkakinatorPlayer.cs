@@ -55,7 +55,7 @@ namespace ChessBots
 
         public override void TurnStarted(Chessboard board)
         {
-            board.PerformMove(this.logic.GenerateMoveParrallel(board, this.Depth));
+            board.PerformMove(this.logic.GenerateMoveParallel(board, this.Depth));
         }
     }
 }

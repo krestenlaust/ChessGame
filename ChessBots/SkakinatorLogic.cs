@@ -32,6 +32,7 @@
 
             bool maximize = board.CurrentTeamTurn == TeamColor.White;
             float bestEvaluation = maximize ? float.MinValue : float.MaxValue;
+
             foreach (var move in board.GetMoves())
             {
                 Chessboard childNode = new Chessboard(board, move);
@@ -49,29 +50,29 @@
 
                 if (this.transpositionTable.TryGetValue(childNode, out float precalculatedEvaluation))
                 {
-                    if (maximize)
-                    {
-                        alpha = Math.Max(alpha, bestEvaluation);
-                    }
-                    else
-                    {
-                        beta = Math.Min(beta, bestEvaluation);
-                    }
-
                     bestEvaluation = precalculatedEvaluation;
                 }
                 else
                 {
+                    float newEvaluation = this.MinimaxSearch(childNode, newDepth, alpha, beta);
+
                     if (maximize)
                     {
-                        bestEvaluation = Math.Max(bestEvaluation, this.MinimaxSearch(childNode, newDepth, alpha, beta));
-                        alpha = Math.Max(alpha, bestEvaluation);
+                        bestEvaluation = Math.Max(bestEvaluation, newEvaluation);
                     }
                     else
                     {
-                        bestEvaluation = Math.Min(bestEvaluation, this.MinimaxSearch(childNode, newDepth, alpha, beta));
-                        beta = Math.Min(beta, bestEvaluation);
+                        bestEvaluation = Math.Min(bestEvaluation, newEvaluation);
                     }
+                }
+
+                if (maximize)
+                {
+                    alpha = Math.Max(alpha, bestEvaluation);
+                }
+                else
+                {
+                    beta = Math.Min(beta, bestEvaluation);
                 }
 
                 if (beta <= alpha)
@@ -155,7 +156,7 @@
         /// <param name="board">The state of the board.</param>
         /// <param name="targetDepth">The amount of moves, in depth, to simulate.</param>
         /// <returns>The 'supposedly best' move.</returns>
-        public Move GenerateMoveParrallel(Chessboard board, int targetDepth)
+        public Move GenerateMoveParallel(Chessboard board, int targetDepth)
         {
             SemaphoreSlim ss = new SemaphoreSlim(5, 5);
             List<Task> moveTasks = new List<Task>();
@@ -241,7 +242,9 @@
                 return 0;
             }
 
-            float centipawns = 0;
+            float hectocentipawns = 0;
+
+            // Pawn advancement-incentive.
             foreach ((Pawn, Coordinate) item in board.GetPieces<Pawn>())
             {
                 int dangerzoneSum = board.GetDangerSquareSum(item.Item2);
@@ -253,7 +256,7 @@
                         continue;
                     }
 
-                    centipawns += 0.05f * (item.Item2.Rank - 1);
+                    hectocentipawns += 0.05f * (item.Item2.Rank - 1);
                 }
                 else
                 {
@@ -262,7 +265,7 @@
                         continue;
                     }
 
-                    centipawns -= 0.05f * (7 - item.Item2.Rank);
+                    hectocentipawns -= 0.05f * (7 - item.Item2.Rank);
                 }
             }
 
@@ -293,16 +296,16 @@
 
                     if (piece.Color == TeamColor.White)
                     {
-                        centipawns += CenterSquareRawValue / (round * CenterSquareModifier);
+                        hectocentipawns += CenterSquareRawValue / (round * CenterSquareModifier);
                     }
                     else
                     {
-                        centipawns -= CenterSquareRawValue / (round * CenterSquareModifier);
+                        hectocentipawns -= CenterSquareRawValue / (round * CenterSquareModifier);
                     }
                 }
             }
 
-            return board.MaterialSum + centipawns;
+            return board.MaterialSum + hectocentipawns;
         }
     }
 }

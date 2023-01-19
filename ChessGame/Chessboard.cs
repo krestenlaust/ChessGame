@@ -508,25 +508,29 @@ namespace ChessGame
         }
 
         /// <summary>
-        /// Returns sum of dangersquares.
+        /// Gets the sum of the pieces which can capture <c>position</c>, with black's pieces subtracted from white's pieces.
         /// </summary>
         /// <param name="position"></param>
         /// <returns></returns>
         public int GetDangerSquareSum(Coordinate position)
         {
-            int sum = 0;
-            if (this.Dangerzone.TryGetValue(position, out List<Piece> pieces))
+            if (!this.Dangerzone.TryGetValue(position, out List<Piece> pieces))
             {
-                foreach (var item in pieces)
+                // No pieces can capture this tile.
+                return 0;
+            }
+
+            int sum = 0;
+
+            foreach (var item in pieces)
+            {
+                if (item.Color == TeamColor.White)
                 {
-                    if (item.Color == TeamColor.White)
-                    {
-                        sum += 1;
-                    }
-                    else
-                    {
-                        sum -= 1;
-                    }
+                    sum += 1;
+                }
+                else
+                {
+                    sum -= 1;
                 }
             }
 

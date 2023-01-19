@@ -19,14 +19,14 @@ namespace ChessUnitTests
             Chessboard board = new ClassicChess(null, null).GenerateBoard();
 
             SkakinatorLogic logic = new SkakinatorLogic();
-            logic.GenerateMoveParrallel(board, 2);
+            logic.GenerateMoveParallel(board, 2);
 
             board[new Coordinate("c2")] = null;
             board[new Coordinate("d2")] = null;
             board[new Coordinate("e2")] = null;
             board[new Coordinate("f2")] = null;
 
-            logic.GenerateMoveParrallel(board, 2);
+            logic.GenerateMoveParallel(board, 2);
         }
     }
 }
