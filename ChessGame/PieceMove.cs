@@ -13,6 +13,7 @@ namespace ChessGame
         /// If null, disappears out of the thin air.
         /// </summary>
         public readonly Coordinate? Destination;
+
         /// <summary>
         /// If null, appears out of the thing air.
         /// </summary>
@@ -20,6 +21,7 @@ namespace ChessGame
         public readonly bool Captures;
         public readonly Piece Piece;
         public readonly Piece PromotePiece;
+
         public char PromotesTo
         {
             get

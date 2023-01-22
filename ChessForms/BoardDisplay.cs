@@ -170,26 +170,23 @@ namespace ChessForms
 
             if (recentMoveFrom is not null)
             {
-                ColorSquare(recentMoveFrom.Value.File, recentMoveFrom.Value.Rank, RecentMoveColor);
+                ColorSquare(recentMoveFrom.Value, RecentMoveColor);
             }
 
             if (recentMoveTo is not null)
             {
-                ColorSquare(recentMoveTo.Value.File, recentMoveTo.Value.Rank, RecentMoveColor);
+                ColorSquare(recentMoveTo.Value, RecentMoveColor);
             }
 
             if (chessboard.IsKingInCheck(chessboard.CurrentTeamTurn))
             {
-                foreach (var item in chessboard.GetPieces<King>())
-                {
-                    if (item.Item1.Color != chessboard.CurrentTeamTurn)
-                    {
-                        continue;
-                    }
+                var kingsOnCheckedTeam = chessboard.GetPieces<King>()
+                    .Where(king => king.piece.Color == chessboard.CurrentTeamTurn);
 
-                    ColorSquare(item.Item2.File, item.Item2.Rank, CheckedSquareColor);
-                }
-                
+                foreach (var (_, position) in kingsOnCheckedTeam)
+                {
+                    ColorSquare(position, CheckedSquareColor);
+                }                
             }
         }
 
@@ -306,14 +303,14 @@ namespace ChessForms
         /// </summary>
         void DrawDangerzone()
         {
-            foreach (var item in chessboard.Dangerzone)
+            foreach (KeyValuePair<Coordinate, List<Piece>> item in chessboard.Dangerzone)
             {
                 if (!chessboard.InsideBoard(item.Key))
                 {
                     continue;
                 }
 
-                ColorSquare(item.Key.File, item.Key.Rank, DangersquareColor);
+                ColorSquare(item.Key, DangersquareColor);
             }
         }
 
@@ -346,47 +343,44 @@ namespace ChessForms
 
         Move ChooseMove(IEnumerable<Move> moves)
         {
-            switch (gamemode)
+
+            List<Piece> pieces = new List<Piece>();
+
+            foreach (var move in moves)
             {
-                default:
-                    List<Piece> pieces = new List<Piece>();
-
-                    foreach (var move in moves)
+                foreach (var singleMove in move.Moves)
+                {
+                    if (singleMove.PromotePiece is null)
                     {
-                        foreach (var singleMove in move.Moves)
-                        {
-                            if (singleMove.PromotePiece is null)
-                            {
-                                continue;
-                            }
-
-                            pieces.Add(singleMove.PromotePiece);
-                        }
+                        continue;
                     }
 
-                    if (pieces.Count == 0)
-                    {
-                        return moves.FirstOrDefault();
-                    }
-
-                    PromotionPrompt prompt = new PromotionPrompt(pieces);
-                    DialogResult res = prompt.ShowDialog();
-                    
-                    if (res == DialogResult.OK)
-                    {
-                        foreach (var move in moves)
-                        {
-                            foreach (var singleMove in move.Moves)
-                            {
-                                if (singleMove.PromotePiece.Notation == prompt.SelectedPiece.Notation)
-                                {
-                                    return move;
-                                }
-                            }
-                        }
-                    }
-                    break;
+                    pieces.Add(singleMove.PromotePiece);
+                }
             }
+
+            if (pieces.Count == 0)
+            {
+                return moves.FirstOrDefault();
+            }
+
+            PromotionPrompt prompt = new PromotionPrompt(pieces);
+            DialogResult res = prompt.ShowDialog();
+                    
+            if (res == DialogResult.OK)
+            {
+                foreach (var move in moves)
+                {
+                    foreach (var singleMove in move.Moves)
+                    {
+                        if (singleMove.PromotePiece.Notation == prompt.SelectedPiece.Notation)
+                        {
+                            return move;
+                        }
+                    }
+                }
+            }
+            
 
             return moves.First();
         }
@@ -568,6 +562,8 @@ namespace ChessForms
         {
             GetCell(x, y).BackColor = color;
         }
+
+        public void ColorSquare(Coordinate position, Color color) => ColorSquare(position.File, position.Rank, color);
 
         void BackgroundWorkerMove_DoWork(object sender, DoWorkEventArgs e)
         {

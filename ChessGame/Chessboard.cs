@@ -14,19 +14,22 @@ namespace ChessGame
     /// <summary>
     /// A class that describes a game of chess.
     /// </summary>
-    public class Chessboard : IEquatable<Chessboard> 
+    public class Chessboard : IEquatable<Chessboard>
     {
         public readonly byte Height;
         public readonly byte Width;
         public readonly Dictionary<Coordinate, Piece> Pieces;
+
         /// <summary>
         /// Describes intersection squares. An intersection square is a square which one or more pieces threaten at once.
         /// </summary>
         public readonly Dictionary<Coordinate, List<Piece>> Dangerzone;
+
         /// <summary>
         /// Previous moves, that resolve to this position.
         /// </summary>
         public readonly Stack<Move> Moves;
+
         /// <summary>
         /// A list of pieces, that have moved.
         /// </summary>
@@ -34,7 +37,9 @@ namespace ChessGame
         readonly Gamemode gamemode;
 
         public GameState CurrentState { get; internal set; }
+
         public TeamColor CurrentTeamTurn { get; set; }
+
         /// <summary>
         /// A Player object that is equal to the player whose turn it is
         /// </summary>
@@ -76,7 +81,7 @@ namespace ChessGame
         }
 
         /// <summary>
-        /// Instantiate board and simulate <c>move</c>.
+        /// Initializes a new instance of the <see cref="Chessboard"/> class and simulates a <see cref="Move"/>.
         /// </summary>
         /// <param name="board"></param>
         /// <param name="move"></param>
@@ -219,29 +224,13 @@ namespace ChessGame
         /// </summary>
         /// <param name="teamColor"></param>
         /// <returns></returns>
-        public IEnumerable<Move> GetMoves(TeamColor teamColor)
-        {
-            foreach (var piece in this.Pieces.Values.ToList())
-            {
-                if (piece.Color != teamColor)
-                {
-                    continue;
-                }
-
-                foreach (var move in piece.GetMoves(this))
-                {
-                    if (!this.gamemode.ValidateMove(move, this))
-                    {
-                        continue;
-                    }
-
-                    yield return move;
-                }
-            }
-        }
+        public IEnumerable<Move> GetMoves(TeamColor teamColor) => Pieces.Values
+                .Where(p => p.Color == teamColor)
+                .SelectMany(p => p.GetMoves(this))
+                .Where(move => this.gamemode.ValidateMove(move, this));
 
         /// <summary>
-        /// Checks if a given position is outside the board (and thereby invalid).
+        /// Checks if a given position is inside the board bounds (or otherwise invalid).
         /// </summary>
         /// <param name="position"></param>
         /// <returns></returns>
@@ -327,7 +316,7 @@ namespace ChessGame
 
             // Get first king, with this color, and it's position.
             (king, position) = (from piece in this.GetPieces<King>()
-                                where piece.Item1.Color == color
+                                where piece.piece.Color == color
                                 select piece).FirstOrDefault();
 
             // No king of this color was found, thus the king can't be in check.
@@ -348,6 +337,7 @@ namespace ChessGame
                 return false;
             }
         }
+
         /// <summary>
         /// This method gets a collection of moves by the notation you put in as parameters.
         /// </summary>
@@ -379,6 +369,7 @@ namespace ChessGame
                         {
                             promotionTarget = notation[4];
                         }
+
                         break;
                     case MoveNotation.StandardAlgebraic:
                         // read destination square
@@ -423,6 +414,7 @@ namespace ChessGame
                         {
                             pieceNotation = notation[0];
                         }
+
                         break;
                 }
             }
@@ -489,7 +481,7 @@ namespace ChessGame
         /// <param name="notation"></param>
         /// <param name="player"></param>
         /// <returns></returns>
-        public Move GetMoveByNotation(string notation, TeamColor player, MoveNotation notationType) => 
+        public Move GetMoveByNotation(string notation, TeamColor player, MoveNotation notationType) =>
             this.GetMovesByNotation(notation, player, notationType).FirstOrDefault();
 
         /// <summary>
@@ -503,7 +495,7 @@ namespace ChessGame
             {
                 return pieces is null ? 0 : pieces.Count(p => p.Color == color);
             }
-            
+
             return 0;
         }
 
@@ -641,7 +633,7 @@ namespace ChessGame
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public List<(Piece, Coordinate)> GetPieces<T>() where T : Piece => (from piece in this.Pieces
+        public List<(Piece piece, Coordinate position)> GetPieces<T>() where T : Piece => (from piece in this.Pieces
                                                               where piece.Value is T
                                                               select (piece.Value, piece.Key)).ToList();
 
@@ -669,15 +661,18 @@ namespace ChessGame
             int hashCode = 1077646461;
             hashCode = hashCode * -1521134295 + this.Height.GetHashCode();
             hashCode = hashCode * -1521134295 + this.Width.GetHashCode();
+
             foreach (var item in this.Pieces)
             {
                 hashCode = hashCode * -1521134295 + item.Key.GetHashCode();
                 hashCode = hashCode * -1521134295 + item.Value.GetHashCode();
             }
+
             foreach (var item in this.MovedPieces)
             {
                 hashCode = hashCode * -1521134295 + item.GetHashCode();
             }
+
             hashCode = hashCode * -1521134295 + EqualityComparer<Gamemode>.Default.GetHashCode(this.gamemode);
             hashCode = hashCode * -1521134295 + this.CurrentState.GetHashCode();
             hashCode = hashCode * -1521134295 + this.CurrentTeamTurn.GetHashCode();
@@ -685,14 +680,8 @@ namespace ChessGame
             return hashCode;
         }
 
-        public static bool operator ==(Chessboard left, Chessboard right)
-        {
-            return EqualityComparer<Chessboard>.Default.Equals(left, right);
-        }
+        public static bool operator ==(Chessboard left, Chessboard right) => EqualityComparer<Chessboard>.Default.Equals(left, right);
 
-        public static bool operator !=(Chessboard left, Chessboard right)
-        {
-            return !(left == right);
-        }
+        public static bool operator !=(Chessboard left, Chessboard right) => !(left == right);
     }
 }
