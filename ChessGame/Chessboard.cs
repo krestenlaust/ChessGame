@@ -41,7 +41,7 @@ namespace ChessGame
         public TeamColor CurrentTeamTurn { get; set; }
 
         /// <summary>
-        /// A Player object that is equal to the player whose turn it is
+        /// A Player object that is equal to the player whose turn it is.
         /// </summary>
         public Player CurrentPlayerTurn => CurrentTeamTurn == TeamColor.White ? gamemode.PlayerWhite : gamemode.PlayerBlack;
 
@@ -57,7 +57,7 @@ namespace ChessGame
         }
 
         /// <summary>
-        /// A boolean to tell whether or not the game has finished
+        /// A boolean to tell whether or not the game has finished.
         /// </summary>
         public bool isGameFinished =>
             CurrentState is GameState.Checkmate or GameState.Stalemate or GameState.DeadPosition;
@@ -281,7 +281,7 @@ namespace ChessGame
 
                 Coordinate destination = singleMove.Destination.Value;
 
-                // remove previous instance
+                // Remove previous instance
                 if (!(singleMove.Source is null))
                 {
                     Pieces.Remove(singleMove.Source.Value);
@@ -311,6 +311,9 @@ namespace ChessGame
                 }
             }
 
+            // TODO: Only update neccessary dangerzones.
+            // It should be possible to only update the pieces with dangerzone on Source square, and on Destination square.
+            // And the moved piece itself.
             UpdateDangerzones();
         }
 
@@ -540,7 +543,7 @@ namespace ChessGame
         }
 
         /// <summary>
-        /// Removes old references of piece, and adds new.
+        /// Adds new dangerzone info of piecce.
         /// </summary>
         /// <param name="piece"></param>
         void UpdateDangerzones(Piece piece)
