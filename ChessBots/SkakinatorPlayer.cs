@@ -25,6 +25,11 @@ namespace ChessBots
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SkakinatorPlayer"/> class.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="enableUI"></param>
         public SkakinatorPlayer(string name, bool enableUI)
             : base(name)
         {

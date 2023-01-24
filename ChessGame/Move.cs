@@ -32,12 +32,23 @@ namespace ChessGame
         public readonly string CustomNotation;
         public readonly TeamColor Color;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Move"/> class.
+        /// </summary>
+        /// <param name="moves"></param>
+        /// <param name="color"></param>
         public Move(PieceMove[] moves, TeamColor color)
         {
             Submoves = moves;
             Color = color;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Move"/> class.
+        /// </summary>
+        /// <param name="moves"></param>
+        /// <param name="notation"></param>
+        /// <param name="color"></param>
         public Move(PieceMove[] moves, string notation, TeamColor color)
         {
             Submoves = moves;
@@ -45,6 +56,14 @@ namespace ChessGame
             Color = color;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Move"/> class.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="source"></param>
+        /// <param name="piece"></param>
+        /// <param name="captures"></param>
+        /// <param name="color"></param>
         public Move(Coordinate position, Coordinate source, Piece piece, bool captures, TeamColor color)
         {
             Submoves = new[]
@@ -54,6 +73,15 @@ namespace ChessGame
             Color = color;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Move"/> class.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="source"></param>
+        /// <param name="piece"></param>
+        /// <param name="captures"></param>
+        /// <param name="notation"></param>
+        /// <param name="color"></param>
         public Move(Coordinate position, Coordinate source, Piece piece, bool captures, string notation, TeamColor color)
         {
             Submoves = new[]

@@ -29,6 +29,12 @@ namespace ChessGame
         public readonly byte MaterialValue; // { get; protected set; }
         protected IMovementPattern[] MovementPatternList;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Piece"/> class.
+        /// </summary>
+        /// <param name="notation"></param>
+        /// <param name="materialValue"></param>
+        /// <param name="color"></param>
         protected Piece(char notation, byte materialValue, TeamColor color)
         {
             MaterialValue = materialValue;

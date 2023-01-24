@@ -5,6 +5,10 @@
     /// </summary>
     public class Hypnotist : Piece
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Hypnotist"/> class.
+        /// </summary>
+        /// <param name="teamColor"></param>
         public Hypnotist(TeamColor teamColor)
             : base('H', 5, teamColor)
         {

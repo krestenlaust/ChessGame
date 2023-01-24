@@ -37,6 +37,14 @@ namespace ChessGame
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PieceMove"/> struct.
+        /// </summary>
+        /// <param name="destination"></param>
+        /// <param name="source"></param>
+        /// <param name="piece"></param>
+        /// <param name="captures"></param>
+        /// <param name="promotePiece"></param>
         public PieceMove(Coordinate? destination, Coordinate? source, Piece piece, bool captures, Piece promotePiece = null)
         {
             Destination = destination;

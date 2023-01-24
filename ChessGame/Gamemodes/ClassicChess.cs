@@ -7,6 +7,11 @@ namespace ChessGame.Gamemodes
     /// </summary>
     public class ClassicChess : Gamemode
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClassicChess"/> class.
+        /// </summary>
+        /// <param name="playerWhite"></param>
+        /// <param name="playerBlack"></param>
         public ClassicChess(Player playerWhite, Player playerBlack)
             : base(playerWhite, playerBlack)
         {

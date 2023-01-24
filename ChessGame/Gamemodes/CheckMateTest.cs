@@ -4,6 +4,11 @@ namespace ChessGame.Gamemodes
 {
     public class CheckMateTest : Gamemode
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CheckMateTest"/> class.
+        /// </summary>
+        /// <param name="playerWhite"></param>
+        /// <param name="playerBlack"></param>
         public CheckMateTest(Player playerWhite, Player playerBlack)
             : base(playerWhite, playerBlack)
         {

@@ -8,6 +8,11 @@ namespace ChessGame
     {
         readonly NetworkStream stream;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetworkedPlayer"/> class.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="stream"></param>
         public NetworkedPlayer(string name, NetworkStream stream)
             : base(name)
         {

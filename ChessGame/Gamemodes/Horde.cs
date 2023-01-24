@@ -4,6 +4,11 @@ namespace ChessGame.Gamemodes
 {
     public class Horde : Gamemode
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Horde"/> class.
+        /// </summary>
+        /// <param name="playerWhite"></param>
+        /// <param name="playerBlack"></param>
         public Horde(Player playerWhite, Player playerBlack)
             : base(playerWhite, playerBlack)
         {
