@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ChessGame.Pieces;
+﻿using ChessGame.Pieces;
 
 namespace ChessGame.Gamemodes
 {
     public class Horde : Gamemode
     {
-        public Horde(Player playerWhite, Player playerBlack) : base(playerWhite, playerBlack)
+        public Horde(Player playerWhite, Player playerBlack)
+            : base(playerWhite, playerBlack)
         {
         }
 

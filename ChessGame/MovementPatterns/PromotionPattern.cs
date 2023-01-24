@@ -28,40 +28,48 @@ namespace ChessGame.MovementPatterns
             // check left flank
             if (board.GetPiece(leftAttack) is Piece LeftAttackedPiece && LeftAttackedPiece.Color != piece.Color || guardedSquaresOnly)
             {
-                yield return new Move(new[] {
-                    new PieceMove(leftAttack, position, piece, true, new Pieces.Queen(piece.Color))
+                yield return new Move(new[]
+                {
+                    new PieceMove(leftAttack, position, piece, true, new Pieces.Queen(piece.Color)),
                 }, piece.Color);
 
-                yield return new Move(new[] {
-                    new PieceMove(leftAttack, position, piece, true, new Pieces.Rook(piece.Color))
+                yield return new Move(new[]
+                {
+                    new PieceMove(leftAttack, position, piece, true, new Pieces.Rook(piece.Color)),
                 }, piece.Color);
 
-                yield return new Move(new[] {
-                    new PieceMove(leftAttack, position, piece, true, new Pieces.Knight(piece.Color))
+                yield return new Move(new[]
+                {
+                    new PieceMove(leftAttack, position, piece, true, new Pieces.Knight(piece.Color)),
                 }, piece.Color);
 
-                yield return new Move(new[] {
-                    new PieceMove(leftAttack, position, piece, true, new Pieces.Bishop(piece.Color))
+                yield return new Move(new[]
+                {
+                    new PieceMove(leftAttack, position, piece, true, new Pieces.Bishop(piece.Color)),
                 }, piece.Color);
             }
 
             // check right flank
             if (board.GetPiece(rightAttack) is Piece rightAttackedPiece && rightAttackedPiece.Color != piece.Color || guardedSquaresOnly)
             {
-                yield return new Move(new[] {
-                    new PieceMove(rightAttack, position, piece, true, new Pieces.Queen(piece.Color))
+                yield return new Move(new[]
+                {
+                    new PieceMove(rightAttack, position, piece, true, new Pieces.Queen(piece.Color)),
                 }, piece.Color);
 
-                yield return new Move(new[] {
-                    new PieceMove(rightAttack, position, piece, true, new Pieces.Rook(piece.Color))
+                yield return new Move(new[]
+                {
+                    new PieceMove(rightAttack, position, piece, true, new Pieces.Rook(piece.Color)),
                 }, piece.Color);
 
-                yield return new Move(new[] {
-                    new PieceMove(rightAttack, position, piece, true, new Pieces.Knight(piece.Color))
+                yield return new Move(new[]
+                {
+                    new PieceMove(rightAttack, position, piece, true, new Pieces.Knight(piece.Color)),
                 }, piece.Color);
 
-                yield return new Move(new[] {
-                    new PieceMove(rightAttack, position, piece, true, new Pieces.Bishop(piece.Color))
+                yield return new Move(new[]
+                {
+                    new PieceMove(rightAttack, position, piece, true, new Pieces.Bishop(piece.Color)),
                 }, piece.Color);
             }
 
@@ -74,20 +82,24 @@ namespace ChessGame.MovementPatterns
                 yield break;
             }
 
-            yield return new Move(new[] {
-                    new PieceMove(forwardPush, position, piece, false, new Pieces.Queen(piece.Color))
+            yield return new Move(new[]
+            {
+                    new PieceMove(forwardPush, position, piece, false, new Pieces.Queen(piece.Color)),
                 }, piece.Color);
 
-            yield return new Move(new[] {
-                    new PieceMove(forwardPush, position, piece, false, new Pieces.Rook(piece.Color))
+            yield return new Move(new[]
+            {
+                    new PieceMove(forwardPush, position, piece, false, new Pieces.Rook(piece.Color)),
                 }, piece.Color);
 
-            yield return new Move(new[] {
-                    new PieceMove(forwardPush, position, piece, false, new Pieces.Knight(piece.Color))
+            yield return new Move(new[]
+            {
+                    new PieceMove(forwardPush, position, piece, false, new Pieces.Knight(piece.Color)),
                 }, piece.Color);
 
-            yield return new Move(new[] {
-                    new PieceMove(forwardPush, position, piece, false, new Pieces.Bishop(piece.Color))
+            yield return new Move(new[]
+            {
+                    new PieceMove(forwardPush, position, piece, false, new Pieces.Bishop(piece.Color)),
                 }, piece.Color);
         }
     }

@@ -1,12 +1,12 @@
 ﻿namespace ChessBots
 {
+    using ChessGame;
+    using ChessGame.Pieces;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using ChessGame;
-    using ChessGame.Pieces;
 
     /// <summary>
     /// The logic of the Skakinator.
@@ -38,7 +38,7 @@
                 Chessboard childNode = new Chessboard(board, move);
 
                 int newDepth;
-                if (depth == 1 && (move.Captures || !(move.Moves[0].PromotePiece is null)))
+                if (depth == 1 && (move.Captures || !(move.Submoves[0].PromotePiece is null)))
                 {
                     // check one level deeper because last move was a capture move.
                     newDepth = depth;
@@ -195,27 +195,26 @@
 
             bestEvaluation = Math.Round(bestEvaluation, 1);
 
-            List<Move> sortedMoves;
+            // Sorts all calculated moves by their evaluation in acending order
+            List<Move> sortedMoves = (from moveEvaluation in moves
+                                      orderby moveEvaluation.Item1
+                                      where Math.Round(moveEvaluation.Item1, 1) == bestEvaluation
+                                      select moveEvaluation.Item2).ToList();
+
+            Move chosenMove = board.CurrentTeamTurn == TeamColor.White ? sortedMoves.Last() : sortedMoves.First();
+
+            // This is probably neccesary.
             if (board.CurrentTeamTurn == TeamColor.White)
             {
-                sortedMoves = (from moveEvaluation in moves
-                               orderby moveEvaluation.Item1 descending
-                               where Math.Round(moveEvaluation.Item1, 1) == bestEvaluation
-                               select moveEvaluation.Item2).ToList();
-            }
-            else
-            {
-                sortedMoves = (from moveEvaluation in moves
-                               orderby moveEvaluation.Item1 ascending
-                               where Math.Round(moveEvaluation.Item1, 1) == bestEvaluation
-                               select moveEvaluation.Item2).ToList();
+                sortedMoves.Reverse();
             }
 
-            Move chosenMove = sortedMoves[0];
-
+            // TODO: find out what the intention was here.
             foreach (var move in sortedMoves)
             {
                 string moveNotation = move.ToString();
+
+                // TODO: And here.
                 if (moveNotation == "O-O-O" || moveNotation == "O-O")
                 {
                     chosenMove = move;
@@ -244,6 +243,7 @@
 
             float hectocentipawns = 0;
 
+            // TODO: White bias.
             // Pawn advancement-incentive.
             foreach ((Pawn, Coordinate) item in board.GetPieces<Pawn>())
             {

@@ -14,14 +14,14 @@ namespace ChessGame.MovementPatterns
             int moveDirectionY = piece.Color == TeamColor.White ? 1 : -1;
 
             Move previousMove = board.Moves.Peek();
-            if (!(previousMove.Moves[0].Piece is Pieces.Pawn))
+            if (!(previousMove.Submoves[0].Piece is Pieces.Pawn))
             {
                 // en passent not possible, wasnt previous move.
                 yield break;
             }
 
-            Coordinate previousMoveDestination = previousMove.Moves[0].Destination.Value;
-            Coordinate previousMoveSource = previousMove.Moves[0].Source.Value;
+            Coordinate previousMoveDestination = previousMove.Submoves[0].Destination.Value;
+            Coordinate previousMoveSource = previousMove.Submoves[0].Source.Value;
 
             // if pawn didn't make long jump, then break.
             if (previousMoveSource != new Coordinate(0, moveDirectionY * 2) + previousMoveDestination)
@@ -39,7 +39,6 @@ namespace ChessGame.MovementPatterns
 
                 if (capturedPiece is null)
                 {
-
                 }
                 else
                 {
@@ -47,7 +46,7 @@ namespace ChessGame.MovementPatterns
                     yield return new Move(new PieceMove[]
                     {
                         new PieceMove(leftEnPassent, position, piece, true),
-                        new PieceMove(null, enPassentTargetLeft, capturedPiece, false)
+                        new PieceMove(null, enPassentTargetLeft, capturedPiece, false),
                     }, piece.Color);
                 }
                 yield break;
@@ -62,7 +61,6 @@ namespace ChessGame.MovementPatterns
 
                 if (capturedPiece is null)
                 {
-
                 }
                 else
                 {
@@ -70,11 +68,10 @@ namespace ChessGame.MovementPatterns
                     yield return new Move(new PieceMove[]
                     {
                         new PieceMove(rightEnPassent, position, piece, true),
-                        new PieceMove(null, enPassentTargetRight, capturedPiece, false)
+                        new PieceMove(null, enPassentTargetRight, capturedPiece, false),
                     }, piece.Color);
                 }
             }
-
         }
     }
 }

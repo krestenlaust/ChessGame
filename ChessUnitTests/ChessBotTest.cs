@@ -1,8 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using ChessBots;
 using ChessGame;
-using ChessBots;
 using ChessGame.Gamemodes;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ChessUnitTests
 {

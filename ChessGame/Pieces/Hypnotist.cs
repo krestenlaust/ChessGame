@@ -5,10 +5,12 @@
     /// </summary>
     public class Hypnotist : Piece
     {
-        public Hypnotist(TeamColor teamColor) : base('H', 5, teamColor)
+        public Hypnotist(TeamColor teamColor)
+            : base('H', 5, teamColor)
         {
-            MovementPatternList = new IMovementPattern[] {
-                new MovementPatterns.HypnoJumpPattern()
+            MovementPatternList = new IMovementPattern[]
+            {
+                new MovementPatterns.HypnoJumpPattern(),
             };
         }
     }

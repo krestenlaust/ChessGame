@@ -10,13 +10,13 @@ namespace ChessGame
     public class Move : IEqualityComparer<Move>
     {
         /// <summary>
-        /// Returns true if any of <c>Moves</c> captures.
+        /// Returns true if any of <c>Submoves</c> captures.
         /// </summary>
         public bool Captures
         {
             get
             {
-                foreach (var singleMove in Moves)
+                foreach (var singleMove in Submoves)
                 {
                     if (singleMove.Captures)
                     {
@@ -28,37 +28,37 @@ namespace ChessGame
             }
         }
 
-        public readonly PieceMove[] Moves;
+        public readonly PieceMove[] Submoves;
         public readonly string CustomNotation;
         public readonly TeamColor Color;
 
         public Move(PieceMove[] moves, TeamColor color)
         {
-            Moves = moves;
+            Submoves = moves;
             Color = color;
         }
 
         public Move(PieceMove[] moves, string notation, TeamColor color)
         {
-            Moves = moves;
+            Submoves = moves;
             CustomNotation = notation;
             Color = color;
         }
 
         public Move(Coordinate position, Coordinate source, Piece piece, bool captures, TeamColor color)
         {
-            Moves = new[]
+            Submoves = new[]
             {
-                new PieceMove(position, source, piece, captures)
+                new PieceMove(position, source, piece, captures),
             };
             Color = color;
         }
 
         public Move(Coordinate position, Coordinate source, Piece piece, bool captures, string notation, TeamColor color)
         {
-            Moves = new[]
+            Submoves = new[]
             {
-                new PieceMove(position, source, piece, captures)
+                new PieceMove(position, source, piece, captures),
             };
 
             CustomNotation = notation;
@@ -74,7 +74,7 @@ namespace ChessGame
             switch (notationType)
             {
                 case MoveNotation.UCI:
-                    return Moves[0].ToString(MoveNotation.UCI);
+                    return Submoves[0].ToString(MoveNotation.UCI);
                 case MoveNotation.StandardAlgebraic:
                     return ToString();
                 default:
@@ -94,7 +94,7 @@ namespace ChessGame
 
             StringBuilder sb = new StringBuilder();
 
-            foreach (var singleMove in Moves)
+            foreach (var singleMove in Submoves)
             {
                 sb.Append(',');
                 sb.Append(singleMove.ToString());

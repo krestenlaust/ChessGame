@@ -8,7 +8,7 @@ namespace ChessGame
     public enum MoveNotation : byte
     {
         UCI,
-        StandardAlgebraic
+        StandardAlgebraic,
     }
 
     /// <summary>
@@ -46,15 +46,16 @@ namespace ChessGame
         public Player CurrentPlayerTurn => CurrentTeamTurn == TeamColor.White ? gamemode.PlayerWhite : gamemode.PlayerBlack;
 
         /// <summary>
-        /// A integearena to determine the material sum of the game
+        /// Gets a value to determine the material sum of the game.
         /// </summary>
-        public int MaterialSum 
+        public int MaterialSum
         {
             get
             {
                 return Pieces.Values.Sum(p => p.Color == TeamColor.Black ? -p.MaterialValue : p.MaterialValue);
             }
         }
+
         /// <summary>
         /// A boolean to tell whether or not the game has finished
         /// </summary>
@@ -62,9 +63,10 @@ namespace ChessGame
             CurrentState is GameState.Checkmate or GameState.Stalemate or GameState.DeadPosition;
 
         /// <summary>
-        /// Makes a copy of <c>board</c>, player references stay the same.
+        /// Initializes a new instance of the <see cref="Chessboard"/> class,
+        /// which is a copy of <c>board</c>, player references stay the same.
         /// </summary>
-        /// <param name="board"></param>
+        /// <param name="board">The board to copy.</param>
         public Chessboard(Chessboard board)
         {
             Height = board.Height;
@@ -76,6 +78,7 @@ namespace ChessGame
             Pieces = new Dictionary<Coordinate, Piece>(board.Pieces);
             MovedPieces = new HashSet<Piece>(board.MovedPieces);
             Moves = new Stack<Move>(board.Moves);
+
             // not needed before executing move
             Dangerzone = new Dictionary<Coordinate, List<Piece>>();
         }
@@ -103,6 +106,12 @@ namespace ChessGame
             SimulateMove(move);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Chessboard"/> class.
+        /// </summary>
+        /// <param name="width">The amount of files.</param>
+        /// <param name="height">The amount of ranks.</param>
+        /// <param name="gamemode">The game mode to be associated with this board instance.</param>
         public Chessboard(byte width, byte height, Gamemode gamemode)
         {
             Width = width;
@@ -125,7 +134,8 @@ namespace ChessGame
         public Piece this[Coordinate position]
         {
             get => GetPiece(position);
-            set {
+            set
+            {
                 if (value is null)
                 {
                     Pieces.Remove(position);
@@ -260,7 +270,7 @@ namespace ChessGame
                 return;
             }
 
-            foreach (var singleMove in move.Moves)
+            foreach (var singleMove in move.Submoves)
             {
                 // remove piece
                 if (singleMove.Destination is null)
@@ -438,7 +448,7 @@ namespace ChessGame
                     continue;
                 }
 
-                foreach (var pieceMove in move.Moves)
+                foreach (var pieceMove in move.Submoves)
                 {
                     if (!(source is null) && source != pieceMove.Source)
                     {
@@ -533,34 +543,20 @@ namespace ChessGame
         /// Removes old references of piece, and adds new.
         /// </summary>
         /// <param name="piece"></param>
-        void UpdateDangerzones(Piece piece, bool removeOld = false)
+        void UpdateDangerzones(Piece piece)
         {
-            // Remove all instances of this piece.
-            if (removeOld)
-            {
-                foreach (var item in Dangerzone)
-                {
-                    if (item.Value is null)
-                    {
-                        continue;
-                    }
-
-                    item.Value.Remove(piece);
-                }
-            }
-
             // Updates dangerzone
             foreach (var move in piece.GetMoves(this, true))
             {
-                foreach (var singleMove in move.Moves)
+                for (int i = 0; i < move.Submoves.Length; i++)
                 {
                     // If the move has no destination then it doesn't threaten any square.
-                    if (singleMove.Destination is null)
+                    if (move.Submoves[i].Destination is null)
                     {
                         continue;
                     }
 
-                    Coordinate destination = singleMove.Destination.Value;
+                    Coordinate destination = move.Submoves[i].Destination.Value;
 
                     // Make new list of pieces aiming on this square if there isn't one already.
                     if (!Dangerzone.ContainsKey(destination))
@@ -569,7 +565,7 @@ namespace ChessGame
                     }
 
                     // Add this move to dangerzone.
-                    Dangerzone[destination].Add(singleMove.Piece);
+                    Dangerzone[destination].Add(move.Submoves[i].Piece);
                 }
             }
         }
@@ -606,7 +602,6 @@ namespace ChessGame
             {
                 position = Pieces.FirstOrDefault(x => x.Value == piece).Key;
                 return true;
-
             }
             catch (ArgumentNullException)
             {
@@ -634,8 +629,8 @@ namespace ChessGame
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public List<(Piece piece, Coordinate position)> GetPieces<T>() where T : Piece => (from piece in Pieces
-                                                              where piece.Value is T
-                                                              select (piece.Value, piece.Key)).ToList();
+                                                                                           where piece.Value is T
+                                                                                           select (piece.Value, piece.Key)).ToList();
 
         public override bool Equals(object obj)
         {

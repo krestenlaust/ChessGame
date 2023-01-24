@@ -4,7 +4,8 @@ namespace ChessGame.Gamemodes
 {
     public class CheckMateTest : Gamemode
     {
-        public CheckMateTest(Player playerWhite, Player playerBlack) : base(playerWhite, playerBlack)
+        public CheckMateTest(Player playerWhite, Player playerBlack)
+            : base(playerWhite, playerBlack)
         {
         }
 

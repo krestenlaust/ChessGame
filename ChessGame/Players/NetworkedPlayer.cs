@@ -8,7 +8,8 @@ namespace ChessGame
     {
         readonly NetworkStream stream;
 
-        public NetworkedPlayer(string name, NetworkStream stream) : base(name)
+        public NetworkedPlayer(string name, NetworkStream stream)
+            : base(name)
         {
             this.stream = stream;
         }
@@ -37,7 +38,6 @@ namespace ChessGame
             }
             catch (System.IO.IOException)
             {
-
             }
 
             return Encoding.ASCII.GetString(moveAscii).Trim();
@@ -53,7 +53,6 @@ namespace ChessGame
             }
             catch (System.IO.IOException)
             {
-
             }
         }
     }

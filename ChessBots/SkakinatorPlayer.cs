@@ -1,6 +1,5 @@
-﻿using System;
-using System.Windows.Forms;
-using ChessGame;
+﻿using ChessGame;
+using System;
 
 namespace ChessBots
 {
@@ -26,7 +25,8 @@ namespace ChessBots
             }
         }
 
-        public SkakinatorPlayer(string name, bool enableUI) : base(name)
+        public SkakinatorPlayer(string name, bool enableUI)
+            : base(name)
         {
             logic = new SkakinatorLogic();
             if (enableUI)

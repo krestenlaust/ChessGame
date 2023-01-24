@@ -110,7 +110,7 @@ namespace ChessForms
                 case GameState.Check:
                     outputMsg = $"{chessboard.CurrentPlayerTurn} is in check!";
                     break;
-            } 
+            }
 
             if (outputMsg == string.Empty)
             {
@@ -142,7 +142,7 @@ namespace ChessForms
                 return;
             }
 
-            PieceMove recentMove = chessboard.Moves.Peek().Moves[0];
+            PieceMove recentMove = chessboard.Moves.Peek().Submoves[0];
             recentMoveFrom = recentMove.Source;
             recentMoveTo = recentMove.Destination;
 
@@ -164,7 +164,7 @@ namespace ChessForms
                 for (int x = 0; x < chessboard.Width; x++)
                 {
                     ResetTileColor(x, y);
-                    GetCell(x,y).BorderStyle = BorderStyle.None;
+                    GetCell(x, y).BorderStyle = BorderStyle.None;
                 }
             }
 
@@ -186,7 +186,7 @@ namespace ChessForms
                 foreach (var (_, position) in kingsOnCheckedTeam)
                 {
                     ColorSquare(position, CheckedSquareColor);
-                }                
+                }
             }
         }
 
@@ -286,7 +286,7 @@ namespace ChessForms
             {
                 Label label = new Label
                 {
-                    Text =  (y + 1).ToString(),
+                    Text = (y + 1).ToString(),
                     TextAlign = ContentAlignment.MiddleCenter,
                     Dock = DockStyle.Fill,
                     Font = labelFont
@@ -348,7 +348,7 @@ namespace ChessForms
 
             foreach (var move in moves)
             {
-                foreach (var singleMove in move.Moves)
+                foreach (var singleMove in move.Submoves)
                 {
                     if (singleMove.PromotePiece is null)
                     {
@@ -366,12 +366,12 @@ namespace ChessForms
 
             PromotionPrompt prompt = new PromotionPrompt(pieces);
             DialogResult res = prompt.ShowDialog();
-                    
+
             if (res == DialogResult.OK)
             {
                 foreach (var move in moves)
                 {
-                    foreach (var singleMove in move.Moves)
+                    foreach (var singleMove in move.Submoves)
                     {
                         if (singleMove.PromotePiece.Notation == prompt.SelectedPiece.Notation)
                         {
@@ -380,7 +380,7 @@ namespace ChessForms
                     }
                 }
             }
-            
+
 
             return moves.First();
         }
@@ -435,15 +435,15 @@ namespace ChessForms
                         fromPosition = clickTarget;
                         SelectPiece(cellX, cellY);
                         selectedPiece = piece;
-                        
+
                         foreach (var move in piece.GetMoves(chessboard))
                         {
-                            if (move.Moves[0].Destination is null)
+                            if (move.Submoves[0].Destination is null)
                             {
                                 continue;
                             }
 
-                            Coordinate guardedSquare = move.Moves[0].Destination.Value;
+                            Coordinate guardedSquare = move.Submoves[0].Destination.Value;
 
                             // TODO: Patrick fixer brættet, cirka her omkring
                             TilePictureControl cellImageControl = GetCell(guardedSquare.File, guardedSquare.Rank);
@@ -454,13 +454,13 @@ namespace ChessForms
 
                             if (move.Captures)
                             {
-                                backgroundColor = isMoveValid ? 
-                                    CaptureTileAvailableColor : 
+                                backgroundColor = isMoveValid ?
+                                    CaptureTileAvailableColor :
                                     CaptureTileUnavailableColor;
                             }
                             else
                             {
-                                cellImage = isMoveValid ? 
+                                cellImage = isMoveValid ?
                                     Properties.Resources.MuligtTrkBrikTilgængelig :
                                     Properties.Resources.MuligtTrkBrikUtilgængelig;
                             }
@@ -486,10 +486,10 @@ namespace ChessForms
                     break;
                 case MouseButtons.None:
                     break;
-                    // Mark square.
+                // Mark square.
                 case MouseButtons.Right:
                     // do not change color if square is already colored.
-                    if (recentMoveFrom?.File == cellX && recentMoveFrom?.Rank == cellY || 
+                    if (recentMoveFrom?.File == cellX && recentMoveFrom?.Rank == cellY ||
                         recentMoveTo?.File == cellX && recentMoveTo?.Rank == cellY)
                     {
                         break;
@@ -524,7 +524,7 @@ namespace ChessForms
         {
             GetCell(x, y).BorderStyle = BorderStyle.None;
         }
-        
+
         /// <summary>
         /// Changes borderstyle on a particular position.
         /// </summary>
@@ -572,7 +572,7 @@ namespace ChessForms
 
         void BackgroundWorkerMove_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            
+
         }
 
         void BoardDisplay_KeyUp(object sender, KeyEventArgs e)
@@ -583,11 +583,11 @@ namespace ChessForms
                     break;
                 case Keys.Right:
                     break;
-                    // Refresh dangerzone
+                // Refresh dangerzone
                 case Keys.R:
                     chessboard.UpdateDangerzones();
                     break;
-                    // Display dangerzone
+                // Display dangerzone
                 case Keys.Space:
                     DrawDangerzone();
                     break;

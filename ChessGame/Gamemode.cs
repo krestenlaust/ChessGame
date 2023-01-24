@@ -87,7 +87,7 @@
         public virtual bool ValidateMove(Move move, Chessboard board)
         {
             // if move is outside board, then it's invalid.
-            foreach (var singleMove in move.Moves)
+            foreach (var singleMove in move.Submoves)
             {
                 if (singleMove.Destination is null)
                 {

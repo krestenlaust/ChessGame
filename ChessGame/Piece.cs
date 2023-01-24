@@ -8,7 +8,7 @@ namespace ChessGame
     public enum TeamColor : byte
     {
         Black = 0,
-        White = 1
+        White = 1,
     }
 
     public abstract class Piece
@@ -17,6 +17,7 @@ namespace ChessGame
         /// The character used to notate the piece in algebraic notation.
         /// </summary>
         public readonly char Notation; // { get; protected set; }
+
         /// <summary>
         /// Whether a piece is White or Black.
         /// </summary>

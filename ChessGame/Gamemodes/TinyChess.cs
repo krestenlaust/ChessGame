@@ -4,7 +4,8 @@ namespace ChessGame.Gamemodes
 {
     public class TinyChess : Gamemode
     {
-        public TinyChess(Player playerWhite, Player playerBlack) : base(playerWhite, playerBlack)
+        public TinyChess(Player playerWhite, Player playerBlack)
+            : base(playerWhite, playerBlack)
         {
         }
 

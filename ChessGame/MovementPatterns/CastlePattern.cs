@@ -28,10 +28,12 @@ namespace ChessGame.MovementPatterns
                         if (blockingPiece is Pieces.Rook && !board.MovedPieces.Contains(blockingPiece))
                         {
                             yield return new Move(
-                                new PieceMove[] {
+                                new PieceMove[]
+                                {
                                     new PieceMove(position - new Coordinate(2, 0), position, piece, false),
-                                    new PieceMove(position - new Coordinate(1, 0), checkPosition, blockingPiece, false)
-                                }, "O-O-O", piece.Color);
+                                    new PieceMove(position - new Coordinate(1, 0), checkPosition, blockingPiece, false),
+                                }, "O-O-O",
+                                piece.Color);
                         }
 
                         blockedLeft = true;
@@ -46,10 +48,12 @@ namespace ChessGame.MovementPatterns
                         if (blockingPiece is Pieces.Rook && !board.MovedPieces.Contains(blockingPiece))
                         {
                             yield return new Move(
-                                new PieceMove[] {
+                                new PieceMove[]
+                                {
                                     new PieceMove(position + new Coordinate(2, 0), position, piece, false),
-                                    new PieceMove(position + new Coordinate(1, 0), checkPosition, blockingPiece, false)
-                                }, "O-O", piece.Color);
+                                    new PieceMove(position + new Coordinate(1, 0), checkPosition, blockingPiece, false),
+                                }, "O-O",
+                                piece.Color);
                         }
 
                         blockedRight = true;

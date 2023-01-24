@@ -7,7 +7,8 @@ namespace ChessGame.Gamemodes
     /// </summary>
     public class ClassicChess : Gamemode
     {
-        public ClassicChess(Player playerWhite, Player playerBlack) : base(playerWhite, playerBlack)
+        public ClassicChess(Player playerWhite, Player playerBlack)
+            : base(playerWhite, playerBlack)
         {
         }
 

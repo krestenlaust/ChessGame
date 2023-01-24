@@ -1,11 +1,11 @@
-﻿using ChessGame;
+﻿using ChessBots;
+using ChessGame;
 using ChessGame.Gamemodes;
 using ChessGame.Players;
 using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
-using ChessBots;
 
 namespace ChessForms
 {
@@ -190,7 +190,7 @@ namespace ChessForms
 
         void radioButtonWhiteLichessPlayer_CheckedChanged(object sender, EventArgs e)
         {
-            
+
         }
 
         void radioButtonWhiteDistributedComputing_CheckedChanged(object sender, EventArgs e)

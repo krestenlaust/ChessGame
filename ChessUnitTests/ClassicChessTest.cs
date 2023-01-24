@@ -1,8 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using ChessGame;
+﻿using ChessGame;
 using ChessGame.Gamemodes;
 using ChessGame.Pieces;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -48,8 +47,8 @@ namespace ChessUnitTests
             // checks if all moves are valid.
             foreach (var item in moves)
             {
-                Assert.IsNotNull(item.Moves[0].Destination);
-                Assert.IsTrue(possibleMoves.Contains(item.Moves[0].Destination.Value));
+                Assert.IsNotNull(item.Submoves[0].Destination);
+                Assert.IsTrue(possibleMoves.Contains(item.Submoves[0].Destination.Value));
                 Assert.IsFalse(item.Captures);
             }
 
@@ -72,8 +71,8 @@ namespace ChessUnitTests
 
             foreach (var item in moves)
             {
-                Assert.IsNotNull(item.Moves[0].Destination);
-                Assert.IsTrue(possibleMoves.Contains(item.Moves[0].Destination.Value));
+                Assert.IsNotNull(item.Submoves[0].Destination);
+                Assert.IsTrue(possibleMoves.Contains(item.Submoves[0].Destination.Value));
             }
 
             // next move
@@ -96,8 +95,8 @@ namespace ChessUnitTests
 
             foreach (var item in moves)
             {
-                Assert.IsNotNull(item.Moves[0].Destination);
-                Assert.IsTrue(possibleMoves.Contains(item.Moves[0].Destination.Value));
+                Assert.IsNotNull(item.Submoves[0].Destination);
+                Assert.IsTrue(possibleMoves.Contains(item.Submoves[0].Destination.Value));
                 Assert.IsFalse(item.Captures);
             }
 

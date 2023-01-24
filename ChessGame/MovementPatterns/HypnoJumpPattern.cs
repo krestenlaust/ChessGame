@@ -16,8 +16,9 @@ namespace ChessGame.MovementPatterns
             Piece occupyingPiece = board.GetPiece(targetPosition);
             if (occupyingPiece is null)
             {
-                yield return new Move(new PieceMove[]{
-                    new PieceMove(targetPosition, position, piece, false)
+                yield return new Move(new PieceMove[]
+                {
+                    new PieceMove(targetPosition, position, piece, false),
                 }, piece.Color);
             }
             else if (occupyingPiece.Color != piece.Color)
@@ -25,7 +26,7 @@ namespace ChessGame.MovementPatterns
                 yield return new Move(new PieceMove[]
                 {
                     new PieceMove(targetPosition, position, piece, true),
-                    new PieceMove(position, targetPosition, occupyingPiece, false)
+                    new PieceMove(position, targetPosition, occupyingPiece, false),
                 }, piece.Color);
             }
         }

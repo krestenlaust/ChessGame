@@ -16,4 +16,13 @@ dotnet_diagnostic.IDE0090.severity = none
 dotnet_diagnostic.SA1400.severity = none
 
 # SA1101: Prefix local calls with this
-dotnet_diagnostic.SA1101.severity = silent
+dotnet_diagnostic.SA1101.severity = none
+
+# IDE0048: Add parentheses for clarity
+dotnet_diagnostic.IDE0048.severity = none
+
+# SA1407: Arithmetic expressions should declare precedence
+dotnet_diagnostic.SA1407.severity = none
+
+# SA1200: Using directives should be placed correctly
+dotnet_diagnostic.SA1200.severity = none
