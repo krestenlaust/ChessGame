@@ -29,8 +29,8 @@
         /// <param name="rank">The y-coordinate, the row.</param>
         public Coordinate(byte file, byte rank)
         {
-            this.File = file;
-            this.Rank = rank;
+            File = file;
+            Rank = rank;
         }
 
         /// <summary>
@@ -40,8 +40,8 @@
         /// <param name="rank">The y-coordinate, the row.</param>
         public Coordinate(int file, int rank)
         {
-            this.File = (byte)file;
-            this.Rank = (byte)rank;
+            File = (byte)file;
+            Rank = (byte)rank;
         }
 
         /// <summary>
@@ -51,8 +51,8 @@
         /// <param name="notation">Examples: 'a7' 'b2'.</param>
         public Coordinate(string notation)
         {
-            this.File = (byte)(char.ToLower(notation[0]) - 97);
-            this.Rank = (byte)(notation[1] - 49);
+            File = (byte)(char.ToLower(notation[0]) - 97);
+            Rank = (byte)(notation[1] - 49);
         }
 
         [DebuggerStepThrough]
@@ -75,8 +75,8 @@
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append((char)(97 + this.File)); // tilføj bogstavs modpart til værdien af File.
-            sb.Append(this.Rank + 1);
+            sb.Append((char)(97 + File)); // tilføj bogstavs modpart til værdien af File.
+            sb.Append(Rank + 1);
 
             return sb.ToString();
         }
@@ -90,8 +90,8 @@
         public override bool Equals(object obj)
         {
             return obj is Coordinate coordinate &&
-                   this.File == coordinate.File &&
-                   this.Rank == coordinate.Rank;
+                   File == coordinate.File &&
+                   Rank == coordinate.Rank;
         }
 
         /// <summary>
@@ -110,8 +110,8 @@
         public override int GetHashCode()
         {
             int hashCode = -73919966;
-            hashCode = (hashCode * -1521134295) + this.File.GetHashCode();
-            hashCode = (hashCode * -1521134295) + this.Rank.GetHashCode();
+            hashCode = (hashCode * -1521134295) + File.GetHashCode();
+            hashCode = (hashCode * -1521134295) + Rank.GetHashCode();
             return hashCode;
         }
     }

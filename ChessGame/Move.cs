@@ -16,7 +16,7 @@ namespace ChessGame
         {
             get
             {
-                foreach (var singleMove in this.Moves)
+                foreach (var singleMove in Moves)
                 {
                     if (singleMove.Captures)
                     {
@@ -34,35 +34,35 @@ namespace ChessGame
 
         public Move(PieceMove[] moves, TeamColor color)
         {
-            this.Moves = moves;
-            this.Color = color;
+            Moves = moves;
+            Color = color;
         }
 
         public Move(PieceMove[] moves, string notation, TeamColor color)
         {
-            this.Moves = moves;
-            this.CustomNotation = notation;
-            this.Color = color;
+            Moves = moves;
+            CustomNotation = notation;
+            Color = color;
         }
 
         public Move(Coordinate position, Coordinate source, Piece piece, bool captures, TeamColor color)
         {
-            this.Moves = new[]
+            Moves = new[]
             {
                 new PieceMove(position, source, piece, captures)
             };
-            this.Color = color;
+            Color = color;
         }
 
         public Move(Coordinate position, Coordinate source, Piece piece, bool captures, string notation, TeamColor color)
         {
-            this.Moves = new[]
+            Moves = new[]
             {
                 new PieceMove(position, source, piece, captures)
             };
 
-            this.CustomNotation = notation;
-            this.Color = color;
+            CustomNotation = notation;
+            Color = color;
         }
 
         public static bool operator ==(Move a, Move b) => a.Equals(b);
@@ -74,9 +74,9 @@ namespace ChessGame
             switch (notationType)
             {
                 case MoveNotation.UCI:
-                    return this.Moves[0].ToString(MoveNotation.UCI);
+                    return Moves[0].ToString(MoveNotation.UCI);
                 case MoveNotation.StandardAlgebraic:
-                    return this.ToString();
+                    return ToString();
                 default:
                     break;
             }
@@ -87,14 +87,14 @@ namespace ChessGame
         public override string ToString()
         {
             // Return custom notation if it's defined.
-            if (!(this.CustomNotation is null))
+            if (!(CustomNotation is null))
             {
-                return this.CustomNotation;
+                return CustomNotation;
             }
 
             StringBuilder sb = new StringBuilder();
 
-            foreach (var singleMove in this.Moves)
+            foreach (var singleMove in Moves)
             {
                 sb.Append(',');
                 sb.Append(singleMove.ToString());
@@ -106,17 +106,17 @@ namespace ChessGame
         public override bool Equals(object obj)
         {
             return obj is Move move &&
-                   this.ToString() == move.ToString() &&
-                   this.CustomNotation == move.CustomNotation &&
-                   this.Color == move.Color;
+                   ToString() == move.ToString() &&
+                   CustomNotation == move.CustomNotation &&
+                   Color == move.Color;
         }
 
         public override int GetHashCode()
         {
             int hashCode = -895752563;
-            hashCode = hashCode * -1521134295 + this.ToString().GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(this.CustomNotation);
-            hashCode = hashCode * -1521134295 + this.Color.GetHashCode();
+            hashCode = hashCode * -1521134295 + ToString().GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CustomNotation);
+            hashCode = hashCode * -1521134295 + Color.GetHashCode();
             return hashCode;
         }
 

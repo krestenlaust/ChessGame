@@ -4,7 +4,7 @@
     {
         public Knight(TeamColor teamColor) : base('N', 3, teamColor)
         {
-            this.MovementPatternList = new IMovementPattern[] {
+            MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.KnightPattern()
             };
         }

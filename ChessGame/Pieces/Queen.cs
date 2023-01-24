@@ -4,7 +4,7 @@
     {
         public Queen(TeamColor teamColor) : base('Q', 9, teamColor)
         {
-            this.MovementPatternList = new IMovementPattern[] {
+            MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.CardinalPattern(),
                 new MovementPatterns.DiagonalPattern()
             };

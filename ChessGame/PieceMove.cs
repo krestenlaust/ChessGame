@@ -26,45 +26,45 @@ namespace ChessGame
         {
             get
             {
-                if (this.PromotePiece is null)
+                if (PromotePiece is null)
                 {
                     return '\0';
                 }
                 else
                 {
-                    return this.PromotePiece.Notation;
+                    return PromotePiece.Notation;
                 }
             }
         }
 
         public PieceMove(Coordinate? destination, Coordinate? source, Piece piece, bool captures, Piece promotePiece = null)
         {
-            this.Destination = destination;
-            this.Source = source;
-            this.Piece = piece;
-            this.Captures = captures;
-            this.PromotePiece = promotePiece;
+            Destination = destination;
+            Source = source;
+            Piece = piece;
+            Captures = captures;
+            PromotePiece = promotePiece;
         }
 
         [DebuggerStepThrough]
         public bool Equals(PieceMove other)
         {
-            if (this.Piece != other.Piece)
+            if (Piece != other.Piece)
             {
                 return false;
             }
 
-            if (this.Captures != other.Captures)
+            if (Captures != other.Captures)
             {
                 return false;
             }
 
-            if (this.Destination != other.Destination)
+            if (Destination != other.Destination)
             {
                 return false;
             }
 
-            if (this.Source != other.Source)
+            if (Source != other.Source)
             {
                 return false;
             }
@@ -80,12 +80,12 @@ namespace ChessGame
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append(this.Piece);
+            sb.Append(Piece);
 
-            if (this.Captures)
+            if (Captures)
                 sb.Append('x');
 
-            sb.Append(this.Destination);
+            sb.Append(Destination);
 
             return sb.ToString();
         }
@@ -100,16 +100,16 @@ namespace ChessGame
             switch (notation)
             {
                 case MoveNotation.UCI:
-                    if (this.PromotePiece is null)
+                    if (PromotePiece is null)
                     {
-                        return this.Source.ToString() + this.Destination.ToString();
+                        return Source.ToString() + Destination.ToString();
                     }
                     else
                     {
-                        return this.Source.ToString() + this.Destination.ToString() + this.PromotePiece.Notation;
+                        return Source.ToString() + Destination.ToString() + PromotePiece.Notation;
                     }
                 case MoveNotation.StandardAlgebraic:
-                    return this.ToString();
+                    return ToString();
                 default:
                     break;
             }

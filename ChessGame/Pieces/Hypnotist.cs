@@ -7,7 +7,7 @@
     {
         public Hypnotist(TeamColor teamColor) : base('H', 5, teamColor)
         {
-            this.MovementPatternList = new IMovementPattern[] {
+            MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.HypnoJumpPattern()
             };
         }

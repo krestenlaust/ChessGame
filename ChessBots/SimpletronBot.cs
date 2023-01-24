@@ -23,7 +23,7 @@
         /// <inheritdoc/>
         public override void TurnStarted(Chessboard board)
         {
-            Move move = this.GenerateMove(board);
+            Move move = GenerateMove(board);
 
             board.PerformMove(move);
         }
@@ -32,7 +32,7 @@
         {
             if (node.Depth == 0)
             {
-                node.Board.SimulateMove(this.FindBestMoves(node.Board, node.Board.CurrentTeamTurn)[0]);
+                node.Board.SimulateMove(FindBestMoves(node.Board, node.Board.CurrentTeamTurn)[0]);
                 node.MoveStorage.Add((node.Board.MaterialSum, node.RootMove));
                 return;
             }
@@ -42,7 +42,7 @@
                 Chessboard newBoard = new Chessboard(node.Board);
                 newBoard.SimulateMove(move);
 
-                this.CheckMovesDerp(new NodeState
+                CheckMovesDerp(new NodeState
                 {
                     Board = newBoard,
                     Depth = node.Depth - 1,
@@ -58,7 +58,7 @@
 
             if (depth == 0)
             {
-                board.SimulateMove(this.FindBestMoves(board, boardReadonly.CurrentTeamTurn)[0]);
+                board.SimulateMove(FindBestMoves(board, boardReadonly.CurrentTeamTurn)[0]);
                 moves.Add((board.MaterialSum, baseMove));
                 return;
             }
@@ -70,7 +70,7 @@
                 Chessboard newBoard = new Chessboard(board);
                 newBoard.SimulateMove(move);
 
-                rootMoves.Add(Task.Run(() => this.CheckMovesDerp(new NodeState
+                rootMoves.Add(Task.Run(() => CheckMovesDerp(new NodeState
                 {
                     Board = newBoard,
                     Depth = depth - 1,
@@ -86,7 +86,7 @@
         {
             ConcurrentBag<(int, Move)> longerMoves = new ConcurrentBag<(int, Move)>();
 
-            this.CheckMovesDeep(board, 2, longerMoves);
+            CheckMovesDeep(board, 2, longerMoves);
 
             List<(int, Move)> sortedMoves = longerMoves.OrderByDescending(material => material.Item1).ToList();
 

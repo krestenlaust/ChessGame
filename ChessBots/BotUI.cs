@@ -15,7 +15,7 @@
         /// </summary>
         public BotUI()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         // TODO: Auto-scroll
@@ -23,68 +23,68 @@
         {
             get
             {
-                return (int)this.numericUpDownDepth.Value;
+                return (int)numericUpDownDepth.Value;
             }
         }
 
         public void AddPoint(float evaluation)
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.BeginInvoke(new Action<float>(this.AddPoint), new object[] { evaluation });
+                BeginInvoke(new Action<float>(AddPoint), new object[] { evaluation });
                 return;
             }
 
-            this.currentX++;
-            this.chartBoardEvaluation.Series[0].Points.AddXY(this.currentX, evaluation);
+            currentX++;
+            chartBoardEvaluation.Series[0].Points.AddXY(currentX, evaluation);
         }
 
         public void ClearLog()
         {
-            this.richTextBoxLog.Text = string.Empty;
+            richTextBoxLog.Text = string.Empty;
         }
 
         public void PrintLog(string line)
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.BeginInvoke(new Action<string>(this.PrintLog), new object[] { line });
+                BeginInvoke(new Action<string>(PrintLog), new object[] { line });
                 return;
             }
 
-            this.richTextBoxLog.Text += $"{line}\n";
+            richTextBoxLog.Text += $"{line}\n";
         }
 
         public void SetProgress(int current, int max)
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.BeginInvoke(new Action<int, int>(this.SetProgress), new object[] { current, max });
+                BeginInvoke(new Action<int, int>(SetProgress), new object[] { current, max });
                 return;
             }
 
             if (current == max)
             {
-                this.labelCalculation.Text = $"Finished calculating";
+                labelCalculation.Text = $"Finished calculating";
             }
             else
             {
-                this.labelCalculation.Text = $"Calculated moves: {current}/{max}";
+                labelCalculation.Text = $"Calculated moves: {current}/{max}";
             }
 
-            this.progressBarCalculation.Maximum = max;
-            this.progressBarCalculation.Value = current;
+            progressBarCalculation.Maximum = max;
+            progressBarCalculation.Value = current;
         }
 
         void BotUI_Load(object sender, EventArgs e)
         {
-            this.numericUpDownDepth.Value = SkakinatorPlayer.DEFAULT_DEPTH;
+            numericUpDownDepth.Value = SkakinatorPlayer.DEFAULT_DEPTH;
         }
 
         void RichTextBoxLog_TextChanged(object sender, EventArgs e)
         {
-            this.richTextBoxLog.SelectionStart = this.richTextBoxLog.Text.Length;
-            this.richTextBoxLog.ScrollToCaret();
+            richTextBoxLog.SelectionStart = richTextBoxLog.Text.Length;
+            richTextBoxLog.ScrollToCaret();
         }
 
         void CheckBoxShowGraph_CheckedChanged(object sender, EventArgs e)
@@ -93,11 +93,11 @@
 
             if (isChecked)
             {
-                this.Width += this.chartBoardEvaluation.Width + 20;
+                Width += chartBoardEvaluation.Width + 20;
             }
             else
             {
-                this.Width -= this.chartBoardEvaluation.Width + 20;
+                Width -= chartBoardEvaluation.Width + 20;
             }
         }
     }

@@ -20,10 +20,10 @@ namespace ChessUnitTests
 
             // https://lichess.org/editor/8/8/8/8/8/2pp4/8/k3K3_w_-_-_0_1
             Chessboard chessboard = new Chessboard(8, 8, gamemode);
-            chessboard[new Coordinate(0, 0)] = new King { Color = TeamColor.Black };
-            chessboard[new Coordinate(4, 0)] = new King { Color = TeamColor.White };
-            chessboard[new Coordinate(2, 2)] = new Pawn { Color = TeamColor.Black };
-            chessboard[new Coordinate(3, 2)] = new Pawn { Color = TeamColor.Black };
+            chessboard[new Coordinate(0, 0)] = new King(TeamColor.Black);
+            chessboard[new Coordinate(4, 0)] = new King(TeamColor.White);
+            chessboard[new Coordinate(2, 2)] = new Pawn(TeamColor.Black);
+            chessboard[new Coordinate(3, 2)] = new Pawn(TeamColor.Black);
 
             chessboard.StartNextTurn();
             chessboard.CurrentTeamTurn = TeamColor.Black;

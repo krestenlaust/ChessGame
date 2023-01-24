@@ -4,7 +4,7 @@
     {
         public Bishop(TeamColor teamColor) : base('B', 3, teamColor)
         {
-            this.MovementPatternList = new IMovementPattern[] {
+            MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.DiagonalPattern()
             };
         }

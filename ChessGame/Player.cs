@@ -16,7 +16,7 @@
         /// <param name="name">The nickname of the player.</param>
         public Player(string name)
         {
-            this.Nickname = name;
+            Nickname = name;
         }
 
         /// <summary>
@@ -31,6 +31,6 @@
         /// Returns player nickname.
         /// </summary>
         /// <returns>Nickname of player.</returns>
-        public override string ToString() => this.Nickname;
+        public override string ToString() => Nickname;
     }
 }

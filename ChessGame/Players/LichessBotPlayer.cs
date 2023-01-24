@@ -29,8 +29,8 @@
             : base(name)
         {
             this.gameID = gameID;
-            this.httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            this.localGameStream = new StreamReader(this.GetGameStream());
+            httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            localGameStream = new StreamReader(GetGameStream());
         }
 
         /// <summary>
@@ -42,11 +42,11 @@
         public LichessBotPlayer(string name, string token, TeamColor localPlayerColor)
             : base(name)
         {
-            this.httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            this.localEventStream = new StreamReader(this.GetEventStream());
-            this.CreateSeek(localPlayerColor);
-            this.gameID = this.ReceiveGame();
-            this.localGameStream = new StreamReader(this.GetGameStream());
+            httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            localEventStream = new StreamReader(GetEventStream());
+            CreateSeek(localPlayerColor);
+            gameID = ReceiveGame();
+            localGameStream = new StreamReader(GetGameStream());
         }
 
         /// <summary>
@@ -55,7 +55,7 @@
         /// <returns>Returns event stream.</returns>
         public Stream GetEventStream()
         {
-            return this.httpClient.GetStreamAsync("https://lichess.org/api/stream/event").Result;
+            return httpClient.GetStreamAsync("https://lichess.org/api/stream/event").Result;
         }
 
         /// <summary>
@@ -65,7 +65,7 @@
         /// <returns>Returns game stream.</returns>
         public Stream GetGameStream()
         {
-            return this.httpClient.GetStreamAsync($"https://lichess.org/api/bot/game/stream/{this.gameID}").Result;
+            return httpClient.GetStreamAsync($"https://lichess.org/api/bot/game/stream/{gameID}").Result;
         }
 
         /// <inheritdoc/>
@@ -73,22 +73,22 @@
         {
             if (board.Moves.Count > 0)
             {
-                this.SendMove(board.Moves.Peek());
+                SendMove(board.Moves.Peek());
             }
 
-            board.PerformMove(this.ReceiveMove(board.CurrentTeamTurn), MoveNotation.UCI);
+            board.PerformMove(ReceiveMove(board.CurrentTeamTurn), MoveNotation.UCI);
         }
 
         /// <summary>
         /// Resigns the game.
         /// </summary>
-        public void ResignGame() => this.httpClient.PostAsync($"https://lichess.org/api/bot/game/{this.gameID}/resign", null);
+        public void ResignGame() => httpClient.PostAsync($"https://lichess.org/api/bot/game/{gameID}/resign", null);
 
         /// <summary>
         /// Sends a move to a game.
         /// </summary>
         /// <param name="move">Move instance.</param>
-        public void SendMove(Move move) => this.SendMove(move.ToString(MoveNotation.UCI));
+        public void SendMove(Move move) => SendMove(move.ToString(MoveNotation.UCI));
 
         /// <summary>
         /// Sends a move in UCI-notation to a game.
@@ -96,7 +96,7 @@
         /// <param name="move">Move in UCI-notation.</param>
         public void SendMove(string move)
         {
-            this.httpClient.PostAsync($"https://lichess.org/api/bot/game/{this.gameID}/move/{move}", null);
+            httpClient.PostAsync($"https://lichess.org/api/bot/game/{gameID}/move/{move}", null);
         }
 
         void CreateSeek(TeamColor color)
@@ -109,7 +109,7 @@
                 ["increment"] = "0",
             };
 
-            this.httpClient.PostAsync("https://lichess.org/api/board/seek", new FormUrlEncodedContent(postParameters));
+            httpClient.PostAsync("https://lichess.org/api/board/seek", new FormUrlEncodedContent(postParameters));
         }
 
         /// <summary>
@@ -123,14 +123,14 @@
             {
                 // update latest game info.
                 string line;
-                while ((line = this.localEventStream.ReadLine()) != string.Empty)
+                while ((line = localEventStream.ReadLine()) != string.Empty)
                 {
-                    this.ParseEventStreamObject(line);
+                    ParseEventStreamObject(line);
                 }
 
-                if (!(this.gameID is null))
+                if (!(gameID is null))
                 {
-                    return this.gameID;
+                    return gameID;
                 }
 
                 Thread.Sleep(250);
@@ -149,19 +149,19 @@
             {
                 // update latest game info.
                 string line;
-                while ((line = this.localGameStream.ReadLine()) != string.Empty)
+                while ((line = localGameStream.ReadLine()) != string.Empty)
                 {
-                    this.ParseGameStreamObject(line);
+                    ParseGameStreamObject(line);
                 }
 
                 // if divisible by 2, then it's white's turn
-                TeamColor waitingFor = this.lichessMoves.Length % 2 != 0 ? TeamColor.White : TeamColor.Black;
+                TeamColor waitingFor = lichessMoves.Length % 2 != 0 ? TeamColor.White : TeamColor.Black;
 
                 // should be waiting for this player
-                if (waitingFor == player && this.receivedMove)
+                if (waitingFor == player && receivedMove)
                 {
-                    this.receivedMove = false;
-                    return this.lichessMoves[this.lichessMoves.Length - 1];
+                    receivedMove = false;
+                    return lichessMoves[lichessMoves.Length - 1];
                 }
                 else
                 {
@@ -193,8 +193,8 @@
                         gameState = obj.Root;
                     }
 
-                    this.lichessMoves = ((string)gameState["moves"]).Split(' ');
-                    this.receivedMove = true;
+                    lichessMoves = ((string)gameState["moves"]).Split(' ');
+                    receivedMove = true;
                     break;
                 default:
                     break;
@@ -215,7 +215,7 @@
             switch (msgType)
             {
                 case "gameStart":
-                    this.gameID = (string)obj["game"]["id"];
+                    gameID = (string)obj["game"]["id"];
                     break;
                 default:
                     break;

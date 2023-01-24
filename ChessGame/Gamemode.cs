@@ -58,8 +58,8 @@
         /// <param name="playerBlack">The player instance of player black.</param>
         public Gamemode(Player playerWhite, Player playerBlack)
         {
-            this.PlayerWhite = playerWhite;
-            this.PlayerBlack = playerBlack;
+            PlayerWhite = playerWhite;
+            PlayerBlack = playerBlack;
         }
 
         /// <summary>
@@ -162,7 +162,7 @@
                 // checkmate
                 if (board.CurrentState == GameState.Check)
                 {
-                    this.Winner = board.CurrentTeamTurn == TeamColor.White ? this.PlayerBlack : this.PlayerWhite;
+                    Winner = board.CurrentTeamTurn == TeamColor.White ? PlayerBlack : PlayerWhite;
                     board.CurrentState = GameState.Checkmate;
                 }
                 else
@@ -185,9 +185,9 @@
         /// <returns>False if game has ended.</returns>
         public virtual bool StartTurn(Chessboard board)
         {
-            if (this.UpdateGameState(board))
+            if (UpdateGameState(board))
             {
-                this.GameStateChanged?.Invoke(board.CurrentState);
+                GameStateChanged?.Invoke(board.CurrentState);
 
                 switch (board.CurrentState)
                 {
@@ -197,7 +197,7 @@
                 }
             }
 
-            this.TurnChanged?.Invoke();
+            TurnChanged?.Invoke();
             return true;
         }
     }

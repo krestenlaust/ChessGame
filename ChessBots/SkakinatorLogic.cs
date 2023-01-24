@@ -48,13 +48,13 @@
                     newDepth = depth - 1;
                 }
 
-                if (this.transpositionTable.TryGetValue(childNode, out float precalculatedEvaluation))
+                if (transpositionTable.TryGetValue(childNode, out float precalculatedEvaluation))
                 {
                     bestEvaluation = precalculatedEvaluation;
                 }
                 else
                 {
-                    float newEvaluation = this.MinimaxSearch(childNode, newDepth, alpha, beta);
+                    float newEvaluation = MinimaxSearch(childNode, newDepth, alpha, beta);
 
                     if (maximize)
                     {
@@ -81,7 +81,7 @@
                 }
             }
 
-            this.transpositionTable[board] = bestEvaluation;
+            transpositionTable[board] = bestEvaluation;
             return bestEvaluation;
         }
 
@@ -100,7 +100,7 @@
             {
                 Chessboard rootNode = new Chessboard(board, move);
 
-                float evaluation = this.MinimaxSearch(rootNode, targetDepth - 1, float.MinValue, float.MaxValue);
+                float evaluation = MinimaxSearch(rootNode, targetDepth - 1, float.MinValue, float.MaxValue);
                 moves.Add((evaluation, move));
             }
 
@@ -145,7 +145,7 @@
             }
 
             // Clean-up
-            this.transpositionTable.Clear();
+            transpositionTable.Clear();
 
             return sortedMoves[0];
         }
@@ -163,7 +163,7 @@
 
             List<(float, Move)> moves = new List<(float, Move)>();
             List<Move> availableMoves = board.GetMoves().ToList();
-            this.SingleMoveCalculated?.Invoke(0, availableMoves.Count, null, StaticEvaluation(board, 1));
+            SingleMoveCalculated?.Invoke(0, availableMoves.Count, null, StaticEvaluation(board, 1));
 
             foreach (var move in availableMoves)
             {
@@ -174,9 +174,9 @@
                 moveTasks.Add(
                     Task.Run(() =>
                     {
-                        float evaluation = this.MinimaxSearch(rootNode, targetDepth - 1, float.MinValue, float.MaxValue);
+                        float evaluation = MinimaxSearch(rootNode, targetDepth - 1, float.MinValue, float.MaxValue);
                         moves.Add((evaluation, move));
-                        this.SingleMoveCalculated?.Invoke(moves.Count, availableMoves.Count, move, evaluation);
+                        SingleMoveCalculated?.Invoke(moves.Count, availableMoves.Count, move, evaluation);
                         ss.Release();
                     }));
             }
@@ -224,7 +224,7 @@
             }
 
             // Clean-up
-            this.transpositionTable.Clear();
+            transpositionTable.Clear();
 
             return sortedMoves[0];
         }

@@ -4,7 +4,7 @@
     {
         public Rook(TeamColor teamColor) : base('R', 5, teamColor)
         {
-            this.MovementPatternList = new IMovementPattern[] {
+            MovementPatternList = new IMovementPattern[] {
                 new MovementPatterns.CardinalPattern()
             };
         }
