@@ -64,7 +64,6 @@
   <ItemGroup>
     <Compile Include="Gamemodes\CheckMateTest.cs" />
     <Compile Include="Gamemodes\Horde.cs" />
-    <Compile Include="PartialPieceMove.cs" />
     <Compile Include="Players\LichessBotPlayer.cs" />
     <Compile Include="Chessboard.cs" />
     <Compile Include="Coordinate.cs" />

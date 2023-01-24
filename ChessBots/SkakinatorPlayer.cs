@@ -1,5 +1,5 @@
-﻿using ChessGame;
-using System;
+﻿using System;
+using ChessGame;
 
 namespace ChessBots
 {
@@ -36,8 +36,10 @@ namespace ChessBots
             logic = new SkakinatorLogic();
             if (enableUI)
             {
-                UI = new BotUI();
-                UI.Text = $"Bot info: {name}";
+                UI = new BotUI
+                {
+                    Text = $"Bot info: {name}",
+                };
                 UI.Show();
                 logic.SingleMoveCalculated += Logic_onSingleMoveCalculated;
             }

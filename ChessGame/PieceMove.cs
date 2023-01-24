@@ -116,6 +116,7 @@ namespace ChessGame
                     {
                         return Source.ToString() + Destination.ToString() + PromotePiece.Notation;
                     }
+
                 case MoveNotation.StandardAlgebraic:
                     return ToString();
                 default:

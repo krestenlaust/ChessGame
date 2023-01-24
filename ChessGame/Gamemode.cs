@@ -44,12 +44,13 @@
     /// </summary>
     public abstract class Gamemode
     {
+        public readonly Player PlayerWhite;
+        public readonly Player PlayerBlack;
+
         /// <summary>
         /// Null if no winner has been selected.
         /// </summary>
         public Player Winner;
-        public readonly Player PlayerWhite;
-        public readonly Player PlayerBlack;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Gamemode"/> class.

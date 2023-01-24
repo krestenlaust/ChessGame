@@ -49,6 +49,7 @@ namespace ChessGame.MovementPatterns
                         new PieceMove(null, enPassentTargetLeft, capturedPiece, false),
                     }, piece.Color);
                 }
+
                 yield break;
             }
 

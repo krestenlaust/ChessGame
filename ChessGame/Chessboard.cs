@@ -1,7 +1,7 @@
-﻿using ChessGame.Pieces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ChessGame.Pieces;
 
 namespace ChessGame
 {
