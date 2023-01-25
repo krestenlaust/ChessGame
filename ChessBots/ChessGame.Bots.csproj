@@ -7,8 +7,8 @@
     <ProjectGuid>{40B29C7C-8E24-496C-BA44-4330949F1D38}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ChessBots</RootNamespace>
-    <AssemblyName>ChessBots</AssemblyName>
+    <RootNamespace>ChessGame.Bots</RootNamespace>
+    <AssemblyName>ChessGame.Bots</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

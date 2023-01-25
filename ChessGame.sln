@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30717.126
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessGame", "ChessGame\ChessGame.csproj", "{63C22B99-D079-4C8E-9F60-A27BCD082FA3}"
 EndProject
@@ -14,9 +14,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessForms", "ChessForms\ChessForms.csproj", "{E6DC8C1B-6EAA-4011-946C-D106820A6E17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessBots", "ChessBots\ChessBots.csproj", "{40B29C7C-8E24-496C-BA44-4330949F1D38}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessGame.Bots", "ChessBots\ChessGame.Bots.csproj", "{40B29C7C-8E24-496C-BA44-4330949F1D38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessUnitTests", "ChessUnitTests\ChessUnitTests.csproj", "{439C98C0-0D5D-4ACF-82BF-6434DF9B7CA7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessGame.Tests", "ChessUnitTests\ChessGame.Tests.csproj", "{439C98C0-0D5D-4ACF-82BF-6434DF9B7CA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessGame.Bots.Tests", "ChessBots.Tests\ChessGame.Bots.Tests.csproj", "{F13EEB1E-FC45-4000-AE6F-E0E16A2902A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +46,10 @@ Global
 		{439C98C0-0D5D-4ACF-82BF-6434DF9B7CA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{439C98C0-0D5D-4ACF-82BF-6434DF9B7CA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{439C98C0-0D5D-4ACF-82BF-6434DF9B7CA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F13EEB1E-FC45-4000-AE6F-E0E16A2902A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F13EEB1E-FC45-4000-AE6F-E0E16A2902A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F13EEB1E-FC45-4000-AE6F-E0E16A2902A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F13EEB1E-FC45-4000-AE6F-E0E16A2902A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

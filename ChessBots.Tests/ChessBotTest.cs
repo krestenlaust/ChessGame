@@ -1,9 +1,7 @@
-﻿using ChessBots;
-using ChessGame;
-using ChessGame.Gamemodes;
+﻿using ChessGame.Gamemodes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ChessUnitTests
+namespace ChessGame.Bots.Tests
 {
     [TestClass]
     public class ChessBotTest
@@ -17,7 +15,7 @@ namespace ChessUnitTests
             // intial move
             Chessboard board = new ClassicChess(null, null).GenerateBoard();
 
-            SkakinatorLogic logic = new SkakinatorLogic();
+            ChessBots.SkakinatorLogic logic = new ChessBots.SkakinatorLogic();
             logic.GenerateMoveParallel(board, 2);
 
             board[new Coordinate("c2")] = null;

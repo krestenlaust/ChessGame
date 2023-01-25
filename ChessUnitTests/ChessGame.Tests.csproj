@@ -8,7 +8,7 @@
     <ProjectGuid>{439C98C0-0D5D-4ACF-82BF-6434DF9B7CA7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ChessUnitTests</RootNamespace>
+    <RootNamespace>ChessGame.Tests</RootNamespace>
     <AssemblyName>ChessUnitTests</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -49,7 +49,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChessBotTest.cs" />
     <Compile Include="ClassicChessTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -57,10 +56,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ChessBots\ChessBots.csproj">
-      <Project>{40b29c7c-8e24-496c-ba44-4330949f1d38}</Project>
-      <Name>ChessBots</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ChessGame\ChessGame.csproj">
       <Project>{63c22b99-d079-4c8e-9f60-a27bcd082fa3}</Project>
       <Name>ChessGame</Name>

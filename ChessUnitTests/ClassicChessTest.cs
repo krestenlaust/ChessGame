@@ -1,11 +1,10 @@
-﻿using ChessGame;
-using ChessGame.Gamemodes;
+﻿using ChessGame.Gamemodes;
 using ChessGame.Pieces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ChessUnitTests
+namespace ChessGame.Tests
 {
     [TestClass]
     public class ClassicChessTest
@@ -39,6 +38,7 @@ namespace ChessUnitTests
                 new Coordinate("f2"),
                 new Coordinate("f1")
             };
+
             List<Move> moves = chessboard.GetMoves().ToList();
 
             // check if the amount of moves even is correct.
