@@ -51,10 +51,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ChessBots\ChessGame.Bots.csproj">
-      <Project>{40b29c7c-8e24-496c-ba44-4330949f1d38}</Project>
-      <Name>ChessGame.Bots</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ChessGame\ChessGame.csproj">
       <Project>{63c22b99-d079-4c8e-9f60-a27bcd082fa3}</Project>
       <Name>ChessGame</Name>

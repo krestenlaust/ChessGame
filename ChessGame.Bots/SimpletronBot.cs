@@ -1,4 +1,4 @@
-﻿namespace ChessBots
+﻿namespace ChessGame.Bots
 {
     using System.Collections.Concurrent;
     using System.Collections.Generic;

@@ -1,7 +1,7 @@
 ﻿using System;
 using ChessGame;
 
-namespace ChessBots
+namespace ChessGame.Bots
 {
     /// <summary>
     /// The player referenced by chess games implemented using <c>ChessGame</c> library.

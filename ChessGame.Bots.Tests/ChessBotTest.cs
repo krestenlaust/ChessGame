@@ -15,7 +15,7 @@ namespace ChessGame.Bots.Tests
             // intial move
             Chessboard board = new ClassicChess(null, null).GenerateBoard();
 
-            ChessBots.SkakinatorLogic logic = new ChessBots.SkakinatorLogic();
+            SkakinatorLogic logic = new SkakinatorLogic();
             logic.GenerateMoveParallel(board, 2);
 
             board[new Coordinate("c2")] = null;

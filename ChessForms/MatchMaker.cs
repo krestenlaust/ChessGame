@@ -1,4 +1,4 @@
-﻿using ChessBots;
+﻿using ChessGame.Bots;
 using ChessGame;
 using ChessGame.Gamemodes;
 using ChessGame.Players;

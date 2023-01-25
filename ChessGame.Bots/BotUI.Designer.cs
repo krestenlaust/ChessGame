@@ -1,5 +1,5 @@
 ﻿
-namespace ChessBots
+namespace ChessGame.Bots
 {
     partial class BotUI
     {
