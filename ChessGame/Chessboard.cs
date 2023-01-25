@@ -207,6 +207,7 @@ namespace ChessGame
             if (CurrentState == GameState.NotStarted)
             {
                 CurrentState = GameState.Started;
+                UpdateDangerzones();
             }
 
             // change turn
