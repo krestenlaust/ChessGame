@@ -2,7 +2,7 @@
 using System.Text;
 using System.Threading;
 
-namespace ChessGame
+namespace ChessGame.Players
 {
     public class NetworkedPlayer : Player
     {

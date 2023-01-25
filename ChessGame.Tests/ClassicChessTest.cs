@@ -9,8 +9,9 @@ namespace ChessGame.Tests
     [TestClass]
     public class ClassicChessTest
     {
+        // TODO: refine test method, make it shorter and simpler.
         [TestMethod]
-        public void CheckPatterns()
+        public void CheckPatternsTest()
         {
             Player player1 = new Player("player1");
             Player player2 = new Player("player2");
@@ -18,8 +19,8 @@ namespace ChessGame.Tests
 
             // https://lichess.org/editor/8/8/8/8/8/2pp4/8/k3K3_w_-_-_0_1
             Chessboard chessboard = new Chessboard(8, 8, gamemode);
-            chessboard[new Coordinate(0, 0)] = new King(TeamColor.Black);
             chessboard[new Coordinate(4, 0)] = new King(TeamColor.White);
+            chessboard[new Coordinate(0, 0)] = new King(TeamColor.Black);
             chessboard[new Coordinate(2, 2)] = new Pawn(TeamColor.Black);
             chessboard[new Coordinate(3, 2)] = new Pawn(TeamColor.Black);
 
@@ -65,6 +66,7 @@ namespace ChessGame.Tests
                 new Coordinate("d2"),
                 new Coordinate("c2")
             };
+
             moves = chessboard.GetMoves().ToList();
 
             Assert.IsTrue(moves.Count == possibleMoves.Count);
@@ -104,7 +106,7 @@ namespace ChessGame.Tests
         }
 
         [TestMethod]
-        public void CoordinateNotationParsing()
+        public void CoordinateNotationParsingTest()
         {
             Coordinate testCoord = new Coordinate("a1");
 

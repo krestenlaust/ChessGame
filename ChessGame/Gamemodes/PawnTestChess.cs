@@ -1,7 +1,7 @@
-﻿namespace ChessGame.Gamemodes
-{
-    using ChessGame.Pieces;
+﻿using ChessGame.Pieces;
 
+namespace ChessGame.Gamemodes
+{
     /// <summary>
     /// Test implementation of a gamemode. Only pawns and kings.
     /// </summary>

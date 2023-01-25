@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace ChessGame.Bots.Tests
 {
     [TestClass]
-    public class ChessBotTest
+    public class SkakinatorTests
     {
         /// <summary>
         /// Tests the performance of the Skakinator bot.

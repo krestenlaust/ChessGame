@@ -4,7 +4,7 @@ using System.Text;
 namespace ChessGame
 {
     /// <summary>
-    /// Describes a complete set of moves, the average move only contains one <c>PieceMove</c>,
+    /// Describes a complete set of submoves, the average move only contains one <c>PieceMove</c>,
     /// castling e.g. contains two <c>PieceMove</c>s.
     /// </summary>
     public class Move : IEqualityComparer<Move>
@@ -35,23 +35,23 @@ namespace ChessGame
         /// <summary>
         /// Initializes a new instance of the <see cref="Move"/> class.
         /// </summary>
-        /// <param name="moves"></param>
+        /// <param name="submoves"></param>
         /// <param name="color"></param>
-        public Move(PieceMove[] moves, TeamColor color)
+        public Move(PieceMove[] submoves, TeamColor color)
         {
-            Submoves = moves;
+            Submoves = submoves;
             Color = color;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Move"/> class.
         /// </summary>
-        /// <param name="moves"></param>
+        /// <param name="submoves"></param>
         /// <param name="notation"></param>
         /// <param name="color"></param>
-        public Move(PieceMove[] moves, string notation, TeamColor color)
+        public Move(PieceMove[] submoves, string notation, TeamColor color)
         {
-            Submoves = moves;
+            Submoves = submoves;
             CustomNotation = notation;
             Color = color;
         }
