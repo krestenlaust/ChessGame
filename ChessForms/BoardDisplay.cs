@@ -303,9 +303,14 @@ namespace ChessForms
         /// </summary>
         void DrawDangerzone()
         {
-            foreach (KeyValuePair<Coordinate, List<Piece>> item in chessboard.Dangerzone)
+            foreach (KeyValuePair<Coordinate, HashSet<Piece>> item in chessboard.Dangerzone)
             {
                 if (!chessboard.InsideBoard(item.Key))
+                {
+                    continue;
+                }
+
+                if (item.Value.Count == 0)
                 {
                     continue;
                 }

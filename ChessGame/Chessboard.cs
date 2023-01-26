@@ -23,7 +23,7 @@ namespace ChessGame
         /// <summary>
         /// Describes intersection squares. An intersection square is a square which one or more pieces threaten at once.
         /// </summary>
-        public readonly Dictionary<Coordinate, List<Piece>> Dangerzone;
+        public readonly Dictionary<Coordinate, HashSet<Piece>> Dangerzone;
 
         /// <summary>
         /// Previous moves, that resolve to this position.
@@ -79,8 +79,11 @@ namespace ChessGame
             MovedPieces = new HashSet<Piece>(board.MovedPieces);
             Moves = new Stack<Move>(board.Moves);
 
-            // not needed before executing move
-            Dangerzone = new Dictionary<Coordinate, List<Piece>>();
+            Dangerzone = new Dictionary<Coordinate, HashSet<Piece>>();
+            foreach (var item in board.Dangerzone)
+            {
+                Dangerzone[item.Key] = new HashSet<Piece>(item.Value);
+            }
         }
 
         /// <summary>
@@ -100,8 +103,11 @@ namespace ChessGame
             MovedPieces = new HashSet<Piece>(board.MovedPieces);
             Moves = new Stack<Move>(board.Moves.Reverse());
 
-            // is refreshed in simulatemove
-            Dangerzone = new Dictionary<Coordinate, List<Piece>>();
+            Dangerzone = new Dictionary<Coordinate, HashSet<Piece>>();
+            foreach (var item in board.Dangerzone)
+            {
+                Dangerzone[item.Key] = new HashSet<Piece>(item.Value);
+            }
 
             SimulateMove(move);
         }
@@ -121,7 +127,7 @@ namespace ChessGame
             CurrentState = GameState.NotStarted;
 
             Pieces = new Dictionary<Coordinate, Piece>();
-            Dangerzone = new Dictionary<Coordinate, List<Piece>>();
+            Dangerzone = new Dictionary<Coordinate, HashSet<Piece>>();
             Moves = new Stack<Move>();
             MovedPieces = new HashSet<Piece>();
         }
@@ -273,6 +279,8 @@ namespace ChessGame
 
             foreach (var singleMove in move.Submoves)
             {
+                RemoveDangerzones(singleMove.Piece);
+
                 // remove piece
                 if (singleMove.Destination is null)
                 {
@@ -283,7 +291,7 @@ namespace ChessGame
                 Coordinate destination = singleMove.Destination.Value;
 
                 // Remove previous instance
-                if (!(singleMove.Source is null))
+                if (singleMove.Source.HasValue)
                 {
                     Pieces.Remove(singleMove.Source.Value);
                 }
@@ -312,10 +320,12 @@ namespace ChessGame
                 }
             }
 
+            UpdateDangerzones(move);
+
             // TODO: Only update neccessary dangerzones.
             // It should be possible to only update the pieces with dangerzone on Source square, and on Destination square.
             // And the moved piece itself.
-            UpdateDangerzones();
+            //UpdateDangerzones();
         }
 
         /// <summary>
@@ -340,7 +350,7 @@ namespace ChessGame
             }
 
             // Get list of pieces aiming on the square the king sits on.
-            if (Dangerzone.TryGetValue(position, out List<Piece> pieces))
+            if (Dangerzone.TryGetValue(position, out HashSet<Piece> pieces))
             {
                 // Returns true if any of the pieces are of opposite color.
                 return pieces.Any(p => p.Color != color);
@@ -438,8 +448,20 @@ namespace ChessGame
                 customNotation = true;
             }
 
+            // TODO: Lookup moves by piece on source tile (when known) instead of all moves.
+            IEnumerable<Move> movesToSearch;
+
+            if (source.HasValue && GetPiece(source.Value) is Piece piece)
+            {
+                movesToSearch = piece.GetMoves(this);
+            }
+            else
+            {
+                movesToSearch = GetMoves(player);
+            }
+
             // Look for matching moves.
-            foreach (var move in GetMoves(player))
+            foreach (var move in movesToSearch)
             {
                 // If looking for move by custom notation, return it here.
                 if (customNotation && move.CustomNotation == notation)
@@ -505,7 +527,7 @@ namespace ChessGame
         /// <returns></returns>
         public int IsDangerSquare(Coordinate position, TeamColor color)
         {
-            if (Dangerzone.TryGetValue(position, out List<Piece> pieces))
+            if (Dangerzone.TryGetValue(position, out HashSet<Piece> pieces))
             {
                 return pieces is null ? 0 : pieces.Count(p => p.Color == color);
             }
@@ -520,7 +542,7 @@ namespace ChessGame
         /// <returns></returns>
         public int GetDangerSquareSum(Coordinate position)
         {
-            if (!Dangerzone.TryGetValue(position, out List<Piece> pieces))
+            if (!Dangerzone.TryGetValue(position, out HashSet<Piece> pieces))
             {
                 // No pieces can capture this tile.
                 return 0;
@@ -541,6 +563,67 @@ namespace ChessGame
             }
 
             return sum;
+        }
+
+        void RemoveDangerzones(Piece piece)
+        {
+            List<Coordinate> emptyLists = new List<Coordinate>();
+
+            foreach (var item in Dangerzone)
+            {
+                item.Value.Remove(piece);
+
+                if (item.Value.Count == 0)
+                {
+                    emptyLists.Add(item.Key);
+                }
+            }
+
+            foreach (var item in emptyLists)
+            {
+                Dangerzone.Remove(item);
+            }
+        }
+
+        /// <summary>
+        /// Run after a move has been made.
+        /// </summary>
+        /// <param name="move"></param>
+        void UpdateDangerzones(Move move)
+        {
+            HashSet<Piece> piecesAffected = new HashSet<Piece>();
+            for (int i = 0; i < move.Submoves.Length; i++)
+            {
+                if (move.Submoves[i].Source is Coordinate source && Dangerzone.TryGetValue(source, out HashSet<Piece> piecesAimingAtSource))
+                {
+                    foreach (var piece in piecesAimingAtSource)
+                    {
+                        piecesAffected.Add(piece);
+                    }
+                }
+
+                if (move.Submoves[i].Destination is Coordinate destination && Dangerzone.TryGetValue(destination, out HashSet<Piece> piecesAimingAtDestination))
+                {
+                    foreach (var piece in piecesAimingAtDestination)
+                    {
+                        piecesAffected.Add(piece);
+                    }
+                }
+
+                if (move.Submoves[i].PromotePiece is Piece promotePiece)
+                {
+                    piecesAffected.Add(promotePiece);
+                }
+                else
+                {
+                    piecesAffected.Add(move.Submoves[i].Piece);
+                }
+            }
+
+            foreach (var piece in piecesAffected)
+            {
+                UpdateDangerzones(piece);
+            }
         }
 
         /// <summary>
@@ -565,7 +648,7 @@ namespace ChessGame
                     // Make new list of pieces aiming on this square if there isn't one already.
                     if (!Dangerzone.ContainsKey(destination))
                     {
-                        Dangerzone[destination] = new List<Piece>();
+                        Dangerzone[destination] = new HashSet<Piece>();
                     }
 
                     // Add this move to dangerzone.

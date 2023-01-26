@@ -43,7 +43,7 @@ namespace ChessGame.Tests
             List<Move> moves = chessboard.GetMoves().ToList();
 
             // check if the amount of moves even is correct.
-            Assert.IsTrue(moves.Count == possibleMoves.Count);
+            Assert.AreEqual(possibleMoves.Count, moves.Count);
 
             // checks if all moves are valid.
             foreach (var item in moves)

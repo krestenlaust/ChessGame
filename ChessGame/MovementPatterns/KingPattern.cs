@@ -25,11 +25,6 @@ namespace ChessGame.MovementPatterns
                         continue;
                     }
 
-                    // whether the position is occupied.
-                    Piece occupyingPiece = board.GetPiece(newPosition);
-
-                    TeamColor oppositeColor = piece.Color == TeamColor.Black ? TeamColor.White : TeamColor.Black;
-
                     // moved to before check dangersquare to possibly prevent weird king movement.
                     if (guardedSquaresOnly) // return all protected squares
                     {
@@ -37,11 +32,16 @@ namespace ChessGame.MovementPatterns
                         continue;
                     }
 
+                    TeamColor oppositeColor = piece.Color == TeamColor.Black ? TeamColor.White : TeamColor.Black;
+
                     // The king would put itself in check.
                     if (board.IsDangerSquare(newPosition, oppositeColor) > 0)
                     {
                         continue;
                     }
+
+                    // whether the position is occupied.
+                    Piece occupyingPiece = board.GetPiece(newPosition);
 
                     // is position empty?
                     if (occupyingPiece is null)
