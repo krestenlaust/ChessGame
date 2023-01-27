@@ -109,7 +109,7 @@ namespace ChessGame
                     break;
             }
 
-            return "";
+            return string.Empty;
         }
 
         public override string ToString()
