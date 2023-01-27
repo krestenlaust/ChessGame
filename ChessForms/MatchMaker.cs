@@ -97,9 +97,9 @@ namespace ChessForms
                         return new NetworkedPlayer(name, tcpClient.GetStream());
                     }
                 case PlayerType.LichessPlayer:
-                    return new LichessBotPlayer("lichess-player", "", textBoxBlackLichessMatchID.Text);
+                    return new LichessBotPlayer("lichess-player", string.Empty, textBoxBlackLichessMatchID.Text);
                 case PlayerType.LichessPlayerSeek:
-                    return new LichessBotPlayer("lichess-player", "", TeamColor.White);
+                    return new LichessBotPlayer("lichess-player", string.Empty, TeamColor.White);
                 default:
                     return null;
             }

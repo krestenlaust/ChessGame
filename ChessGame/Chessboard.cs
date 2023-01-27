@@ -326,7 +326,7 @@ namespace ChessGame
         public bool IsKingInCheck(TeamColor color)
         {
             Piece king = null;
-            var position = new Coordinate();
+            var position = default(Coordinate);
 
             // Get first king, with this color, and it's position.
             (king, position) = (from piece in GetPieces<King>()
@@ -609,7 +609,7 @@ namespace ChessGame
             }
             catch (ArgumentNullException)
             {
-                position = new Coordinate();
+                position = default(Coordinate);
                 return false;
             }
         }
@@ -632,9 +632,11 @@ namespace ChessGame
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public List<(Piece piece, Coordinate position)> GetPieces<T>() where T : Piece => (from piece in Pieces
-                                                                                           where piece.Value is T
-                                                                                           select (piece.Value, piece.Key)).ToList();
+        public List<(Piece piece, Coordinate position)> GetPieces<T>()
+            where T : Piece
+            => (from piece in Pieces
+                where piece.Value is T
+                select (piece.Value, piece.Key)).ToList();
 
         public override bool Equals(object obj)
         {
