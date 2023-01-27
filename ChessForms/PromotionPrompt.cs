@@ -42,7 +42,7 @@ namespace ChessForms
                     SizeMode = PictureBoxSizeMode.Zoom,
                     BorderStyle = BorderStyle.FixedSingle,
                     Width = 200,
-                    Height = 200
+                    Height = 200,
                 };
                 control.Click += Control_Click;
 

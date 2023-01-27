@@ -30,7 +30,7 @@ namespace ChessGame.Tests
             chessboard.StartNextTurn();
 
             // - Check dangerzones
-            HashSet<Piece> piecesAimingAtB2 = chessboard.Dangerzone[new Coordinate(1, 1)];
+            ICollection<Piece> piecesAimingAtB2 = chessboard.Dangerzone[new Coordinate(1, 1)];
             // Black king aiming at B2.
             Assert.IsTrue(piecesAimingAtB2.Contains(blackKing));
             // Right pawn aiming at B2.
@@ -69,7 +69,7 @@ namespace ChessGame.Tests
             chessboard.CurrentTeamTurn = TeamColor.Black;
             chessboard.PerformMove("c2c1R", MoveNotation.UCI);
 
-            HashSet<Piece> piecesAimingAtE1 = chessboard.Dangerzone[new Coordinate(4, 0)];
+            ICollection<Piece> piecesAimingAtE1 = chessboard.Dangerzone[new Coordinate(4, 0)];
 
             // Rook aiming at E1.
             Assert.IsTrue(piecesAimingAtE1.Contains(chessboard[new Coordinate(2, 0)]));
