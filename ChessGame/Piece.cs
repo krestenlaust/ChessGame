@@ -70,6 +70,7 @@ namespace ChessGame
 
         public override string ToString() => Notation.ToString();
 
+        /*
         public override bool Equals(object obj)
         {
             return obj is Piece piece &&
@@ -85,6 +86,6 @@ namespace ChessGame
             hashCode = hashCode * -1521134295 + Color.GetHashCode();
             hashCode = hashCode * -1521134295 + MaterialValue.GetHashCode();
             return hashCode;
-        }
+        }*/
     }
 }
