@@ -1,6 +1,7 @@
 ﻿namespace ChessGame.Bots
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
@@ -15,7 +16,7 @@
     {
         const float CenterSquareModifier = 0.2f;
         const float CenterSquareRawValue = 0.5f;
-        readonly Dictionary<Chessboard, float> transpositionTable = new Dictionary<Chessboard, float>();
+        readonly ConcurrentDictionary<Chessboard, float> transpositionTable = new ConcurrentDictionary<Chessboard, float>();
 
         /// <summary>
         /// Called once a move has been calculated.
