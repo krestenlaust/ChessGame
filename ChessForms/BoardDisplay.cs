@@ -277,7 +277,7 @@ namespace ChessForms
                     Text = ((char)(65 + x)).ToString(),
                     TextAlign = ContentAlignment.MiddleCenter,
                     Dock = DockStyle.Fill,
-                    Font = labelFont
+                    Font = labelFont,
                 };
 
                 tableLayoutPanel1.Controls.Add(label, x, tableLayoutPanel1.RowCount - 1);
@@ -289,7 +289,7 @@ namespace ChessForms
                     Text = (y + 1).ToString(),
                     TextAlign = ContentAlignment.MiddleCenter,
                     Dock = DockStyle.Fill,
-                    Font = labelFont
+                    Font = labelFont,
                 };
 
                 tableLayoutPanel1.Controls.Add(label, tableLayoutPanel1.ColumnCount - 1, y);
