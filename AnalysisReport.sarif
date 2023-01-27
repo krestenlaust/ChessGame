@@ -1,0 +1,325 @@
+﻿{
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Dependency Analysis",
+          "semanticVersion": "0.4.355802",
+          "informationUri": "https://docs.microsoft.com/en-us/dotnet/core/porting/upgrade-assistant-overview",
+          "rules": [
+            {
+              "id": "UA106",
+              "name": "PackageToBeAdded",
+              "fullDescription": {
+                "text": "Packages that need to be added in order to upgrade the project to chosen TFM"
+              },
+              "helpUri": "https://docs.microsoft.com/en-us/dotnet/core/porting/upgrade-assistant-overview"
+            },
+            {
+              "id": "UA103",
+              "name": "ReferenceToBeDeleted",
+              "fullDescription": {
+                "text": "References that need to be deleted in order to upgrade the project to chosen TFM"
+              },
+              "helpUri": "https://docs.microsoft.com/en-us/dotnet/core/porting/upgrade-assistant-overview"
+            },
+            {
+              "id": "UA105",
+              "name": "PackageToBeDeleted",
+              "fullDescription": {
+                "text": "Packages that need to be deleted in order to upgrade the project to chosen TFM"
+              },
+              "helpUri": "https://docs.microsoft.com/en-us/dotnet/core/porting/upgrade-assistant-overview"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.4.355802 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/User/source/repos/ChessGame/ChessGame/ChessGame.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.4.355802 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/User/source/repos/ChessGame/ChessCommandline/ChessCommandline.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.4.355802 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/User/source/repos/ChessGame/ChessForms/ChessForms.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.Windows.Compatibility, Version=7.0.0 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/User/source/repos/ChessGame/ChessForms/ChessForms.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA103",
+          "message": {
+            "text": "System.Windows.Forms.DataVisualization is deprecated, for more details - https://github.com/dotnet/winforms-datavisualization"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/User/source/repos/ChessGame/ChessGame.Bots/ChessGame.Bots.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package System.Windows.Forms.DataVisualization, Version=1.0.0-prerelease.20110.1 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/User/source/repos/ChessGame/ChessGame.Bots/ChessGame.Bots.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.4.355802 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/User/source/repos/ChessGame/ChessGame.Bots/ChessGame.Bots.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.Windows.Compatibility, Version=7.0.0 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/User/source/repos/ChessGame/ChessGame.Bots/ChessGame.Bots.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.4.355802 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/User/source/repos/ChessGame/ChessGame.Bots.Tests/ChessGame.Bots.Tests.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA105",
+          "message": {
+            "text": "Package MSTest.TestAdapter, Version=2.1.1 does not support the target(s) netstandard2.0 but a newer version (2.2.10) does.  Package MSTest.TestAdapter needs to be upgraded from 2.1.1 to 2.2.10."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/User/source/repos/ChessGame/ChessGame.Tests/ChessGame.Tests.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package MSTest.TestAdapter, Version=2.2.10 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/User/source/repos/ChessGame/ChessGame.Tests/ChessGame.Tests.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.4.355802 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/User/source/repos/ChessGame/ChessGame.Tests/ChessGame.Tests.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        }
+      ],
+      "columnKind": "utf16CodeUnits"
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "API Upgradability",
+          "semanticVersion": "0.4.355802",
+          "informationUri": "https://docs.microsoft.com/en-us/dotnet/core/porting/upgrade-assistant-overview"
+        }
+      },
+      "results": [],
+      "columnKind": "utf16CodeUnits"
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "Component Analysis",
+          "semanticVersion": "0.4.355802",
+          "informationUri": "https://docs.microsoft.com/en-us/dotnet/core/porting/upgrade-assistant-overview",
+          "rules": [
+            {
+              "id": "UA209",
+              "name": "Microsoft.DotNet.UpgradeAssistant.Extensions.Windows.WinformsDefaultFontUpdater",
+              "fullDescription": {
+                "text": "Default Font API Alert"
+              },
+              "helpUri": "about:blank"
+            },
+            {
+              "id": "UA202",
+              "name": "Microsoft.DotNet.UpgradeAssistant.Extensions.Windows.WinformsDpiSettingUpdater",
+              "fullDescription": {
+                "text": "Winforms Source Updater"
+              },
+              "helpUri": "about:blank"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "UA209",
+          "message": {
+            "text": "Default font in Windows Forms has been changed from Microsoft Sans Serif to Seg Segoe UI, in order to change the default font use the API - Application.SetDefaultFont(Font font). For more details see here - https://devblogs.microsoft.com/dotnet/whats-new-in-windows-forms-in-net-6-0-preview-5/#application-wide-default-font."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/User/source/repos/ChessGame/ChessForms/ChessForms.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA209",
+          "message": {
+            "text": "Default font in Windows Forms has been changed from Microsoft Sans Serif to Seg Segoe UI, in order to change the default font use the API - Application.SetDefaultFont(Font font). For more details see here - https://devblogs.microsoft.com/dotnet/whats-new-in-windows-forms-in-net-6-0-preview-5/#application-wide-default-font."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/User/source/repos/ChessGame/ChessGame.Bots/ChessGame.Bots.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA202",
+          "message": {
+            "text": "HighDpiMode needs to set in Main() instead of app.config or app.manifest - Application.SetHighDpiMode(HighDpiMode.<setting>). It is recommended to use SystemAware as the HighDpiMode option for better results."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/User/source/repos/ChessGame/ChessForms/Program.cs"
+                },
+                "region": {}
+              }
+            }
+          ]
+        }
+      ],
+      "columnKind": "utf16CodeUnits"
+    }
+  ]
+}
