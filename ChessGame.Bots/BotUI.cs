@@ -18,7 +18,7 @@ public partial class BotUI : Form
         InitializeComponent();
     }
 
-    // TODO: Auto-scroll
+    // TODO: Auto-scroll. Not sure what the intention was here, the move description box already has auto-scroll.
     public int DepthSetting
     {
         get

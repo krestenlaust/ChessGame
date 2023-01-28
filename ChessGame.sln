@@ -5,7 +5,7 @@ VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessGame", "ChessGame\ChessGame.csproj", "{63C22B99-D079-4C8E-9F60-A27BCD082FA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessCommandline", "ChessCommandline\ChessCommandline.csproj", "{0817D85B-ACC8-4BEA-80D0-513D44723B04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessCommandline", "ChessCommandline\ChessCommandline.csproj", "{0817D85B-ACC8-4BEA-80D0-513D44723B04}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6462D10B-855C-40F6-9966-CED34ABD86EC}"
 	ProjectSection(SolutionItems) = preProject
@@ -20,6 +20,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessGame.Bots.Tests", "ChessGame.Bots.Tests\ChessGame.Bots.Tests.csproj", "{F13EEB1E-FC45-4000-AE6F-E0E16A2902A1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessGame.Tests", "ChessGame.Tests\ChessGame.Tests.csproj", "{1B263354-8713-4163-A1A3-7C859A26F26E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessGame.Players", "ChessGame.Players\ChessGame.Players.csproj", "{34091F08-EC8A-4F82-A5B1-8B5279E5E97F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{1B263354-8713-4163-A1A3-7C859A26F26E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B263354-8713-4163-A1A3-7C859A26F26E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B263354-8713-4163-A1A3-7C859A26F26E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34091F08-EC8A-4F82-A5B1-8B5279E5E97F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34091F08-EC8A-4F82-A5B1-8B5279E5E97F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34091F08-EC8A-4F82-A5B1-8B5279E5E97F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34091F08-EC8A-4F82-A5B1-8B5279E5E97F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

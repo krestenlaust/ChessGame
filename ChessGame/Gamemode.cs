@@ -4,54 +4,10 @@ using System;
 using System.Linq;
 
 /// <summary>
-/// The states of a game.
-/// </summary>
-public enum GameState : byte
-{
-    /// <summary>
-    /// The player whose turn it is, doesn't have any available moves.
-    /// </summary>
-    Stalemate,
-
-    /// <summary>
-    /// The player whose turn it is, doesn't have any available moves, that unchecks thier king.
-    /// </summary>
-    Checkmate,
-
-    /// <summary>
-    /// The player whose turn it is, has their king in check.
-    /// </summary>
-    Check,
-
-    /// <summary>
-    /// The game hasn't started yet.
-    /// </summary>
-    NotStarted,
-
-    /// <summary>
-    /// The game has just started.
-    /// </summary>
-    Started,
-
-    /// <summary>
-    /// The game is in such a position that it isn't possible for any player to check the other.
-    /// </summary>
-    DeadPosition,
-}
-
-/// <summary>
 /// The abstract class representing a game. Inherit to implement gamemodes.
 /// </summary>
 public abstract class Gamemode
 {
-    public readonly Player PlayerWhite;
-    public readonly Player PlayerBlack;
-
-    /// <summary>
-    /// Null if no winner has been selected.
-    /// </summary>
-    public Player Winner;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="Gamemode"/> class.
     /// </summary>
@@ -73,6 +29,15 @@ public abstract class Gamemode
     /// </summary>
     public event Action TurnChanged;
 
+    public Player PlayerWhite { get; }
+
+    public Player PlayerBlack { get; }
+
+    /// <summary>
+    /// Gets the player who has won, null if no winner has been selected.
+    /// </summary>
+    public Player Winner { get; private set; }
+
     /// <summary>
     /// Called to setup the chessboard.
     /// </summary>
@@ -87,6 +52,7 @@ public abstract class Gamemode
     /// <returns>Returns whether the move is valid.</returns>
     public virtual bool ValidateMove(Move move, Chessboard board)
     {
+        /* // TODO: Check if this still works. It should be the MovementPattern's responsibility to check whether the move is outside the board.
         // if move is outside board, then it's invalid.
         foreach (var singleMove in move.Submoves)
         {
@@ -99,7 +65,7 @@ public abstract class Gamemode
             {
                 return false;
             }
-        }
+        }*/
 
         // if move puts king in check — it's invalid.
         Chessboard boardSimulation = new Chessboard(board);

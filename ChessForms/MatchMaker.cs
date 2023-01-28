@@ -1,11 +1,11 @@
-﻿using ChessGame.Bots;
-using ChessGame;
-using ChessGame.Gamemodes;
-using ChessGame.Players;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
+using ChessGame;
+using ChessGame.Bots;
+using ChessGame.Gamemodes;
+using ChessGame.Players;
 
 namespace ChessForms;
 

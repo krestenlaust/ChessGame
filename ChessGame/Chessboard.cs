@@ -25,17 +25,6 @@ public class Chessboard : IEquatable<Chessboard>
 {
     public readonly byte Height;
     public readonly byte Width;
-    public readonly Dictionary<Coordinate, Piece> Pieces;
-
-    /// <summary>
-    /// Describes intersection squares. An intersection square is a square which one or more pieces threaten at once.
-    /// </summary>
-    public readonly Dictionary<Coordinate, List<Piece>> Dangerzone;
-
-    /// <summary>
-    /// Previous moves, that resolve to this position.
-    /// </summary>
-    public readonly Stack<Move> Moves;
 
     /// <summary>
     /// A list of pieces, that have moved.
@@ -66,10 +55,10 @@ public class Chessboard : IEquatable<Chessboard>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Chessboard"/> class and simulates a <see cref="Move"/>.
+    /// Initializes a new instance of the <see cref="Chessboard"/> class, performs a deep-copy of the chessboard, and simulates a <see cref="Move"/>.
     /// </summary>
-    /// <param name="board"></param>
-    /// <param name="move"></param>
+    /// <param name="board">The chessboard instance to copy.</param>
+    /// <param name="move">The move to simulate.</param>
     public Chessboard(Chessboard board, Move move)
     {
         Height = board.Height;
@@ -107,6 +96,21 @@ public class Chessboard : IEquatable<Chessboard>
         Moves = new Stack<Move>();
         MovedPieces = new HashSet<Piece>();
     }
+
+    /// <summary>
+    /// Gets the pieces with their associated position on the board.
+    /// </summary>
+    public Dictionary<Coordinate, Piece> Pieces { get; }
+
+    /// <summary>
+    /// Gets a dictionary that describes intersection squares. An intersection square is a square which one or more pieces threaten at once.
+    /// </summary>
+    public Dictionary<Coordinate, List<Piece>> Dangerzone { get; }
+
+    /// <summary>
+    /// Gets previous moves, that resolve to this position.
+    /// </summary>
+    public Stack<Move> Moves { get; }
 
     public GameState CurrentState { get; internal set; }
 

@@ -1,11 +1,11 @@
-﻿namespace ChessGame.Players;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
 using Newtonsoft.Json.Linq;
+
+namespace ChessGame.Players;
 
 /// <summary>
 /// Represents an opponent on Lichess. On turn, makes move as Lichess bot and returns the move of the opponent.
