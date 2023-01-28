@@ -1,8 +1,8 @@
-﻿using ChessGame;
+﻿using System;
+using System.Text;
+using ChessGame;
 using ChessGame.Gamemodes;
 using ChessGame.Pieces;
-using System;
-using System.Text;
 
 namespace ChessCommandline;
 

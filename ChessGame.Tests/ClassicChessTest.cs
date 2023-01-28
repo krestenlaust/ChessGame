@@ -1,8 +1,5 @@
 ﻿using ChessGame.Gamemodes;
 using ChessGame.Pieces;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ChessGame.Tests;
 
@@ -42,8 +39,8 @@ public class ClassicChessTest
 
         List<Move> moves = chessboard.GetMoves().ToList();
 
-            // check if the amount of moves even is correct.
-            Assert.AreEqual(possibleMoves.Count, moves.Count);
+        // check if the amount of moves even is correct.
+        Assert.AreEqual(possibleMoves.Count, moves.Count);
 
         // checks if all moves are valid.
         foreach (var item in moves)

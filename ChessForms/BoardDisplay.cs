@@ -348,21 +348,18 @@ public partial class BoardDisplay : Form
     /// </summary>
     void DrawDangerzone()
     {
-        foreach (KeyValuePair<Coordinate, List<Piece>> item in chessboard.Dangerzone)
+        foreach (KeyValuePair<Coordinate, HashSet<Piece>> item in chessboard.Dangerzone)
         {
             if (!chessboard.InsideBoard(item.Key))
             {
                 continue;
             }
 
-                if (item.Value.Count == 0)
-                {
-                    continue;
-                }
-
-                ColorSquare(item.Key, DangersquareColor);
+            if (item.Value.Count == 0)
+            {
+                continue;
             }
-        }
+
             ColorSquare(item.Key, DangersquareColor);
         }
     }
@@ -373,247 +370,247 @@ public partial class BoardDisplay : Form
     /// <param name="from"></param>
     /// <param name="to"></param>
     void MakeLocalMove(Coordinate from, Coordinate to)
+{
+    IEnumerable<Move> moves = chessboard.GetMovesByNotation(from.ToString() + to.ToString(), chessboard.CurrentTeamTurn, MoveNotation.UCI);
+
+    Move move = ChooseMove(moves);
+    if (move is null)
     {
-        IEnumerable<Move> moves = chessboard.GetMovesByNotation(from.ToString() + to.ToString(), chessboard.CurrentTeamTurn, MoveNotation.UCI);
+        return;
+    }
 
-        Move move = ChooseMove(moves);
-        if (move is null)
+    if (chessboard.PerformMove(move, false))
+    {
+        recentMoveFrom = from;
+        recentMoveTo = to;
+
+        ResetAllTableStyling();
+
+        // Calls next worker.
+        backgroundWorkerMove.RunWorkerAsync();
+    }
+}
+
+Move ChooseMove(IEnumerable<Move> moves)
+{
+    List<Piece> pieces = new List<Piece>();
+
+    foreach (var move in moves)
+    {
+        foreach (var singleMove in move.Submoves)
         {
-            return;
-        }
+            if (singleMove.PromotePiece is null)
+            {
+                continue;
+            }
 
-        if (chessboard.PerformMove(move, false))
-        {
-            recentMoveFrom = from;
-            recentMoveTo = to;
-
-            ResetAllTableStyling();
-
-            // Calls next worker.
-            backgroundWorkerMove.RunWorkerAsync();
+            pieces.Add(singleMove.PromotePiece);
         }
     }
 
-    Move ChooseMove(IEnumerable<Move> moves)
+    if (pieces.Count == 0)
     {
-        List<Piece> pieces = new List<Piece>();
+        return moves.FirstOrDefault();
+    }
 
+    PromotionPrompt prompt = new PromotionPrompt(pieces);
+    DialogResult res = prompt.ShowDialog();
+
+    if (res == DialogResult.OK)
+    {
         foreach (var move in moves)
         {
             foreach (var singleMove in move.Submoves)
             {
-                if (singleMove.PromotePiece is null)
+                if (singleMove.PromotePiece.Notation == prompt.SelectedPiece.Notation)
                 {
-                    continue;
+                    return move;
                 }
-
-                pieces.Add(singleMove.PromotePiece);
             }
         }
+    }
 
-        if (pieces.Count == 0)
-        {
-            return moves.FirstOrDefault();
-        }
+    return moves.First();
+}
 
-        PromotionPrompt prompt = new PromotionPrompt(pieces);
-        DialogResult res = prompt.ShowDialog();
+void CellClicked(object sender, EventArgs e)
+{
+    MouseButtons button = ((MouseEventArgs)e).Button;
 
-        if (res == DialogResult.OK)
-        {
-            foreach (var move in moves)
+    // translate window coordinates to table-cell coordinates
+    Point click = tableLayoutPanel1.PointToClient(MousePosition);
+    int windowX = click.X;
+    int windowY = click.Y;
+
+    // TODO: Make grid accurate by making up for the difference the coordinate system makes.
+    int cellX = windowX / ((tableLayoutPanel1.Width - CoordinateSystemPixelSize) / chessboard.Width);
+    int cellY = windowY / ((tableLayoutPanel1.Height - CoordinateSystemPixelSize) / chessboard.Height);
+
+    Coordinate clickTarget = new Coordinate(cellX, cellY);
+
+    // handle click
+    switch (button)
+    {
+        // Deselects all squares marked, (de)selects a piece, or makes a move with a selected piece.
+        case MouseButtons.Left:
+            ResetAllTableStyling();
+
+            Piece piece = chessboard[clickTarget];
+
+            // deselect piece selected
+            if (fromPosition is not null && piece?.Color == chessboard.CurrentTeamTurn && piece != selectedPiece)
             {
-                foreach (var singleMove in move.Submoves)
+                DeselectPiece(fromPosition.Value.File, fromPosition.Value.Rank);
+                UpdateBoard();
+                fromPosition = null;
+            }
+
+            if (fromPosition is null)
+            {
+                // return if piece is null or has wrong color.
+                if (piece?.Color != chessboard.CurrentTeamTurn)
                 {
-                    if (singleMove.PromotePiece.Notation == prompt.SelectedPiece.Notation)
+                    return;
+                }
+
+                // only allow selection of local players
+                if ((chessboard.CurrentTeamTurn == TeamColor.Black && !blackLocal) ||
+                    (chessboard.CurrentTeamTurn == TeamColor.White && !whiteLocal))
+                {
+                    return;
+                }
+
+                fromPosition = clickTarget;
+                SelectPiece(cellX, cellY);
+                selectedPiece = piece;
+
+                foreach (var move in piece.GetMoves(chessboard))
+                {
+                    if (move.Submoves[0].Destination is null)
                     {
-                        return move;
+                        continue;
                     }
+
+                    Coordinate guardedSquare = move.Submoves[0].Destination.Value;
+
+                    // TODO: Patrick fixer brættet, cirka her omkring
+                    TilePictureControl cellImageControl = GetCell(guardedSquare.File, guardedSquare.Rank);
+                    Image cellImage = cellImageControl.Image;
+                    Color backgroundColor = cellImageControl.BackColor;
+
+                    bool isMoveValid = gamemode.ValidateMove(move, chessboard);
+
+                    if (move.Captures)
+                    {
+                        backgroundColor = isMoveValid ?
+                            CaptureTileAvailableColor :
+                            CaptureTileUnavailableColor;
+                    }
+                    else
+                    {
+                        cellImage = isMoveValid ?
+                            Properties.Resources.MuligtTrkBrikTilgængelig :
+                            Properties.Resources.MuligtTrkBrikUtilgængelig;
+                    }
+
+                    cellImageControl.Image = cellImage;
+                    cellImageControl.BackColor = backgroundColor;
                 }
             }
-        }
-
-        return moves.First();
-    }
-
-    void CellClicked(object sender, EventArgs e)
-    {
-        MouseButtons button = ((MouseEventArgs)e).Button;
-
-        // translate window coordinates to table-cell coordinates
-        Point click = tableLayoutPanel1.PointToClient(MousePosition);
-        int windowX = click.X;
-        int windowY = click.Y;
-
-        // TODO: Make grid accurate by making up for the difference the coordinate system makes.
-        int cellX = windowX / ((tableLayoutPanel1.Width - CoordinateSystemPixelSize) / chessboard.Width);
-        int cellY = windowY / ((tableLayoutPanel1.Height - CoordinateSystemPixelSize) / chessboard.Height);
-
-        Coordinate clickTarget = new Coordinate(cellX, cellY);
-
-        // handle click
-        switch (button)
-        {
-            // Deselects all squares marked, (de)selects a piece, or makes a move with a selected piece.
-            case MouseButtons.Left:
-                ResetAllTableStyling();
-
-                Piece piece = chessboard[clickTarget];
-
-                // deselect piece selected
-                if (fromPosition is not null && piece?.Color == chessboard.CurrentTeamTurn && piece != selectedPiece)
+            else
+            {
+                // select target
+                if (clickTarget != fromPosition)
                 {
-                    DeselectPiece(fromPosition.Value.File, fromPosition.Value.Rank);
-                    UpdateBoard();
-                    fromPosition = null;
+                    MakeLocalMove(fromPosition.Value, clickTarget);
                 }
 
-                if (fromPosition is null)
-                {
-                    // return if piece is null or has wrong color.
-                    if (piece?.Color != chessboard.CurrentTeamTurn)
-                    {
-                        return;
-                    }
+                UpdateBoard();
 
-                    // only allow selection of local players
-                    if ((chessboard.CurrentTeamTurn == TeamColor.Black && !blackLocal) ||
-                        (chessboard.CurrentTeamTurn == TeamColor.White && !whiteLocal))
-                    {
-                        return;
-                    }
+                DeselectPiece(cellX, cellY);
+                selectedPiece = null;
+                fromPosition = null;
+            }
 
-                    fromPosition = clickTarget;
-                    SelectPiece(cellX, cellY);
-                    selectedPiece = piece;
-
-                    foreach (var move in piece.GetMoves(chessboard))
-                    {
-                        if (move.Submoves[0].Destination is null)
-                        {
-                            continue;
-                        }
-
-                        Coordinate guardedSquare = move.Submoves[0].Destination.Value;
-
-                        // TODO: Patrick fixer brættet, cirka her omkring
-                        TilePictureControl cellImageControl = GetCell(guardedSquare.File, guardedSquare.Rank);
-                        Image cellImage = cellImageControl.Image;
-                        Color backgroundColor = cellImageControl.BackColor;
-
-                        bool isMoveValid = gamemode.ValidateMove(move, chessboard);
-
-                        if (move.Captures)
-                        {
-                            backgroundColor = isMoveValid ?
-                                CaptureTileAvailableColor :
-                                CaptureTileUnavailableColor;
-                        }
-                        else
-                        {
-                            cellImage = isMoveValid ?
-                                Properties.Resources.MuligtTrkBrikTilgængelig :
-                                Properties.Resources.MuligtTrkBrikUtilgængelig;
-                        }
-
-                        cellImageControl.Image = cellImage;
-                        cellImageControl.BackColor = backgroundColor;
-                    }
-                }
-                else
-                {
-                    // select target
-                    if (clickTarget != fromPosition)
-                    {
-                        MakeLocalMove(fromPosition.Value, clickTarget);
-                    }
-
-                    UpdateBoard();
-
-                    DeselectPiece(cellX, cellY);
-                    selectedPiece = null;
-                    fromPosition = null;
-                }
-
+            break;
+        case MouseButtons.None:
+            break;
+        case MouseButtons.Right: // Mark square.
+                                 // do not change color if square is already colored.
+            if ((recentMoveFrom?.File == cellX && recentMoveFrom?.Rank == cellY) ||
+                (recentMoveTo?.File == cellX && recentMoveTo?.Rank == cellY))
+            {
                 break;
-            case MouseButtons.None:
-                break;
-            case MouseButtons.Right: // Mark square.
-                // do not change color if square is already colored.
-                if ((recentMoveFrom?.File == cellX && recentMoveFrom?.Rank == cellY) ||
-                    (recentMoveTo?.File == cellX && recentMoveTo?.Rank == cellY))
-                {
-                    break;
-                }
+            }
 
-                if (GetCell(cellX, cellY).BackColor == MarkedSquareColor)
-                {
-                    ResetTileColor(cellX, cellY);
-                }
-                else
-                {
-                    GetCell(cellX, cellY).BackColor = MarkedSquareColor;
-                }
+            if (GetCell(cellX, cellY).BackColor == MarkedSquareColor)
+            {
+                ResetTileColor(cellX, cellY);
+            }
+            else
+            {
+                GetCell(cellX, cellY).BackColor = MarkedSquareColor;
+            }
 
-                break;
-            case MouseButtons.Middle:
-                break;
-            case MouseButtons.XButton1:
-                break;
-            case MouseButtons.XButton2:
-                break;
-            default:
-                break;
-        }
+            break;
+        case MouseButtons.Middle:
+            break;
+        case MouseButtons.XButton1:
+            break;
+        case MouseButtons.XButton2:
+            break;
+        default:
+            break;
     }
+}
 
-    /// <summary>
-    /// Clears bordersrtle on a particular position.
-    /// </summary>
-    /// <param name="x"></param>
-    /// <param name="y"></param>
-    void DeselectPiece(int x, int y)
+/// <summary>
+/// Clears bordersrtle on a particular position.
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
+void DeselectPiece(int x, int y)
+{
+    GetCell(x, y).BorderStyle = BorderStyle.None;
+}
+
+/// <summary>
+/// Changes borderstyle on a particular position.
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
+void SelectPiece(int x, int y)
+{
+    GetCell(x, y).BorderStyle = BorderStyle.FixedSingle;
+}
+
+void BackgroundWorkerMove_DoWork(object sender, DoWorkEventArgs e)
+{
+    chessboard.StartNextTurn();
+}
+
+void BackgroundWorkerMove_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+{
+}
+
+void BoardDisplay_KeyUp(object sender, KeyEventArgs e)
+{
+    switch (e.KeyCode)
     {
-        GetCell(x, y).BorderStyle = BorderStyle.None;
+        case Keys.Left:
+            break;
+        case Keys.Right:
+            break;
+        case Keys.R:
+            // Refresh dangerzone
+            chessboard.UpdateDangerzones();
+            break;
+        case Keys.Space:
+            // Display dangerzone
+            DrawDangerzone();
+            break;
+        default:
+            break;
     }
-
-    /// <summary>
-    /// Changes borderstyle on a particular position.
-    /// </summary>
-    /// <param name="x"></param>
-    /// <param name="y"></param>
-    void SelectPiece(int x, int y)
-    {
-        GetCell(x, y).BorderStyle = BorderStyle.FixedSingle;
-    }
-
-    void BackgroundWorkerMove_DoWork(object sender, DoWorkEventArgs e)
-    {
-        chessboard.StartNextTurn();
-    }
-
-    void BackgroundWorkerMove_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-    {
-    }
-
-    void BoardDisplay_KeyUp(object sender, KeyEventArgs e)
-    {
-        switch (e.KeyCode)
-        {
-            case Keys.Left:
-                break;
-            case Keys.Right:
-                break;
-            case Keys.R:
-                // Refresh dangerzone
-                chessboard.UpdateDangerzones();
-                break;
-            case Keys.Space:
-                // Display dangerzone
-                DrawDangerzone();
-                break;
-            default:
-                break;
-        }
-    }
+}
 }

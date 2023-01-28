@@ -70,22 +70,21 @@ public abstract class Piece
 
     public override string ToString() => Notation.ToString();
 
-        /*
-        public override bool Equals(object obj)
-        {
-            return obj is Piece piece &&
-                   Notation == piece.Notation &&
-                   Color == piece.Color &&
-                   MaterialValue == piece.MaterialValue;
-        }
-
-        public override int GetHashCode()
-        {
-            int hashCode = -1866919884;
-            hashCode = hashCode * -1521134295 + Notation.GetHashCode();
-            hashCode = hashCode * -1521134295 + Color.GetHashCode();
-            hashCode = hashCode * -1521134295 + MaterialValue.GetHashCode();
-            return hashCode;
-        }*/
+    /*
+    public override bool Equals(object obj)
+    {
+        return obj is Piece piece &&
+               Notation == piece.Notation &&
+               Color == piece.Color &&
+               MaterialValue == piece.MaterialValue;
     }
+
+    public override int GetHashCode()
+    {
+        int hashCode = -1866919884;
+        hashCode = hashCode * -1521134295 + Notation.GetHashCode();
+        hashCode = hashCode * -1521134295 + Color.GetHashCode();
+        hashCode = hashCode * -1521134295 + MaterialValue.GetHashCode();
+        return hashCode;
+    }*/
 }

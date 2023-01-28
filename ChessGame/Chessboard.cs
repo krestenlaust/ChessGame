@@ -50,13 +50,13 @@ public class Chessboard : IEquatable<Chessboard>
         MovedPieces = new HashSet<Piece>(board.MovedPieces);
         Moves = new Stack<Move>(board.Moves);
 
-        
-            Dangerzone = new Dictionary<Coordinate, HashSet<Piece>>();
-            foreach (var item in board.Dangerzone)
-            {
-                Dangerzone[item.Key] = new HashSet<Piece>(item.Value);
-            }
+
+        Dangerzone = new Dictionary<Coordinate, HashSet<Piece>>();
+        foreach (var item in board.Dangerzone)
+        {
+            Dangerzone[item.Key] = new HashSet<Piece>(item.Value);
         }
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Chessboard"/> class, performs a deep-copy of the chessboard, and simulates a <see cref="Move"/>.
@@ -75,11 +75,11 @@ public class Chessboard : IEquatable<Chessboard>
         MovedPieces = new HashSet<Piece>(board.MovedPieces);
         Moves = new Stack<Move>(board.Moves.Reverse());
 
-            Dangerzone = new Dictionary<Coordinate, HashSet<Piece>>();
-            foreach (var item in board.Dangerzone)
-            {
-                Dangerzone[item.Key] = new HashSet<Piece>(item.Value);
-            }
+        Dangerzone = new Dictionary<Coordinate, HashSet<Piece>>();
+        foreach (var item in board.Dangerzone)
+        {
+            Dangerzone[item.Key] = new HashSet<Piece>(item.Value);
+        }
 
         SimulateMove(move);
     }
@@ -99,7 +99,7 @@ public class Chessboard : IEquatable<Chessboard>
         CurrentState = GameState.NotStarted;
 
         Pieces = new Dictionary<Coordinate, Piece>();
-        Dangerzone = new Dictionary<Coordinate, List<Piece>>();
+        Dangerzone = new Dictionary<Coordinate, HashSet<Piece>>();
         Moves = new Stack<Move>();
         MovedPieces = new HashSet<Piece>();
     }
@@ -112,7 +112,7 @@ public class Chessboard : IEquatable<Chessboard>
     /// <summary>
     /// Gets a dictionary that describes intersection squares. An intersection square is a square which one or more pieces threaten at once.
     /// </summary>
-    public Dictionary<Coordinate, List<Piece>> Dangerzone { get; }
+    public Dictionary<Coordinate, HashSet<Piece>> Dangerzone { get; }
 
     /// <summary>
     /// Gets previous moves, that resolve to this position.
@@ -366,7 +366,7 @@ public class Chessboard : IEquatable<Chessboard>
         }
 
         // Get list of pieces aiming on the square the king sits on.
-        if (Dangerzone.TryGetValue(position, out List<Piece> pieces))
+        if (Dangerzone.TryGetValue(position, out HashSet<Piece> pieces))
         {
             // Returns true if any of the pieces are of opposite teamColor.
             return pieces.Any(p => p.Color != color);
@@ -533,7 +533,7 @@ public class Chessboard : IEquatable<Chessboard>
     /// <returns></returns>
     public int IsDangerSquare(Coordinate position, TeamColor teamColor)
     {
-        if (Dangerzone.TryGetValue(position, out List<Piece> pieces))
+        if (Dangerzone.TryGetValue(position, out HashSet<Piece> pieces))
         {
             return pieces is null ? 0 : pieces.Count(p => p.Color == teamColor);
         }
@@ -548,7 +548,7 @@ public class Chessboard : IEquatable<Chessboard>
     /// <returns></returns>
     public int GetDangerSquareSum(Coordinate position)
     {
-        if (!Dangerzone.TryGetValue(position, out List<Piece> pieces))
+        if (!Dangerzone.TryGetValue(position, out HashSet<Piece> pieces))
         {
             // No pieces can capture this tile.
             return 0;
@@ -700,7 +700,7 @@ public class Chessboard : IEquatable<Chessboard>
                 // Make new list of pieces aiming on this square if there isn't one already.
                 if (!Dangerzone.ContainsKey(destination))
                 {
-                    Dangerzone[destination] = new List<Piece>();
+                    Dangerzone[destination] = new HashSet<Piece>();
                 }
 
                 // Add this move to dangerzone.

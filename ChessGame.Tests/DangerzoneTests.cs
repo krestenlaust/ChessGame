@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using ChessGame.Gamemodes;
+﻿using ChessGame.Gamemodes;
 using ChessGame.Pieces;
 
 namespace ChessGame.Tests;
