@@ -1,17 +1,16 @@
 ﻿using System.Windows.Forms;
 
-namespace ChessForms
+namespace ChessForms;
+
+public class TilePictureControl : PictureBox
 {
-    public class TilePictureControl : PictureBox
+    public TilePictureControl()
     {
-        public TilePictureControl()
-        {
-            SetStyle(ControlStyles.StandardDoubleClick, false);
-            Dock = DockStyle.Fill;
-            BorderStyle = BorderStyle.None;
-            SizeMode = PictureBoxSizeMode.Zoom;
-            Padding = new Padding(0);
-            Margin = new Padding(0);
-        }
+        SetStyle(ControlStyles.StandardDoubleClick, false);
+        Dock = DockStyle.Fill;
+        BorderStyle = BorderStyle.None;
+        SizeMode = PictureBoxSizeMode.Zoom;
+        Padding = new Padding(0);
+        Margin = new Padding(0);
     }
 }

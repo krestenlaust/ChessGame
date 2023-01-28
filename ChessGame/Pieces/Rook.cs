@@ -1,18 +1,17 @@
-﻿namespace ChessGame.Pieces
+﻿namespace ChessGame.Pieces;
+
+public class Rook : Piece
 {
-    public class Rook : Piece
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Rook"/> class.
+    /// </summary>
+    /// <param name="teamColor"></param>
+    public Rook(TeamColor teamColor)
+        : base('R', 5, teamColor)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Rook"/> class.
-        /// </summary>
-        /// <param name="teamColor"></param>
-        public Rook(TeamColor teamColor)
-            : base('R', 5, teamColor)
+        MovementPatternList = new IMovementPattern[]
         {
-            MovementPatternList = new IMovementPattern[]
-            {
-                new MovementPatterns.CardinalPattern(),
-            };
-        }
+            new MovementPatterns.CardinalPattern(),
+        };
     }
 }

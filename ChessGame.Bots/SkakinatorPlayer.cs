@@ -1,68 +1,67 @@
 ﻿using System;
 using ChessGame;
 
-namespace ChessGame.Bots
+namespace ChessGame.Bots;
+
+/// <summary>
+/// The player referenced by chess games implemented using <c>ChessGame</c> library.
+/// </summary>
+public class SkakinatorPlayer : Player
 {
+    public const int DEFAULT_DEPTH = 3;
+    readonly SkakinatorLogic logic;
+    readonly BotUI UI;
+
     /// <summary>
-    /// The player referenced by chess games implemented using <c>ChessGame</c> library.
+    /// Initializes a new instance of the <see cref="SkakinatorPlayer"/> class.
     /// </summary>
-    public class SkakinatorPlayer : Player
+    /// <param name="name"></param>
+    /// <param name="enableUI"></param>
+    public SkakinatorPlayer(string name, bool enableUI)
+        : base(name)
     {
-        public const int DEFAULT_DEPTH = 3;
-        readonly SkakinatorLogic logic;
-        readonly BotUI UI;
-
-        int Depth
+        logic = new SkakinatorLogic();
+        if (enableUI)
         {
-            get
+            UI = new BotUI
             {
-                if (UI is null)
-                {
-                    return DEFAULT_DEPTH;
-                }
-
-                return UI.DepthSetting;
-            }
+                Text = $"Bot info: {name}",
+            };
+            UI.Show();
+            logic.SingleMoveCalculated += Logic_onSingleMoveCalculated;
         }
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SkakinatorPlayer"/> class.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="enableUI"></param>
-        public SkakinatorPlayer(string name, bool enableUI)
-            : base(name)
+    int Depth
+    {
+        get
         {
-            logic = new SkakinatorLogic();
-            if (enableUI)
+            if (UI is null)
             {
-                UI = new BotUI
-                {
-                    Text = $"Bot info: {name}",
-                };
-                UI.Show();
-                logic.SingleMoveCalculated += Logic_onSingleMoveCalculated;
+                return DEFAULT_DEPTH;
             }
+
+            return UI.DepthSetting;
         }
+    }
 
-        void Logic_onSingleMoveCalculated(int current, int max, Move move, float evaluation)
+    public override void TurnStarted(Chessboard board)
+    {
+        board.PerformMove(logic.GenerateMoveParallel(board, Depth));
+    }
+
+    void Logic_onSingleMoveCalculated(int current, int max, Move move, float evaluation)
+    {
+        UI.SetProgress(current, max);
+
+        if (current == 0)
         {
-            UI.SetProgress(current, max);
-
-            if (current == 0)
-            {
-                UI.AddPoint(evaluation);
-                UI.PrintLog("\n Board: " + evaluation);
-            }
-            else
-            {
-                UI.PrintLog($"[{current}] {move.ToString(MoveNotation.UCI)} = {Math.Round(evaluation, 2)}");
-            }
+            UI.AddPoint(evaluation);
+            UI.PrintLog("\n Board: " + evaluation);
         }
-
-        public override void TurnStarted(Chessboard board)
+        else
         {
-            board.PerformMove(logic.GenerateMoveParallel(board, Depth));
+            UI.PrintLog($"[{current}] {move.ToString(MoveNotation.UCI)} = {Math.Round(evaluation, 2)}");
         }
     }
 }

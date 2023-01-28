@@ -4,174 +4,174 @@ using ChessGame.Pieces;
 using System;
 using System.Text;
 
-namespace ChessCommandline
+namespace ChessCommandline;
+
+class Program
 {
-    class Program
+    static ConsoleColor currentColor = ConsoleColor.DarkRed;
+    static bool showDangersquares;
+    static readonly Array consoleColors = Enum.GetValues(typeof(ConsoleColor));
+    static Chessboard chessboard;
+
+    static void Main(string[] args)
     {
-        static ConsoleColor currentColor = ConsoleColor.DarkRed;
-        static bool showDangersquares;
-        static readonly Array consoleColors = Enum.GetValues(typeof(ConsoleColor));
-        static Chessboard chessboard;
+        Console.OutputEncoding = Encoding.Unicode;
 
-        static void Main(string[] args)
+        Console.WriteLine("Nickname for player 1 [default: white]? ");
+        string nickname = Console.ReadLine();
+        Player player1 = new Player(nickname == string.Empty ? "white" : nickname);
+        Player player2 = new Player(nickname == string.Empty ? "black" : nickname);
+
+        while (true)
         {
-            Console.OutputEncoding = Encoding.Unicode;
+            Gamemode gamemode = new PawnTestChess(player1, player2);
+            gamemode.TurnChanged += AskForMove;
 
-            Console.WriteLine("Nickname for player 1 [default: white]? ");
-            string nickname = Console.ReadLine();
-            Player player1 = new Player(nickname == string.Empty ? "white" : nickname);
-            Player player2 = new Player(nickname == string.Empty ? "black" : nickname);
+            chessboard = gamemode.GenerateBoard();
+            chessboard.StartNextTurn();
 
-            while (true)
+            while (!chessboard.GameFinished)
+            { // (event-based)
+            }
+
+            if (gamemode.Winner is null)
             {
-                Gamemode gamemode = new PawnTestChess(player1, player2);
-                gamemode.TurnChanged += AskForMove;
+                Console.WriteLine("Draw!");
+            }
+            else
+            {
+                Console.WriteLine($"{gamemode.Winner} has won!");
+            }
 
-                chessboard = gamemode.GenerateBoard();
-                chessboard.StartNextTurn();
+            Console.ReadLine();
+        }
+    }
 
-                while (!chessboard.isGameFinished)
-                { // (event-based)
-                }
+    static void AskForMove()
+    {
+        DrawBoard(chessboard);
 
-                if (gamemode.Winner is null)
+        while (true)
+        {
+            Console.Title = $"Material: {chessboard.MaterialSum}";
+            Console.WriteLine($"{chessboard.CurrentPlayerTurn.Nickname}'s turn to move: ");
+            string move = Console.ReadLine();
+
+            if (move == "c")
+            {
+                int i;
+                for (i = 0; i < consoleColors.Length; i++)
                 {
-                    Console.WriteLine("Draw!");
-                }
-                else
-                {
-                    Console.WriteLine($"{gamemode.Winner} has won!");
+                    if ((ConsoleColor)consoleColors.GetValue(i) == currentColor)
+                        break;
                 }
 
-                Console.ReadLine();
+                currentColor = (ConsoleColor)consoleColors.GetValue((i + 1) % consoleColors.Length);
+
+                DrawBoard(chessboard);
+                continue;
+            }
+
+            if (move == "r")
+            {
+                chessboard.UpdateDangerzones();
+
+                DrawBoard(chessboard);
+                continue;
+            }
+
+            if (move == "dangerzone")
+            {
+                showDangersquares = !showDangersquares;
+                DrawBoard(chessboard);
+                continue;
+            }
+
+            if (chessboard.PerformMove(move, MoveNotation.UCI))
+            {
+                return;
+            }
+            else
+            {
+                Console.WriteLine("Incorrect notation/move");
             }
         }
+    }
 
-        static void AskForMove()
+    static void DrawBoard(Chessboard board)
+    {
+        Console.Clear();
+        Console.SetCursorPosition(0, 0);
+
+        int i = 0;
+        for (int y = 0; y < board.Height; y++)
         {
-            DrawBoard(chessboard);
-
-            while (true)
+            for (int x = 0; x < board.Width; x++)
             {
-                Console.Title = $"Material: {chessboard.MaterialSum}";
-                Console.WriteLine($"{chessboard.CurrentPlayerTurn.Nickname}'s turn to move: ");
-                string move = Console.ReadLine();
+                char boardTile = ' ';
+                Coordinate tilePosition = new Coordinate(x, y);
 
-                if (move == "c")
+                if (showDangersquares)
                 {
-                    int i;
-                    for (i = 0; i < consoleColors.Length; i++)
+                    int blackDangersquare = board.IsDangerSquare(tilePosition, TeamColor.Black);
+                    int whiteDangersquare = board.IsDangerSquare(tilePosition, TeamColor.White);
+                    int sumDangersquare = whiteDangersquare - blackDangersquare;
+                    boardTile = Math.Abs(sumDangersquare).ToString()[0];
+
+                    if (sumDangersquare > 0)
                     {
-                        if ((ConsoleColor)consoleColors.GetValue(i) == currentColor)
-                            break;
+                        Console.ForegroundColor = ConsoleColor.Green;
                     }
-
-                    currentColor = (ConsoleColor)consoleColors.GetValue((i + 1) % consoleColors.Length);
-
-                    DrawBoard(chessboard);
-                    continue;
-                }
-
-                if (move == "r")
-                {
-                    chessboard.UpdateDangerzones();
-
-                    DrawBoard(chessboard);
-                    continue;
-                }
-
-                if (move == "dangerzone")
-                {
-                    showDangersquares = !showDangersquares;
-                    DrawBoard(chessboard);
-                    continue;
-                }
-
-                if (chessboard.PerformMove(move, MoveNotation.UCI))
-                {
-                    return;
-                }
-                else
-                {
-                    Console.WriteLine("Incorrect notation/move");
-                }
-            }
-        }
-
-        static void DrawBoard(Chessboard board)
-        {
-            Console.Clear();
-            Console.SetCursorPosition(0, 0);
-
-            int i = 0;
-            for (int y = 0; y < board.Height; y++)
-            {
-                for (int x = 0; x < board.Width; x++)
-                {
-                    char boardTile = ' ';
-                    Coordinate tilePosition = new Coordinate(x, y);
-
-                    if (showDangersquares)
+                    else if (sumDangersquare < 0)
                     {
-                        int blackDangersquare = board.IsDangerSquare(tilePosition, TeamColor.Black);
-                        int whiteDangersquare = board.IsDangerSquare(tilePosition, TeamColor.White);
-                        int sumDangersquare = whiteDangersquare - blackDangersquare;
-                        boardTile = Math.Abs(sumDangersquare).ToString()[0];
-
-                        if (sumDangersquare > 0)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Green;
-                        }
-                        else if (sumDangersquare < 0)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                        }
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.White;
-                            boardTile = ' ';
-                        }
-                    }
-
-
-                    Piece piece = board[new Coordinate(x, y)];
-
-                    switch (piece)
-                    {
-                        case Bishop _:
-                            boardTile = piece.Color == TeamColor.Black ? '♗' : '♝';
-                            break;
-                        case King _:
-                            boardTile = piece.Color == TeamColor.Black ? '♔' : '♚';
-                            break;
-                        case Knight _:
-                            boardTile = piece.Color == TeamColor.Black ? '♘' : '♞';
-                            break;
-                        case Pawn _:
-                            boardTile = piece.Color == TeamColor.Black ? '♙' : '\u265F';
-                            break;
-                        case Queen _:
-                            boardTile = piece.Color == TeamColor.Black ? '♕' : '♛';
-                            break;
-                        case Rook _:
-                            boardTile = piece.Color == TeamColor.Black ? '♖' : '♜';
-                            break;
-                    }
-
-                    if (++i % 2 == 0)
-                    {
-                        Console.BackgroundColor = currentColor;
+                        Console.ForegroundColor = ConsoleColor.Red;
                     }
                     else
                     {
-                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.White;
+                        boardTile = ' ';
                     }
-
-                    Console.Write(boardTile);
                 }
-                i++;
-                Console.WriteLine();
+
+
+                Piece piece = board[new Coordinate(x, y)];
+
+                switch (piece)
+                {
+                    case Bishop _:
+                        boardTile = piece.Color == TeamColor.Black ? '♗' : '♝';
+                        break;
+                    case King _:
+                        boardTile = piece.Color == TeamColor.Black ? '♔' : '♚';
+                        break;
+                    case Knight _:
+                        boardTile = piece.Color == TeamColor.Black ? '♘' : '♞';
+                        break;
+                    case Pawn _:
+                        boardTile = piece.Color == TeamColor.Black ? '♙' : '\u265F';
+                        break;
+                    case Queen _:
+                        boardTile = piece.Color == TeamColor.Black ? '♕' : '♛';
+                        break;
+                    case Rook _:
+                        boardTile = piece.Color == TeamColor.Black ? '♖' : '♜';
+                        break;
+                }
+
+                if (++i % 2 == 0)
+                {
+                    Console.BackgroundColor = currentColor;
+                }
+                else
+                {
+                    Console.BackgroundColor = ConsoleColor.Black;
+                }
+
+                Console.Write(boardTile);
             }
+
+            i++;
+            Console.WriteLine();
         }
     }
 }

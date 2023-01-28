@@ -1,205 +1,206 @@
-﻿using ChessGame.Bots;
-using ChessGame;
-using ChessGame.Gamemodes;
-using ChessGame.Players;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
+using ChessGame;
+using ChessGame.Bots;
+using ChessGame.Gamemodes;
+using ChessGame.Players;
 
-namespace ChessForms
+namespace ChessForms;
+
+public enum PlayerType
 {
-    public enum PlayerType
+    Local,
+    LichessPlayer,
+    LichessPlayerSeek,
+    Bot,
+    Network,
+}
+
+public enum GamemodeType
+{
+    Classic = 0,
+    Horde = 1,
+    CheckMateTest = 2,
+    PawnTest = 3,
+    Tiny = 4,
+}
+
+public partial class MatchMaker : Form
+{
+    public static bool PlaySoundOnMove;
+    PlayerType white = PlayerType.Local;
+    PlayerType black = PlayerType.Local;
+    GamemodeType gamemodeType = GamemodeType.Classic;
+
+    public MatchMaker()
     {
-        Local,
-        LichessPlayer,
-        LichessPlayerSeek,
-        Bot,
-        Network,
+        InitializeComponent();
     }
-    public enum GamemodeType
+
+    void InstantiateMatch(Player playerWhite, Player playerBlack)
     {
-        Classic = 0,
-        Horde = 1,
-        CheckMateTest = 2,
-        PawnTest = 3,
-        Tiny = 4,
+        Gamemode gamemode = CreateGamemode(gamemodeType, playerWhite, playerBlack);
+        BoardDisplay board = new BoardDisplay(gamemode, white == PlayerType.Local, black == PlayerType.Local || black == PlayerType.LichessPlayer);
+        board.Show();
     }
 
-    public partial class MatchMaker : Form
+    void buttonStartMatch_Click(object sender, EventArgs e)
     {
-        public static bool PlaySoundOnMove;
-        PlayerType white = PlayerType.Local;
-        PlayerType black = PlayerType.Local;
-        GamemodeType gamemodeType = GamemodeType.Classic;
+        Player playerWhite = CreatePlayer(white, textBoxWhiteName.Text, TeamColor.White);
+        Player playerBlack = CreatePlayer(black, textBoxBlackName.Text, TeamColor.Black);
 
-        public MatchMaker()
+        if (playerWhite is null || playerBlack is null)
         {
-            InitializeComponent();
+            MessageBox.Show("Unknown exception");
+            return;
         }
 
-        void InstantiateMatch(Player playerWhite, Player playerBlack)
+        InstantiateMatch(playerWhite, playerBlack);
+    }
+
+    Player CreatePlayer(PlayerType type, string name, TeamColor color)
+    {
+        switch (type)
         {
-            Gamemode gamemode = CreateGamemode(gamemodeType, playerWhite, playerBlack);
-            BoardDisplay board = new BoardDisplay(gamemode, white == PlayerType.Local, black == PlayerType.Local || black == PlayerType.LichessPlayer);
-            board.Show();
-        }
-
-        void buttonStartMatch_Click(object sender, EventArgs e)
-        {
-            Player playerWhite = CreatePlayer(white, textBoxWhiteName.Text, TeamColor.White);
-            Player playerBlack = CreatePlayer(black, textBoxBlackName.Text, TeamColor.Black);
-
-            if (playerWhite is null || playerBlack is null)
-            {
-                MessageBox.Show("Unknown exception");
-                return;
-            }
-
-            InstantiateMatch(playerWhite, playerBlack);
-        }
-
-        Player CreatePlayer(PlayerType type, string name, TeamColor color)
-        {
-            switch (type)
-            {
-                case PlayerType.Local:
-                    return new Player(name);
-                case PlayerType.Bot:
-                    return new SkakinatorPlayer(name, true);
-                case PlayerType.Network:
-                    if (color == TeamColor.White)
+            case PlayerType.Local:
+                return new Player(name);
+            case PlayerType.Bot:
+                return new SkakinatorPlayer(name, true);
+            case PlayerType.Network:
+                if (color == TeamColor.White)
+                {
+                    if (!IPAddress.TryParse(textBoxWhiteHost.Text, out IPAddress ipaddress))
                     {
-                        if (!IPAddress.TryParse(textBoxWhiteHost.Text, out IPAddress ipaddress))
-                        {
-                            MessageBox.Show("Invalid IP Address...");
-                            return null;
-                        }
-                        TcpListener tcpListener = new TcpListener(ipaddress, 5050);
-                        tcpListener.Start();
-
-                        TcpClient tcpClient = tcpListener.AcceptTcpClient();
-                        MessageBox.Show("Client connected");
-
-                        return new NetworkedPlayer(textBoxWhiteName.Text, tcpClient.GetStream());
+                        MessageBox.Show("Invalid IP Address...");
+                        return null;
                     }
-                    else
+
+                    TcpListener tcpListener = new TcpListener(ipaddress, 5050);
+                    tcpListener.Start();
+
+                    TcpClient tcpClient = tcpListener.AcceptTcpClient();
+                    MessageBox.Show("Client connected");
+
+                    return new NetworkedPlayer(textBoxWhiteName.Text, tcpClient.GetStream());
+                }
+                else
+                {
+                    if (!IPAddress.TryParse(textBoxBlackServerIP.Text, out IPAddress ipaddress))
                     {
-                        if (!IPAddress.TryParse(textBoxBlackServerIP.Text, out IPAddress ipaddress))
-                        {
-                            MessageBox.Show("Invalid IP Address...");
-                            return null;
-                        }
-
-                        TcpClient tcpClient = new TcpClient();
-                        tcpClient.Connect(ipaddress, 5050);
-
-                        return new NetworkedPlayer(name, tcpClient.GetStream());
+                        MessageBox.Show("Invalid IP Address...");
+                        return null;
                     }
-                case PlayerType.LichessPlayer:
-                    return new LichessBotPlayer("lichess-player", string.Empty, textBoxBlackLichessMatchID.Text);
-                case PlayerType.LichessPlayerSeek:
-                    return new LichessBotPlayer("lichess-player", string.Empty, TeamColor.White);
-                default:
-                    return null;
-            }
-        }
 
-        static Gamemode CreateGamemode(GamemodeType gamemodeType, Player playerWhite, Player playerBlack)
+                    TcpClient tcpClient = new TcpClient();
+                    tcpClient.Connect(ipaddress, 5050);
+
+                    return new NetworkedPlayer(name, tcpClient.GetStream());
+                }
+
+            case PlayerType.LichessPlayer:
+                return new LichessBotPlayer("lichess-player", string.Empty, textBoxBlackLichessMatchID.Text);
+            case PlayerType.LichessPlayerSeek:
+                return new LichessBotPlayer("lichess-player", string.Empty, TeamColor.White);
+            default:
+                return null;
+        }
+    }
+
+    static Gamemode CreateGamemode(GamemodeType gamemodeType, Player playerWhite, Player playerBlack)
+    {
+        switch (gamemodeType)
         {
-            switch (gamemodeType)
-            {
-                case GamemodeType.Classic:
-                    return new ClassicChess(playerWhite, playerBlack);
-                case GamemodeType.Horde:
-                    return new Horde(playerWhite, playerBlack);
-                case GamemodeType.CheckMateTest:
-                    return new CheckMateTest(playerWhite, playerBlack);
-                case GamemodeType.PawnTest:
-                    return new PawnTestChess(playerWhite, playerBlack);
-                case GamemodeType.Tiny:
-                    return new TinyChess(playerWhite, playerBlack);
-            }
-
-            return null;
+            case GamemodeType.Classic:
+                return new ClassicChess(playerWhite, playerBlack);
+            case GamemodeType.Horde:
+                return new Horde(playerWhite, playerBlack);
+            case GamemodeType.CheckMateTest:
+                return new CheckMateTest(playerWhite, playerBlack);
+            case GamemodeType.PawnTest:
+                return new PawnTestChess(playerWhite, playerBlack);
+            case GamemodeType.Tiny:
+                return new TinyChess(playerWhite, playerBlack);
         }
 
-        void radioButtonWhiteNetworked_CheckedChanged(object sender, EventArgs e)
-        {
-            bool isChecked = (sender as RadioButton).Checked;
+        return null;
+    }
 
-            textBoxWhiteHost.Enabled = isChecked;
+    void radioButtonWhiteNetworked_CheckedChanged(object sender, EventArgs e)
+    {
+        bool isChecked = (sender as RadioButton).Checked;
 
-            white = PlayerType.Network;
-        }
+        textBoxWhiteHost.Enabled = isChecked;
 
-        void radioButtonWhiteLocal_CheckedChanged(object sender, EventArgs e)
-        {
-            white = PlayerType.Local;
-        }
+        white = PlayerType.Network;
+    }
 
-        void radioButtonBlackLocal_CheckedChanged(object sender, EventArgs e)
-        {
-            black = PlayerType.Local;
-        }
+    void radioButtonWhiteLocal_CheckedChanged(object sender, EventArgs e)
+    {
+        white = PlayerType.Local;
+    }
 
-        void radioButtonWhiteBot_CheckedChanged(object sender, EventArgs e)
-        {
-            white = PlayerType.Bot;
-        }
+    void radioButtonBlackLocal_CheckedChanged(object sender, EventArgs e)
+    {
+        black = PlayerType.Local;
+    }
 
-        void radioButtonBlackBot_CheckedChanged(object sender, EventArgs e)
-        {
-            black = PlayerType.Bot;
-        }
+    void radioButtonWhiteBot_CheckedChanged(object sender, EventArgs e)
+    {
+        white = PlayerType.Bot;
+    }
 
-        void radioButtonBlackNetworked_CheckedChanged(object sender, EventArgs e)
-        {
-            bool isChecked = (sender as RadioButton).Checked;
+    void radioButtonBlackBot_CheckedChanged(object sender, EventArgs e)
+    {
+        black = PlayerType.Bot;
+    }
 
-            textBoxBlackServerIP.Enabled = isChecked;
+    void radioButtonBlackNetworked_CheckedChanged(object sender, EventArgs e)
+    {
+        bool isChecked = (sender as RadioButton).Checked;
 
-            black = PlayerType.Network;
-        }
+        textBoxBlackServerIP.Enabled = isChecked;
 
-        void MatchMaker_Load(object sender, EventArgs e)
-        {
-            listBoxGamemode.Items.AddRange(Enum.GetNames(typeof(GamemodeType)));
-            listBoxGamemode.SelectedIndex = 0;
-            PlaySoundOnMove = checkBoxSoundOnMove.Checked;
-        }
+        black = PlayerType.Network;
+    }
 
-        void radioButtonBlackLichessPlayer_CheckedChanged(object sender, EventArgs e)
-        {
-            bool isChecked = (sender as RadioButton).Checked;
+    void MatchMaker_Load(object sender, EventArgs e)
+    {
+        listBoxGamemode.Items.AddRange(Enum.GetNames(typeof(GamemodeType)));
+        listBoxGamemode.SelectedIndex = 0;
+        PlaySoundOnMove = checkBoxSoundOnMove.Checked;
+    }
 
-            textBoxBlackLichessMatchID.Enabled = isChecked;
+    void radioButtonBlackLichessPlayer_CheckedChanged(object sender, EventArgs e)
+    {
+        bool isChecked = (sender as RadioButton).Checked;
 
-            black = PlayerType.LichessPlayer;
-        }
+        textBoxBlackLichessMatchID.Enabled = isChecked;
 
-        void listBoxGamemode_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            gamemodeType = (GamemodeType)Enum.Parse(typeof(GamemodeType), (string)listBoxGamemode.SelectedItem);
-        }
+        black = PlayerType.LichessPlayer;
+    }
 
-        void checkBoxSoundOnMove_CheckedChanged(object sender, EventArgs e)
-        {
-            PlaySoundOnMove = (sender as CheckBox).Checked;
-        }
+    void listBoxGamemode_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        gamemodeType = (GamemodeType)Enum.Parse(typeof(GamemodeType), (string)listBoxGamemode.SelectedItem);
+    }
 
-        void radioButtonWhiteLichessPlayer_CheckedChanged(object sender, EventArgs e)
-        {
+    void checkBoxSoundOnMove_CheckedChanged(object sender, EventArgs e)
+    {
+        PlaySoundOnMove = (sender as CheckBox).Checked;
+    }
 
-        }
+    void radioButtonWhiteLichessPlayer_CheckedChanged(object sender, EventArgs e)
+    {
+    }
 
-        void radioButtonWhiteDistributedComputing_CheckedChanged(object sender, EventArgs e)
-        {
-        }
+    void radioButtonWhiteDistributedComputing_CheckedChanged(object sender, EventArgs e)
+    {
+    }
 
-        void radioButtonBlackLichessPlayerSeek_CheckedChanged(object sender, EventArgs e)
-        {
-            black = PlayerType.LichessPlayerSeek;
-        }
+    void radioButtonBlackLichessPlayerSeek_CheckedChanged(object sender, EventArgs e)
+    {
+        black = PlayerType.LichessPlayerSeek;
     }
 }
