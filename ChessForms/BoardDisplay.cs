@@ -137,25 +137,25 @@ public partial class BoardDisplay : Form
     /// </summary>
     public void InstantiateUIBoard()
     {
-        tableLayoutPanel1.ColumnCount = chessboard.Width + 1;
-        tableLayoutPanel1.ColumnStyles.Clear();
-        int i;
-        for (i = 0; i < chessboard.Width; i++)
+        tableLayoutPanelBoard.ColumnCount = chessboard.Width + 1;
+        tableLayoutPanelBoard.ColumnStyles.Clear();
+
+        for (int x = 0; x < chessboard.Width; x++)
         {
             // set size to any percent, doesnt matter
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 1));
+            tableLayoutPanelBoard.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 1));
         }
 
-        tableLayoutPanel1.RowCount = chessboard.Height + 1;
-        tableLayoutPanel1.RowStyles.Clear();
-        for (i = 0; i < chessboard.Height; i++)
+        tableLayoutPanelBoard.RowCount = chessboard.Height + 1;
+        tableLayoutPanelBoard.RowStyles.Clear();
+        for (int y = 0; y < chessboard.Height; y++)
         {
-            tableLayoutPanel1.RowStyles.Add(new ColumnStyle(SizeType.Percent, 1));
+            tableLayoutPanelBoard.RowStyles.Add(new ColumnStyle(SizeType.Percent, 1));
         }
 
         // Coordinate row and column
-        tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, CoordinateSystemPixelSize));
-        tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, CoordinateSystemPixelSize));
+        tableLayoutPanelBoard.RowStyles.Add(new RowStyle(SizeType.Absolute, CoordinateSystemPixelSize));
+        tableLayoutPanelBoard.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, CoordinateSystemPixelSize));
 
         boardcells = new TilePictureControl[chessboard.Width, chessboard.Height];
 
@@ -164,48 +164,48 @@ public partial class BoardDisplay : Form
             for (int x = 0; x < chessboard.Width; x++)
             {
                 TilePictureControl box = new TilePictureControl();
-
                 box.Click += CellClicked;
+                tableLayoutPanelBoard.Controls.Add(box, x, y);
 
                 boardcells[x, y] = box;
-
-                tableLayoutPanel1.Controls.Add(box, x, y);
             }
         }
 
-        Font labelFont = new Font("ariel", 15, FontStyle.Bold);
+        Font labelFont = new Font("arial", 15, FontStyle.Bold);
 
         // Instantiate coordinates
-        for (int x = 0; x < tableLayoutPanel1.ColumnCount - 1; x++)
+        for (int x = 0; x < tableLayoutPanelBoard.ColumnCount - 1; x++)
         {
-            Label label = new Label
-            {
-                Text = ((char)(65 + x)).ToString(),
-                TextAlign = ContentAlignment.MiddleCenter,
-                Dock = DockStyle.Fill,
-                Font = labelFont,
-            };
-
-            tableLayoutPanel1.Controls.Add(label, x, tableLayoutPanel1.RowCount - 1);
+            tableLayoutPanelBoard.Controls.Add(
+                new Label
+                {
+                    Text = ((char)(65 + x)).ToString(),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Dock = DockStyle.Fill,
+                    Font = labelFont,
+                }, x, tableLayoutPanelBoard.RowCount - 1);
         }
 
-        for (int y = 0; y < tableLayoutPanel1.RowCount - 1; y++)
+        for (int y = 0; y < tableLayoutPanelBoard.RowCount - 1; y++)
         {
-            Label label = new Label
-            {
-                Text = (y + 1).ToString(),
-                TextAlign = ContentAlignment.MiddleCenter,
-                Dock = DockStyle.Fill,
-                Font = labelFont,
-            };
-
-            tableLayoutPanel1.Controls.Add(label, tableLayoutPanel1.ColumnCount - 1, y);
+            tableLayoutPanelBoard.Controls.Add(
+                new Label
+                {
+                    Text = (y + 1).ToString(),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Dock = DockStyle.Fill,
+                    Font = labelFont,
+                }, tableLayoutPanelBoard.ColumnCount - 1, y);
         }
 
         ResetAllTableStyling();
     }
 
-    // Clear the image on a position.
+    /// <summary>
+    /// Clears the image on a position.
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
     public void ClearPiece(int x, int y)
     {
         GetCell(x, y).Image = null;
@@ -348,6 +348,7 @@ public partial class BoardDisplay : Form
     /// </summary>
     void DrawDangerzone()
     {
+        /*
         foreach (KeyValuePair<Coordinate, List<Piece>> item in chessboard.Dangerzone)
         {
             if (!chessboard.InsideBoard(item.Key))
@@ -356,6 +357,40 @@ public partial class BoardDisplay : Form
             }
 
             ColorSquare(item.Key, DangersquareColor);
+        }*/
+
+        for (int x = 0; x < chessboard.Width; x++)
+        {
+            for (int y = 0; y < chessboard.Height; y++)
+            {
+                Coordinate pos = new Coordinate(x, y);
+
+                int sum = chessboard.GetDangerSquareSum(pos);
+
+                Color color;
+                if (sum > 1)
+                {
+                    color = Color.DarkBlue;
+                }
+                else if (sum == 1)
+                {
+                    color = Color.Blue;
+                }
+                else if (sum == -1)
+                {
+                    color = Color.Red;
+                }
+                else if (sum < -1)
+                {
+                    color = Color.DarkRed;
+                }
+                else
+                {
+                    continue;
+                }
+
+                ColorSquare(pos, color);
+            }
         }
     }
 
@@ -433,13 +468,13 @@ public partial class BoardDisplay : Form
         MouseButtons button = ((MouseEventArgs)e).Button;
 
         // translate window coordinates to table-cell coordinates
-        Point click = tableLayoutPanel1.PointToClient(MousePosition);
+        Point click = tableLayoutPanelBoard.PointToClient(MousePosition);
         int windowX = click.X;
         int windowY = click.Y;
 
         // TODO: Make grid accurate by making up for the difference the coordinate system makes.
-        int cellX = windowX / ((tableLayoutPanel1.Width - CoordinateSystemPixelSize) / chessboard.Width);
-        int cellY = windowY / ((tableLayoutPanel1.Height - CoordinateSystemPixelSize) / chessboard.Height);
+        int cellX = windowX / ((tableLayoutPanelBoard.Width - CoordinateSystemPixelSize) / chessboard.Width);
+        int cellY = windowY / ((tableLayoutPanelBoard.Height - CoordinateSystemPixelSize) / chessboard.Height);
 
         Coordinate clickTarget = new Coordinate(cellX, cellY);
 
