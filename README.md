@@ -27,7 +27,8 @@ Tiny isn't an official gamemode, but a gamemode made to test the bot in position
 ### Test gamemodes
 The remaining available gamemodes are used for testing, and aren't really playable.
 
-Pawn test:
+#### Pawn test
+
 ![Starting position of pawntest gamemode](Doc/gamemode-pawntest.png)
 
 ## Playmodes
@@ -42,15 +43,33 @@ This is the most basic way to play. It works by both players selecting 'local', 
 (Make good description here)
 
 Player 1 setup:
-![Player 1 (host) setup of networked playmode](Doc/playmode-setup-host-networked)
+
+![Player 1 (host) setup of networked playmode](Doc/playmode-setup-host-networked.png)
+
 Player 2 setup:
-![Player 2 (client) setup of networked playmode](Doc/playmode-setup-client-networked)
 
-### Person vs. Bot
-(Make good description here)
+![Player 2 (client) setup of networked playmode](Doc/playmode-setup-client-networked.png)
 
-### Bot vs. Bot
-(Make good description here)
+### Bot
+Starting a match with a bot, summons a unique window, which shows the calculation process and allows you to change the search depth.
+
+![Unique bot window](Doc/playmode-bot-ui.png)
+
+#### Player vs. Bot
+
+To play against bot, just select 'local' for yourself, and 'bot' as the opponent.
+
+![Setup of player vs bot playmode](Doc/playmode-setup-bot.png)
+
+
+#### Bot vs. Bot
+To watch two bots fight it off, just select 'bot' as both white and black.
+
+![Setup of bot vs bot playmode](Doc/playmode-setup-bot-vs-bot.png)
+
+Doing so will spawn two bot windows instead of one. The title of each window shows which team it's representing.
+
+![Two bot windows next to each other](Doc/playmode-bot-ui-two.png)
 
 ### Lichess API
 (Remember how the Lichess player-class works and make good description here)
