@@ -28,6 +28,7 @@ Tiny isn't an official gamemode, but a gamemode made to test the bot in position
 The remaining available gamemodes are used for testing, and aren't really playable.
 
 #### Pawn test
+This gamemode is used to test the many different movement patterns the pawns make use of.
 
 ![Starting position of pawntest gamemode](Doc/gamemode-pawntest.png)
 
@@ -40,15 +41,21 @@ This is the most basic way to play. It works by both players selecting 'local', 
 ![Setup of hotseat playmode](Doc/playmode-setup-hotseat.png)
 
 ### Networked / LAN
-(Make good description here)
+To play remotely, each person has to open an instance of the software. Then select 'local' as the team they want to play as, and select the 'remote' option of the other team. Furthermore, selecting the 'remote' option unlocks the IP field.
 
-Player 1 setup:
+Both players need to enter the IP of the host. The host is always the one who plays as black, in this case, player 1. Here the player on team black has the local IP `192.168.2.214`.
+
+The host (player 1 / black) needs to press 'Start match' first, then the UI is going to freeze and wait for someone to connect (this is because the server interrups the UI loop (#20)).
+
+**Player 1 setup:**
 
 ![Player 1 (host) setup of networked playmode](Doc/playmode-setup-host-networked.png)
 
-Player 2 setup:
+**Player 2 setup:**
 
 ![Player 2 (client) setup of networked playmode](Doc/playmode-setup-client-networked.png)
+
+In case you have trouble starting a match, please create an issue.
 
 ### Bot
 Starting a match with a bot, summons a unique window, which shows the calculation process and allows you to change the search depth.
@@ -72,9 +79,9 @@ Doing so will spawn two bot windows instead of one. The title of each window sho
 ![Two bot windows next to each other](Doc/playmode-bot-ui-two.png)
 
 ### Lichess API
-(Remember how the Lichess player-class works and make good description here)
+(Try to remember how the Lichess player-class works and make a good description here)
 
-(insert image of setup, both Lichess documentation and ChessForms UI)
+(insert image of setup, both Lichess and ChessForms UI)
 
 
 
