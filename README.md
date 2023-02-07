@@ -35,7 +35,7 @@ Playmodes are the ways to play a gamemode, locally, remotely or maybe with a bot
 #### Hot-seat
 This is the most basic way to play. It works by both players selecting 'local', and then they both make moves by selecting a piece with the UI. The boards rotation is currently fixed, (maybe the board is going to flip every move in the future when #11 has been resolved).
 
-(insert image of setup)
+![Setup of hotseat playmode](Doc/playmode-setup-hotseat.png)
 
 #### Networked / LAN
 (Make good description here)
