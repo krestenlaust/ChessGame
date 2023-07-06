@@ -1,14 +1,15 @@
-﻿using ChessGame;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using ChessGame;
 
 namespace ChessForms;
 
 public partial class PromotionPrompt : Form
 {
     public Piece SelectedPiece { get; private set; }
+
     public Dictionary<Image, Piece> PieceButtons = new Dictionary<Image, Piece>();
 
     public PromotionPrompt(List<Piece> pieces)

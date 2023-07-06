@@ -46,7 +46,9 @@ public class DiagonalPattern : IMovementPattern
 
                 if (checkPosition.Rank >= board.Height || checkPosition.Rank < 0 ||
                     checkPosition.File >= board.Width || checkPosition.File < 0) // If the checking position is outside of the board
+                {
                     continue;
+                }
 
                 // whether the position is occupied.
                 Piece occupyingPiece = board.GetPiece(checkPosition);

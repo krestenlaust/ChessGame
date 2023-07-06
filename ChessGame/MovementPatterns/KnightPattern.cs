@@ -52,7 +52,9 @@ public class KnightPattern : IMovementPattern
                 // If the checking position is outside of the board.
                 if (checkPosition.Rank >= board.Height || checkPosition.Rank < 0 ||
                     checkPosition.File >= board.Width || checkPosition.File < 0)
+                {
                     continue;
+                }
 
                 // whether the position is occupied.
                 Piece occupyingPiece = board.GetPiece(checkPosition);

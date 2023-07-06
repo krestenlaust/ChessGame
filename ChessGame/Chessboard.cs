@@ -175,7 +175,9 @@ public class Chessboard : IEquatable<Chessboard>
         Move pieceMove = GetMoveByNotation(move, CurrentTeamTurn, notationType);
 
         if (pieceMove is null)
+        {
             return false;
+        }
 
         return PerformMove(pieceMove, startNextTurn);
     }
@@ -612,7 +614,9 @@ public class Chessboard : IEquatable<Chessboard>
     public Piece GetPiece(Coordinate position)
     {
         if (Pieces.TryGetValue(position, out Piece piece))
+        {
             return piece;
+        }
 
         return null;
     }

@@ -18,10 +18,10 @@ public class CheckMateTest : Gamemode
     {
         var board = new Chessboard(8, 8, this);
 
-        board[new Coordinate(0, 7-0)] = new King(TeamColor.White);
+        board[new Coordinate(0, 7 - 0)] = new King(TeamColor.White);
         board[new Coordinate(2, 2)] = new Pawn(TeamColor.White);
         board[new Coordinate(3, 2)] = new Pawn(TeamColor.White);
-        board[new Coordinate(4, 7-0)] = new King(TeamColor.Black);
+        board[new Coordinate(4, 7 - 0)] = new King(TeamColor.Black);
         board[new Coordinate(4, 5)] = new Pawn(TeamColor.Black);
         board[new Coordinate(5, 5)] = new Pawn(TeamColor.Black);
         /*

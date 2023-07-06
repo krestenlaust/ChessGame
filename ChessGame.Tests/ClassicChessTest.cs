@@ -1,8 +1,5 @@
 ﻿using ChessGame.Gamemodes;
 using ChessGame.Pieces;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ChessGame.Tests;
 

@@ -48,7 +48,9 @@ public class CardinalPattern : IMovementPattern
                 // If the checking position is outside of the board.
                 if (checkPosition.Rank >= board.Height || checkPosition.Rank < 0 ||
                     checkPosition.File >= board.Width || checkPosition.File < 0)
+                {
                     break;
+                }
 
                 // whether the position is occupied.
                 Piece occupyingPiece = board.GetPiece(checkPosition);
