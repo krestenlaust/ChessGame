@@ -1,13 +1,13 @@
 ﻿namespace ChessGame.Bots;
 
-using ChessGame;
-using ChessGame.Pieces;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ChessGame;
+using ChessGame.Pieces;
 
 /// <summary>
 /// The logic of the Skakinator.
