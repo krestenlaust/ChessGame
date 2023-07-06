@@ -9,6 +9,7 @@ namespace ChessForms;
 public partial class PromotionPrompt : Form
 {
     public Piece SelectedPiece { get; private set; }
+
     public Dictionary<Image, Piece> PieceButtons = new Dictionary<Image, Piece>();
 
     public PromotionPrompt(List<Piece> pieces)

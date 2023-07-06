@@ -63,7 +63,9 @@ class Program
                 for (i = 0; i < consoleColors.Length; i++)
                 {
                     if ((ConsoleColor)consoleColors.GetValue(i) == currentColor)
+                    {
                         break;
+                    }
                 }
 
                 currentColor = (ConsoleColor)consoleColors.GetValue((i + 1) % consoleColors.Length);

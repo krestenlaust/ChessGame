@@ -91,7 +91,9 @@ public readonly struct PieceMove : IEquatable<PieceMove>
         sb.Append(Piece);
 
         if (Captures)
+        {
             sb.Append('x');
+        }
 
         sb.Append(Destination);
 
