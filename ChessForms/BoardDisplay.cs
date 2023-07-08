@@ -356,6 +356,11 @@ public partial class BoardDisplay : Form
                 continue;
             }
 
+            if (item.Value.Count == 0)
+            {
+                continue;
+            }
+
             ColorSquare(item.Key, DangersquareColor);
         }*/
 
@@ -566,7 +571,7 @@ public partial class BoardDisplay : Form
             case MouseButtons.None:
                 break;
             case MouseButtons.Right: // Mark square.
-                // do not change color if square is already colored.
+                                     // do not change color if square is already colored.
                 if ((recentMoveFrom?.File == cellX && recentMoveFrom?.Rank == cellY) ||
                     (recentMoveTo?.File == cellX && recentMoveTo?.Rank == cellY))
                 {

@@ -70,6 +70,7 @@ public abstract class Piece
 
     public override string ToString() => Notation.ToString();
 
+    /*
     public override bool Equals(object obj)
     {
         return obj is Piece piece &&
@@ -85,5 +86,5 @@ public abstract class Piece
         hashCode = hashCode * -1521134295 + Color.GetHashCode();
         hashCode = hashCode * -1521134295 + MaterialValue.GetHashCode();
         return hashCode;
-    }
+    }*/
 }
