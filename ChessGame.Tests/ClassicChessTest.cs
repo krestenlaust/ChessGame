@@ -6,7 +6,7 @@ namespace ChessGame.Tests;
 [TestClass]
 public class ClassicChessTest
 {
-    // TODO: refine test method, make it shorter and simpler.
+    // TODO: refine test method, make it shorter and simpler, by splitting into multiple functions.
     [TestMethod]
     public void CheckPatternsTest()
     {
@@ -66,7 +66,7 @@ public class ClassicChessTest
 
         moves = chessboard.GetMoves().ToList();
 
-        Assert.IsTrue(moves.Count == possibleMoves.Count);
+        Assert.AreEqual(possibleMoves.Count, moves.Count);
 
         foreach (var item in moves)
         {
@@ -79,7 +79,7 @@ public class ClassicChessTest
         chessboard.PerformMove("a1b2", MoveNotation.UCI);
         // new position: https://lichess.org/analysis/8/8/8/8/8/2pp4/8/k3K3_b_-_-_0_1#6
 
-        Assert.AreEqual(chessboard.CurrentState, GameState.Started);
+        Assert.AreEqual(GameState.Started, chessboard.CurrentState);
 
         possibleMoves = new List<Coordinate>
         {
@@ -90,7 +90,7 @@ public class ClassicChessTest
         };
         moves = chessboard.GetMoves().ToList();
 
-        Assert.IsTrue(moves.Count == possibleMoves.Count);
+        Assert.AreEqual(possibleMoves.Count, moves.Count);
 
         foreach (var item in moves)
         {
@@ -99,7 +99,7 @@ public class ClassicChessTest
             Assert.IsFalse(item.Captures);
         }
 
-        Assert.AreEqual(chessboard.CurrentState, GameState.Started);
+        Assert.AreEqual(GameState.Started, chessboard.CurrentState);
     }
 
     [TestMethod]
